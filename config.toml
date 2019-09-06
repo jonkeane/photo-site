@@ -1,0 +1,56 @@
+languageCode = "en-us"
+title = "Jonathan Keane Photography"
+baseURL = "http://localhost:1313/"
+theme = "hugo-theme-massively-jtk"
+googleanalytics = ""
+# disableKinds = ["taxonomy", "taxonomyTerm", "section"]
+
+sectionPagesMenu = "main"
+
+[[menu.main]]
+   identifier="intro"
+   name = "Intro"
+   url  = "/"
+   weight = 1
+
+[[menu.main]]
+   identifier="store"
+   name = "store"
+   url  = "/store/"
+   weight = 2
+
+[[menu.main]]
+   identifier="gallery"
+   name = "gallery"
+   url  = "/gallery/"
+   weight = 3
+
+
+# [params]
+  # set below parameter to define a favicon
+  # favicon = "favicon.ico"
+  # set to change date format
+  # dateFormat = "2.1.2006"
+
+[params.slider]
+    enable = true
+    manual = false # Setting manual to true renders the slide selection to only those where the post has a slider=true option enabled
+    num_features = 6 # The slider picks up the banner images from the N most recent posts, where num_features is N.
+
+# Below parameters can be set to override default post settings
+# [params.posts]
+#     folderName = "post"
+#     pageSize = "6"
+#     featuredPost = true
+#     paginationPages = 2
+#     showFirstLast = false
+
+[languages]
+[languages.en]
+  languageName = "English"
+#[languages.es]
+#  languageName = "Español"
+#  title = "Massively - Versión Español"
+#[languages.fr]
+#  languageName = "Français"
+#  title = "Massively - Version Française"
