@@ -1,0 +1,3 @@
+[submodule "themes/hugo-theme-massively-jtk"]
+  path = themes/hugo-theme-massively-jtk
+  url = https://github.com/jonkeane/hugo-theme-massively-jtk.git
