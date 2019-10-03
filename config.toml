@@ -4,6 +4,8 @@ title = "Jonathan Keane Photography"
 theme = "hugo-theme-massively-jtk"
 googleanalytics = "UA-147422220-1"
 # disableKinds = ["taxonomy", "taxonomyTerm", "section"]
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+
 
 sectionPagesMenu = "main"
 
@@ -34,6 +36,10 @@ sectionPagesMenu = "main"
 
 [params.slider]
     enable = true
+
+[imaging.exif]
+  includeFields = ".*"
+
 
 # Below parameters can be set to override default post settings
 # [params.posts]
