@@ -38,7 +38,7 @@ sectionPagesMenu = "main"
     enable = true
 
 [imaging.exif]
-  includeFields = ".*"
+  includeFields = "Description"
 
 
 # Below parameters can be set to override default post settings
