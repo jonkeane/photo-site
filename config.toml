@@ -34,11 +34,15 @@ sectionPagesMenu = "main"
   # set to change date format
   # dateFormat = "2.1.2006"
 
+[params.nanog]
+  flickr_userid = "65556368@N00"
+  thumbnailHoverEffect2 = "imageScaleIn80|labelSlideUp|label_backgroundColor_rgba(50,50,50,0.01)_rgba(50,50,50,0.8)"
+
 [params.slider]
     enable = true
 
 [imaging.exif]
-  includeFields = ".*"
+  includeFields = "Description"
 
 
 # Below parameters can be set to override default post settings
