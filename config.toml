@@ -37,6 +37,7 @@ sectionPagesMenu = "main"
 [params.nanog]
   flickr_userid = "65556368@N00"
   thumbnailHoverEffect2 = "imageScaleIn80|labelSlideUp|label_backgroundColor_rgba(50,50,50,0.01)_rgba(50,50,50,0.8)"
+  tagBlackList = "nogallery"
 
 [params.slider]
     enable = true
