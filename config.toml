@@ -52,6 +52,7 @@ sectionPagesMenu = "main"
    description = "Jonathan Keane Photography — Travelling the world and taking photographs of things that catch my eye. Landscapes, cityscapes, nature, people."
    robots = "index, follow, noarchive"
    googlebot = "noarchive"
+   googlesiteverification = "f2zJ8lbq0tyR9J_pME6DbTDQWFrLLH-m98SKSbgnmCE"
 
 [imaging.exif]
   includeFields = "Description"
