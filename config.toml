@@ -27,6 +27,11 @@ sectionPagesMenu = "main"
    url  = "/gallery/"
    weight = 3
 
+[[menu.main]]
+   identifier="about"
+   name = "about"
+   url  = "/about/"
+   weight = 4
 
 # [params]
   # set below parameter to define a favicon
