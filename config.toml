@@ -6,7 +6,6 @@ googleanalytics = "UA-147422220-1"
 # disableKinds = ["taxonomy", "taxonomyTerm", "section"]
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
-
 sectionPagesMenu = "main"
 
 [[menu.main]]
@@ -48,9 +47,14 @@ sectionPagesMenu = "main"
 [params.slider]
     enable = true
 
+[params.meta]
+   keywords = "photography, photographs, photos, prints, art, framed prints, travel, landscapes, cityscapes, nature, japan, chicago, australia"
+   description = "Jonathan Keane Photography — Travelling the world and taking photographs of things that catch my eye. Landscapes, cityscapes, nature, people."
+   robots = "index, follow, noarchive"
+   googlebot = "noarchive"
+
 [imaging.exif]
   includeFields = "Description"
-
 
 # Below parameters can be set to override default post settings
 # [params.posts]
