@@ -32,11 +32,17 @@ sectionPagesMenu = "main"
    url  = "/about/"
    weight = 4
 
-# [params]
+[params]
+  description = "Jonathan Keane Photography — Travelling the world and taking photographs of things that catch my eye. Landscapes, cityscapes, nature, people."
+  images = ["site-feature-image.jpg"]
+  title = "Jonathan Keane Photography"
   # set below parameter to define a favicon
   # favicon = "favicon.ico"
   # set to change date format
-  # dateFormat = "2.1.2006"
+  dateFormat = "2006-01-02"
+
+[taxonomies]
+  series = "series"
 
 [params.nanog]
   # flickr_userid = "65556368@N00"
