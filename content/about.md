@@ -1,6 +1,6 @@
 ---
 title: About
-description: About me
+description:
 slug: about
 ---
 
