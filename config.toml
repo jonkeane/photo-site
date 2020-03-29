@@ -1,6 +1,6 @@
 languageCode = "en-us"
 title = "Jonathan Keane Photography"
-baseURL = "https://photo.jonkeane.com"
+# baseURL = "https://photo.jonkeane.com"
 theme = "hugo-theme-massively-jtk"
 googleanalytics = "UA-147422220-1"
 # disableKinds = ["taxonomy", "taxonomyTerm", "section"]
