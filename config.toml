@@ -1,5 +1,6 @@
 languageCode = "en-us"
 title = "Jonathan Keane Photography"
+# If specified, it messes up some links on the preview site, is it needed at all?
 # baseURL = "https://photo.jonkeane.com"
 theme = "hugo-theme-massively-jtk"
 googleanalytics = "UA-147422220-1"
