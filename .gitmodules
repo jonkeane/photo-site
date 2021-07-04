@@ -1,6 +1,6 @@
 [submodule "themes/hugo-theme-massively-jtk"]
   path = themes/hugo-theme-massively-jtk
-  url = https://github.com/jonkeane/hugo-theme-massively-jtk.git
+  url = git@github.com:jonkeane/hugo-theme-massively-jtk.git
 [submodule "assets"]
 	path = assets
 	url = git@github.com:jonkeane/photo-site-assets.git
