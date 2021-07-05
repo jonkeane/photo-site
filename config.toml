@@ -48,7 +48,6 @@ sectionPagesMenu = "main"
 [params.nanog]
   flickr_userid = "65556368@N00"
   # flickr_userid = "jonkeane"
-  flickr_apikey = "8546be6a9d9a7369255bd3282929be6f"
   thumbnailHoverEffect2 = "imageScaleIn80|labelSlideUp|label_backgroundColor_rgba(50,50,50,0.01)_rgba(50,50,50,0.8)"
   tagBlockList = "nogallery"
 
