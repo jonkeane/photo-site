@@ -34,7 +34,7 @@ sectionPagesMenu = "main"
    weight = 4
 
 [params]
-  description = "Jonathan Keane Photography — Travelling the world and taking photographs of things that catch my eye. Landscapes, cityscapes, nature, people."
+  description = "Travelling the world and taking photographs of things that catch my eye. Landscapes, cityscapes, nature, people."
   images = ["photo-jonkeane.jpg"]
   title = "Jonathan Keane Photography"
   # set below parameter to define a favicon
@@ -56,7 +56,7 @@ sectionPagesMenu = "main"
 
 [params.meta]
    keywords = "photography, photographs, photos, prints, art, framed prints, travel, landscapes, cityscapes, nature, japan, chicago, australia"
-   description = "Jonathan Keane Photography — Travelling the world and taking photographs of things that catch my eye. Landscapes, cityscapes, nature, people."
+   description = "Travelling the world and taking photographs of things that catch my eye. Landscapes, cityscapes, nature, people."
    robots = "index, follow, noarchive"
    googlebot = "noarchive"
    googlesiteverification = "f2zJ8lbq0tyR9J_pME6DbTDQWFrLLH-m98SKSbgnmCE"
