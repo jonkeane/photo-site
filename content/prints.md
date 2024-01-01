@@ -1,7 +1,7 @@
 ---
-title: Store
+title: Prints
 description: 
-slug: store
+slug: prints
 ---
 
 A photo is a moment in time, captured for later viewing. These images show the beauty, the hecticness, and sometimes the absurdity of the planet we all share. 

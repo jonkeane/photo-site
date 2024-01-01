@@ -16,15 +16,15 @@ sectionPagesMenu = "main"
    weight = 1
 
 [[menu.main]]
-   identifier="store"
-   name = "store"
-   url  = "/store/"
-   weight = 2
-
-[[menu.main]]
    identifier="gallery"
    name = "gallery"
    url  = "/gallery/"
+   weight = 2
+
+[[menu.main]]
+   identifier="prints"
+   name = "prints"
+   url  = "/prints/"
    weight = 3
 
 [[menu.main]]
@@ -64,6 +64,10 @@ sectionPagesMenu = "main"
 
 [imaging.exif]
   includeFields = "Description"
+
+[params.posts]
+  featuredPost = false
+  pageSize = "10"
 
 # Below parameters can be set to override default post settings
 # [params.posts]
