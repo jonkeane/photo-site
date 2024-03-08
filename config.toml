@@ -6,6 +6,7 @@ theme = "hugo-theme-massively-jtk"
 googleanalytics = "G-CPQDC0642Z"
 # disableKinds = ["taxonomy", "taxonomyTerm", "section"]
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+timeout = 600
 
 sectionPagesMenu = "main"
 
