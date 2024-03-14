@@ -5,5 +5,6 @@ HUGO_VERSION = "0.110.0"
 HUGO_VERSION = "0.110.0"
 
 [[edge_functions]]
-path = "/gallery/*"
+path = "/gallery/*/*"
+excludedPath = "/*.jpg"
 function = "og-image"
