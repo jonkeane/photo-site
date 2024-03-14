@@ -49,8 +49,7 @@ sectionPagesMenu = "main"
 [params.nanog]
   flickr_userid = "65556368@N00"
   # flickr_userid = "jonkeane"
-  # this doesn't actually make the label appear since it's set to display off
-  # thumbnailHoverEffect2 = "imageScale105"
+  thumbnailHoverEffect2 = "imageScale105"
   tagBlockList = "nogallery"
 
 [params.slider]
