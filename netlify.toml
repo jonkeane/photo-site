@@ -3,3 +3,8 @@ HUGO_VERSION = "0.110.0"
 
 [context.deploy-preview.environment]
 HUGO_VERSION = "0.110.0"
+
+[[edge_functions]]
+path = "/gallery/*/*"
+excludedPath = "/*.jpg"
+function = "og-image"
