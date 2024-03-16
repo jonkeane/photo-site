@@ -1,5 +1,5 @@
 ---
-Title: Montréal
+Title: Montréal 2015
 Description: Scenes from Montréal, Canada
 slug: montreal2015
 date: "2015-01-01T00:00:00"

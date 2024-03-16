@@ -1,5 +1,5 @@
 ---
-Title: Starved Rock
+Title: Starved Rock 2016
 Description:
 slug: starvedrock2016
 date: "2016-01-01T00:00:00"

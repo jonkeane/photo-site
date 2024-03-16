@@ -49,7 +49,6 @@ sectionPagesMenu = "main"
 [params.nanog]
   flickr_userid = "65556368@N00"
   # flickr_userid = "jonkeane"
-  thumbnailHoverEffect2 = "imageScale105"
   tagBlockList = "nogallery"
 
 [params.slider]
