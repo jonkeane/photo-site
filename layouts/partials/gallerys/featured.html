@@ -1,0 +1,40 @@
+<!-- Featured Post -->
+{{ $data := .siteData }}
+{{ $no_dates := .no_dates }}
+{{ range .firstpost }}
+
+<article class="post featured">
+    <header class="major">
+        {{ if not ( or ( .Date.IsZero ) ( $no_dates ) ) }}
+            <span class="date">{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
+        {{ end }}
+        <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+    </header>
+    {{ if .Params.image }}
+    {{ $image := resources.Get .Params.image }}
+    {{ $x2700x := $image.Resize "2700x" }}
+    {{ $x1800x := $image.Resize "1800x" }}
+    {{ $x900x := $image.Resize "900x" }}
+    {{ $x400x := $image.Resize "400x" }}
+    <a href="{{ .RelPermalink }}" class="image main">
+        <picture>
+            <source
+            srcset="{{ $x2700x.RelPermalink }} 3x,
+                    {{ $x1800x.RelPermalink }} 2x,
+                    {{ $x900x.RelPermalink }} 1x"
+            media="(min-width: 630px)"/>
+                <source
+            srcset="{{ $x1800x.RelPermalink }} 3x,
+                    {{ $x900x.RelPermalink }} 2x,
+                    {{ $x400x.RelPermalink }} 1x"
+            media="(min-width: 350px)"/>
+            <img src="{{ $x900x.RelPermalink }}"  alt = "{{ $x900x.Exif.Tags.ImageDescription }}">
+        </picture>
+    </a>
+    {{ end }}
+    <p>{{ .Description }}</p>
+    <ul class="actions">
+        <li><a href="{{ .RelPermalink }}" class="button big">{{ $data.post.linktext }}</a></li>
+    </ul>
+</article>
+{{ end }}

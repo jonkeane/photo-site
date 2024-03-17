@@ -1,0 +1,31 @@
+{{ partial "htmlhead" . }}
+	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+			    <div class="bg fixed"></div>
+
+				{{ partial "intro.html" . }}
+				{{ partial "header" . }}
+				{{ partial "nav" . }}
+
+				<!-- Main -->
+					<div id="main">
+
+                        <!-- Post -->
+                        <section class="page"> <!-- used to be class="post"-->
+                            {{ partial "slider" . }}
+
+                            <a href="/store/" class="button big fullwidth">Prints available</a>
+                            {{ .Content }}
+                        </section>
+
+					</div>
+
+					{{ partial "footer/index" . }}
+					{{ partial "copyright" . }}
+
+			</div>
+			{{ partial "scripts/index" . }}
+			{{- partial "scripts/jonkeane" . }}
+	</body>
+</html>

@@ -1,0 +1,77 @@
+{{ if isset .Site.Params "slider" }}
+{{ if .Site.Params.slider.enable }}
+
+<!-- Make resized images for responsive handling -->
+{{ $images_scratch := newScratch }}
+{{ $folder := printf "assets/slider" }}
+{{ range $index, $file := readDir $folder }}
+    {{ $image := resources.Get (printf "slider/%s" $file.Name) }}
+
+    {{ if eq $image.ResourceType "image" }}
+        {{ $slider_images := dict "x4095x" ( $image.Resize "4095x" ) }}
+        {{ $slider_images = merge $slider_images (dict "x3072x" ( $image.Resize "3072x" ) ) }}
+        {{ $slider_images = merge $slider_images (dict "x2730x" ( $image.Resize "2730x" ) ) }}
+        {{ $slider_images = merge $slider_images (dict "x2500x" ( $image.Resize "2500x" ) ) }}
+        {{ $slider_images = merge $slider_images (dict "x2048x" ( $image.Resize "2048x" ) ) }}
+        {{ $slider_images = merge $slider_images (dict "x1536x" ( $image.Resize "1536x" ) ) }}
+        {{ $slider_images = merge $slider_images (dict "x1024x" ( $image.Resize "1024x" ) ) }}
+        {{ $slider_images = merge $slider_images (dict "x512x" ( $image.Resize "512x" ) ) }}
+        {{ $images_scratch.Add "slider_images" (slice $slider_images ) }}
+    {{ end }}
+{{ end }}
+
+<section class="slider">
+    <div id="theCarousel" class="carousel slide lazy" data-ride="carousel" data-interval="10000">
+
+    <ol class="carousel-indicators">
+
+    	{{ range $index, $image := $images_scratch.Get "slider_images" }}
+            <li data-target="#theCarousel" data-slide-to="{{ $index }}"{{ if (eq $index 0) }}  class="active" {{ end }}></li>
+        {{ end }}
+    </ol>
+    <div class="carousel-inner">
+    	{{ range $index, $image := $images_scratch.Get "slider_images" }}
+    	<div class="carousel-item{{ if (eq $index 0) }} active{{ end }}">
+    	    <picture id="theCarousel-image-{{$index}}">
+    	        <!-- max: 1365 pixels -->
+                <source
+            {{ if (lt $index 1) }}srcset{{ else }}data-srcset{{ end }}="
+            {{ $image.x4095x.Permalink }} 3x,
+            {{ $image.x2730x.Permalink }} 2x,
+            {{ $image.x1365x.Permalink }} 1x"
+            media="(min-width: 1680px)"/>
+                <!-- max: 1024 pixels -->
+                <source
+            {{ if (lt $index 1) }}srcset{{ else }}data-srcset{{ end }}="
+            {{ $image.x3072x.Permalink }} 3x,
+            {{ $image.x2048x.Permalink }} 2x,
+            {{ $image.x1024x.Permalink }} 1x"
+            media="(min-width: 630px)"/>
+                <!-- max: 521 pixels -->
+                <source
+            {{ if (lt $index 1) }}srcset{{ else }}data-srcset{{ end }}="
+            {{ $image.x1536x.Permalink }} 3x,
+            {{ $image.x1024x.Permalink }} 2x,
+            {{ $image.x512x.Permalink }} 1x"
+            media="(min-width: 350px)"/>
+                <img {{ if (lt $index 1) }}srcset{{ else }}data-srcset{{ end }}="{{ $image.x512x.Permalink }}"
+                class="d-block w-100" alt="{{ $image.x512x.Exif.Tags.ImageDescription }}" title="{{ $image.x512x.Exif.Tags.ImageDescription }}" />
+                    </picture>
+    	</div>
+	   {{ end }}
+    </div>
+    <a class="carousel-control-prev" href="#theCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#theCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+
+    </div>
+    <!-- #controllers -->
+</section><!-- .featured-slider -->
+
+{{ end }}
+{{ end }}
