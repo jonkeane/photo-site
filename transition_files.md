@@ -1,0 +1,72 @@
+# Move wholesale (these are files I've added — maybe they can be in the override?)
+- [ ] static/assets/css/bootstrap-grid.css
+- [ ] static/assets/css/bootstrap-grid.css.map
+- [ ] static/assets/css/bootstrap-grid.min.css
+- [ ] static/assets/css/bootstrap-grid.min.css.map
+- [ ] static/assets/css/bootstrap-reboot.css
+- [ ] static/assets/css/bootstrap-reboot.css.map
+- [ ] static/assets/css/bootstrap-reboot.min.css
+- [ ] static/assets/css/bootstrap-reboot.min.css.map
+- [ ] static/assets/css/bootstrap.css
+- [ ] static/assets/css/bootstrap.css.map
+- [ ] static/assets/css/bootstrap.min.css
+- [ ] static/assets/css/bootstrap.min.css.map
+- [ ] static/assets/css/customizations.css
+- [ ] static/assets/css/font/.htaccess (delete?)
+- [ ] static/assets/css/font/ngy2_icon_font.woff
+- [ ] static/assets/css/font/ngy2_icon_font.woff2
+- [ ] static/assets/css/nanogallery2.min.css
+- [ ] static/assets/css/nanogallery2.woff.min.css
+- [ ] static/assets/css/type/azuro-bold.eot
+- [ ] static/assets/css/type/azuro-bold.woff
+- [ ] static/assets/css/type/azuro-bolditalic.eot
+- [ ] static/assets/css/type/azuro-bolditalic.woff
+- [ ] static/assets/css/type/azuro-italic.eot
+- [ ] static/assets/css/type/azuro-italic.woff
+- [ ] static/assets/css/type/azuro-regular.eot
+- [ ] static/assets/css/type/azuro-regular.woff
+- [ ] static/assets/js/bootstrap.bundle.js
+- [ ] static/assets/js/bootstrap.bundle.js.map
+- [ ] static/assets/js/bootstrap.bundle.min.js
+- [ ] static/assets/js/bootstrap.bundle.min.js.map
+- [ ] static/assets/js/bootstrap.js
+- [ ] static/assets/js/bootstrap.js.map
+- [ ] static/assets/js/bootstrap.min.js
+- [ ] static/assets/js/bootstrap.min.js.map
+- [ ] static/assets/js/nanogallery2/README.md
+- [ ] static/assets/js/nanogallery2/jquery.nanogallery2.js
+- [ ] static/assets/js/nanogallery2/jquery.nanogallery2.min.js
+- [ ] static/assets/js/jquery.bcSwipe.js (remove? no carosel?)
+- [ ] static/assets/js/jquery.bcSwipe.min.js (remove? no carosel?)
+
+# Edit
+- [ ] README.md
+- [ ] i18n/en.toml
+- [ ] theme.toml
+- [ ] static/assets/css/main.css (or transition out + override?)
+- [ ] static/assets/js/main.js  (or transition out + override?)
+- [ ] static/assets/sass/libs/_vars.scss
+
+
+# Transition to overrirde?
+- [ ] .gitignore
+- [ ] layouts/_default/list.html
+- [ ] layouts/_default/single.html
+- [ ] layouts/gallery/list.html
+- [ ] layouts/gallery/single.html
+- [ ] layouts/index.html
+- [ ] layouts/partials/bg.html
+- [ ] layouts/partials/colophon.html
+- [ ] layouts/partials/copyright.html
+- [ ] layouts/partials/footer/index.html
+- [ ] layouts/partials/gallerys/featured.html
+- [ ] layouts/partials/gallerys/list.html
+- [ ] layouts/partials/gallerys/pagination.html
+- [ ] layouts/partials/htmlhead.html
+- [ ] layouts/partials/nav.html
+- [ ] layouts/partials/opengraph.html
+- [ ] layouts/partials/posts/featured.html
+- [ ] layouts/partials/posts/list.html
+- [ ] layouts/partials/scripts/index.html
+- [ ] layouts/partials/slider.html
+- [ ] layouts/partials/twitter_cards.html
