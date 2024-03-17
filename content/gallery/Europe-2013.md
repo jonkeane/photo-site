@@ -1,5 +1,5 @@
 ---
-Title: Europe
+Title: Europe 2013
 Description: London—Berlin
 slug: europe2013
 date: "2013-06-01T00:00:00"

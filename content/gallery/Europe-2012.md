@@ -1,5 +1,5 @@
 ---
-Title: Europe
+Title: Europe 2012
 Description: Stockholm—Copenhagen—Swabia
 slug: europe2012
 date: "2012-06-01T00:00:00"

@@ -1,5 +1,5 @@
 ---
-Title: San Francisco
+Title: San Francisco 2015
 Description: Muir woods & Botanical gardens
 slug: SanFrancisco2015
 date: "2015-07-01T00:00:00"
