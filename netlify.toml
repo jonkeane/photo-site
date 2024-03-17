@@ -8,3 +8,6 @@ HUGO_VERSION = "0.110.0"
 path = "/gallery/*/*"
 excludedPath = "/*.jpg"
 function = "og-image"
+
+[dev]
+framework = "hugo"

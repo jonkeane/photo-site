@@ -43,6 +43,14 @@ sectionPagesMenu = "main"
   # set to change date format
   dateFormat = "2006-01-02"
 
+[module]
+[[module.mounts]]
+    source = 'static/assets'
+    target = 'assets'
+[[module.mounts]]
+    source = 'assets'
+    target = 'assets'
+
 [taxonomies]
   series = "series"
 

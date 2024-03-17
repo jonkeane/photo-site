@@ -1,0 +1,447 @@
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:900");
+
+
+@font-face {
+    font-family: 'Azuro';
+    src: url('type/azuro-regular.eot');
+    src: url('type/azuro-regular.eot?iefix') format('eot'),
+            url('type/azuro-regular.woff') format('woff'),
+            url('type/azuro-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal; }
+
+@font-face {
+    font-family: 'Azuro';
+    src: url('type/azuro-italic.eot');
+    src: url('type/azuro-italic.eot?iefix') format('eot'),
+            url('type/azuro-italic.woff') format('woff'),
+            url('type/azuro-italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic; }
+
+@font-face {
+    font-family: 'Azuro';
+    src: url('type/azuro-bold.eot');
+    src: url('type/azuro-bold.eot?iefix') format('eot'),
+            url('type/azuro-bold.woff') format('woff'),
+            url('type/azuro-bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal; }
+
+@font-face {
+    font-family: 'Azuro';
+    src: url('type/azuro-bolditalic.eot');
+    src: url('type/azuro-bolditalic.eot?iefix') format('eot'),
+            url('type/azuro-bolditalic.woff') format('woff'),
+            url('type/azuro-bolditalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic; }
+
+p {
+    line-height: 1.5;
+}
+
+// @media screen and (max-width: ...) { ... font-size: bigger }
+
+body, input, select, textarea {
+    font-family: "Azuro", Georgia, serif;
+    a:hover {
+        text-decoration: none;
+    }
+}
+
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+button:hover,
+.button:hover {
+    box-shadow: inset 0 0 0 2px _palette($p, accent);
+    color: _palette($p, accent) !important;
+}
+
+input[type="submit"].primary:hover,
+input[type="reset"].primary:hover,
+input[type="button"].primary:hover,
+button.primary:hover,
+.button.primary:hover {
+    background-color: _palette($p, accent);
+}
+
+
+input[type="checkbox"] + label,
+input[type="radio"] + label {
+    font-family: "Azuro", Georgia, serif;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+select:focus,
+textarea:focus {
+    border-color: _palette($p, accent);
+}
+
+input[type="checkbox"]:focus + label:before,
+input[type="radio"]:focus + label:before {
+    border-color: _palette($p, accent);
+}
+
+.image.main {
+    margin: 1rem 0;
+}
+
+ul.icons li a.icon:hover:before {
+    color: _palette($p, accent);
+}
+
+ul.icons.alt li a.icon:hover:before {
+    box-shadow: inset 0 0 0 2px _palette($p, accent);
+}
+
+header.major {
+    margin: 0 0 1rem 0;
+}
+
+header.major > p {
+    margin-top: 0;
+    // remove text-align: center; //
+}
+
+.pagination {
+    margin: 0 0 0 2px;
+}
+
+.pagination a:hover {
+    color: _palette($p, accent) !important;
+    border-color: _palette($p, accent);
+}
+
+.pagination a:hover + a, .pagination a:hover + span {
+    border-left-color: _palette($p, accent);
+}
+
+#wrapper > .bg {
+    background-image: url("../../images/overlay.png"), linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("../../images/IMG_4941_2300.jpg");
+    transform: none;
+}
+
+/*
+		@media screen and (orientation: portrait) {
+			#wrapper > .bg {
+				background-size: auto,								auto,														auto 100%;
+			}
+		}
+*/
+
+
+
+#intro a:hover {
+    color: _palette($p, accent) !important;
+}
+
+#intro input[type="submit"]:hover,
+#intro input[type="reset"]:hover,
+#intro input[type="button"]:hover,
+#intro button:hover,
+#intro .button:hover {
+    box-shadow: inset 0 0 0 2px _palette($p, accent);
+    color: _palette($p, accent) !important;
+}
+
+#intro input[type="submit"].primary:hover,
+#intro input[type="reset"].primary:hover,
+#intro input[type="button"].primary:hover,
+#intro button.primary:hover,
+#intro .button.primary:hover {
+    background-color: _palette($p, accent);
+}
+
+@media screen and (max-width: 480px) {
+    #header a {
+        margin: 0 10px 0 10px;
+    }
+
+    #intro h1 {
+        font-size: 3rem;
+    }
+}
+
+#header a:hover {
+    color: _palette($p, accent) !important;
+}
+
+#header .logo:hover {
+    border-color: _palette($p, accent) !important;
+    color: _palette($p, accent) !important;
+}
+
+#nav ul.icons li a.icon:hover:before {
+    color: _palette($p, accent);
+}
+
+#nav ul.icons.alt li a.icon:hover:before {
+    box-shadow: inset 0 0 0 2px _palette($p, accent);
+}
+
+#nav a:hover {
+    border-bottom-color: transparent;
+    color: _palette($p, accent) !important;
+}
+
+
+#nav ul.links li.active a:hover {
+    color: _palette($p, accent) !important;
+}
+
+#main > footer {
+    padding: 2rem 4rem 2rem 4rem ;
+    text-align: center;
+}
+
+#main > .post {
+    position: relative;
+    padding: 2rem 8rem 1rem 8rem ;
+}
+
+@media screen and (max-width: 1280px) {
+
+    #main > .post {
+        padding: 2rem 4rem 1rem 4rem ;
+    }
+}
+
+@media screen and (max-width: 736px) {
+
+    #main > .post {
+        padding: 2rem 2rem 2rem 2rem ;
+    }
+}
+
+#main > .posts > * {
+    padding: 2rem 4rem;
+}
+
+/* for ensuring that 2-line titles have aligned photos, change with h2 size */
+#main > .posts > article > header {
+    font-size: 1.75rem;
+    min-height: 2.5em;
+}
+
+#main > .posts > article > header {
+    min-height: 0;
+}
+
+#footer a:hover {
+    color: _palette($p, accent) !important;
+}
+
+#footer input[type="submit"]:hover,
+#footer input[type="reset"]:hover,
+#footer input[type="button"]:hover,
+#footer button:hover,
+#footer .button:hover {
+    box-shadow: inset 0 0 0 2px _palette($p, accent);
+    color: _palette($p, accent) !important;
+}
+
+#footer input[type="submit"].primary:hover,
+#footer input[type="reset"].primary:hover,
+#footer input[type="button"].primary:hover,
+#footer button.primary:hover,
+#footer .button.primary:hover {
+    background-color: _palette($p, accent);
+}
+
+#footer input[type="text"]:focus,
+#footer input[type="password"]:focus,
+#footer input[type="email"]:focus,
+#footer select:focus,
+#footer textarea:focus {
+    border-color: _palette($p, accent);
+}
+
+
+#footer input[type="checkbox"]:focus + label:before,
+#footer input[type="radio"]:focus + label:before {
+    border-color: _palette($p, accent);
+}
+
+#footer ul.icons li a.icon:hover:before {
+    color: _palette($p, accent);
+}
+
+#footer ul.icons.alt li a.icon:hover:before {
+    box-shadow: inset 0 0 0 2px _palette($p, accent);
+}
+
+#footer .pagination a:hover {
+    color: _palette($p, accent) !important;
+    border-color: _palette($p, accent);
+}
+
+#footer .pagination a:hover + a, #footer .pagination a:hover + span {
+    border-left-color: _palette($p, accent);
+}
+
+#footer > section.split.contact > section.single-line {
+    padding: 1.5rem 4rem 1.5rem 4rem;
+}
+
+#copyright {
+    background-color: #363636cc;
+    color: #909498;
+    cursor: default;
+    font-size: 0.9rem;
+    margin: 1rem auto 2rem auto;
+    padding: 0.5rem;
+}
+
+#copyright a:hover {
+    color: _palette($p, accent) !important;
+}
+
+#copyright {
+    margin: 2rem auto 4rem auto;
+}
+
+// @media screen and (max-width: 850px) { do something with the copyright section ... }
+
+
+/* This section has more in it than it strictly needs to */
+#navPanelToggle:before {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-transform: none !important;
+}
+
+#navPanelToggle:before {
+    content: '\f0c9';
+    margin-right: 0.5rem;
+}
+
+#navPanelToggle.alt {
+    background-color: rgba(255, 255, 255, 0.875);
+    box-shadow: 0 0.125rem 0.75rem 0 rgba(30, 37, 45, 0.25);
+    color: #212931;
+    font-size: 1.25rem;
+    transition: font-size 0.5s ease, box-shadow 0.5s ease, background-color 0.5s;
+}
+
+#navPanelToggle.alt:hover {
+    background-color: #ffffff;
+}
+
+@media screen and (max-width: 980px) {
+
+    #navPanelToggle {
+        display: block;
+    }
+
+}
+
+@media screen and (max-width: 736px) {
+
+    #navPanelToggle {
+        font-size: 0.8rem;
+        padding: 0.25rem 1rem;
+    }
+
+}
+
+
+/* TODO: This should all be actually a separate file */
+/* Override some bootstrap Carousel controls */
+.carousel-control-next-icon {
+    margin-left: 50%;
+}
+.carousel-control-prev-icon {
+    margin-right: 50%;
+}
+.carousel-indicators {
+    margin-bottom: 0;
+}
+
+/* wide button */
+.fullwidth {
+	margin: 2rem auto;
+	width: 100%;
+	font-weight: 900;
+    font-size: 2.25rem;
+    padding: 1rem;
+    line-height: 1;
+    height: auto;
+    white-space: normal;
+}
+
+/* nano gallery overrides */
+
+#nanogallery2 {
+    margin-bottom: 1rem;
+}
+
+.nGY2 .nGY2GThumbnailAlbumTitle, .nGY2 .nGY2GThumbnailImageTitle {
+    text-shadow: none;
+}
+
+.nGY2PopupContent,
+.nGY2PopupContentCenter,
+.nGY2PopupContentLeft,
+.nGY2PopupContentRight {
+	max-height: 90%;
+	overflow-y: auto;
+}
+
+.nGY2PopupCloseButton {
+	position: sticky;
+	top: 0px;
+	background-color: rgba(255, 255, 255, 0.75);
+	width: fit-content;
+	float: right;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+/* floating gallery back button */
+/* TODO: get rid of this when the menu is appeared */
+#galleryBackBtn {
+	position: fixed;
+	display: none;
+	/* padding: 0rem 4rem; */
+	width: 60%;
+	margin: 0 auto;
+	width: calc(100% - 12rem);
+	max-width: 64rem;
+	z-index: 1000;
+	top: 1rem;
+	text-decoration: none;
+	-moz-transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	-webkit-transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	-ms-transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	border: 0;
+	color: #ffffff;
+}
+
+#galleryBackBtn.alt {
+	display: inline-block;
+	background-color: rgba(255, 255, 255, 0.875);
+	box-shadow: 0 0.125rem 0.75rem 0 rgba(30, 37, 45, 0.25);
+	color: #212931;
+	font-size: 1.25rem;
+	transition: font-size 0.5s ease, box-shadow 0.5s ease, background-color 0.5s;
+}
+
+#galleryBackBtn.alt:hover {
+	background-color: #ffffff;
+}
+
+@media screen and (max-width: 980px) {
+
+	#galleryBackBtn, #galleryBackBtn.alt {
+		display: none;
+	}
+
+}

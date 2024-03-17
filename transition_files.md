@@ -1,6 +1,6 @@
 # Edit
-- [ ] README.md
-- [ ] theme.toml
+- [x] README.md
+- [x] theme.toml (probably can ignore or not change)
 - [ ] static/assets/css/main.css (or transition out + override?)
 - [ ] static/assets/js/main.js  (or transition out + override?)
 - [ ] static/assets/sass/libs/_vars.scss
@@ -73,3 +73,5 @@ But still need to figure out which can be re-integrated.
 
 # Delete / remove
 - [x] .gitignore
+- [ ] static/assets/css/jtk_main.css
+- [ ] static/assets/css/main_old.css

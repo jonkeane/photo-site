@@ -1,0 +1,24 @@
+// This contains only the overrides that are from the matching file in the theme.
+
+// Font.
+    $font: (
+        family:				('Azuro', 'Merriweather', Georgia, serif),
+        family-heading:		('Source Sans Pro', Helvetica, sans-serif),
+        family-fixed:		('Courier New', monospace),
+        weight:				300,
+        weight-bold:		600,
+        weight-heading:		900
+    );
+
+// Palette.
+    $palette: (
+        accent:				#ff9900,
+
+        alt: (
+            accent:			#ff9900,
+        ),
+
+        invert: (
+            accent:			#ff9900,
+        ),
+    );

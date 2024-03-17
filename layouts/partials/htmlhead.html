@@ -17,9 +17,26 @@
 		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.min.css" | relURL }}' />
  		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.woff.min.css" | relURL }}' />
  		{{ end }}
+		<!-- CSS -->
 		<link rel="stylesheet" href='{{ "assets/css/bootstrap.min.css" | relURL }}' />
-		<link rel="stylesheet" href='{{ "assets/css/main.css" | relURL }}' />
-		<link rel="stylesheet" href='{{ "assets/css/customizations.css" | relURL }}' />
+		<!-- theme CSS -->
+		{{ if .Site.IsServer }}
+		{{ $style := resources.Get "scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/css/main.css" "enableSourceMap" true) }}
+		<link rel="stylesheet" href="{{ ($style).RelPermalink }}">
+		{{ else }}
+		{{ $style := resources.Get "scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/css/main.css" "enableSourceMap" false) }}
+		<link rel="stylesheet" href="{{ ($style | minify).RelPermalink }}">
+		{{ end }}
+
+		<!-- override theme CSS -->
+		{{ if .Site.IsServer }}
+		{{ $style := resources.Get "custom/scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/custom/css/main.css" "enableSourceMap" true) }}
+		<link rel="stylesheet" href="{{ ($style).RelPermalink }}">
+		{{ else }}
+		{{ $style := resources.Get "custom/scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/custom/css/main.css" "enableSourceMap" false) }}
+		<link rel="stylesheet" href="{{ ($style | minify).RelPermalink }}">
+		{{ end }}
+
         {{ partial "bg" . }}
 		{{ with .Site.Params.favicon }}
 		<link rel="shortcut icon" href="{{ . }}">
