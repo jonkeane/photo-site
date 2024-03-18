@@ -45,15 +45,15 @@
 
 						{{ $paginator := .Paginator }}
 						{{ $outer := . }}
-						{{ partial "gallerys/pagination.html" (dict "paginator" $paginator "outer" $outer)}}
+						{{ partial "posts/pagination.html" (dict "paginator" $paginator "outer" $outer)}}
 
 					</div>
 
                     {{ partial "footer/index" . }}
                     {{ partial "copyright" . }}
 
+					<a href="#navPanel" id="navPanelToggle">{{ i18n "NAV_MENU" . }}</a>
             </div>
             {{ partial "scripts/index" . }}
-			{{- partial "scripts/jonkeane" . }}
 	</body>
 </html>

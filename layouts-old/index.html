@@ -2,7 +2,6 @@
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
 		<!-- Wrapper -->
 			<div id="wrapper" class="fade-in">
-			    <div class="bg fixed"></div>
 
 				{{ partial "intro.html" . }}
 				{{ partial "header" . }}
@@ -26,6 +25,5 @@
 
 			</div>
 			{{ partial "scripts/index" . }}
-			{{- partial "scripts/jonkeane" . }}
 	</body>
 </html>

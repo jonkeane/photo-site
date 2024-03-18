@@ -1,6 +1,7 @@
 # TODO:
 - [ ] Remove the carousel entirely(?)
-- [ ] Figure out why nav is broken
+- [ ] Nav: remove contact? remove the first page? disappears on store
+- [ ] layouts/index.html + _default (only for background image?)
 - [ ] PR passing context: {{ partial "htmlhead.custom.html" . }}
 - [ ] main.js is still overridden
 - [ ] break points in scss
