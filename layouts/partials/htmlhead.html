@@ -9,17 +9,7 @@
 		<title>{{ if eq (.Site.Title) (.Title) }}{{ .Site.Title }}{{ else }}{{ .Title }} &middot; {{ .Site.Title }}{{ end }}</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<meta name="keywords" content="{{ .Site.Params.meta.keywords }}" />
-        <meta name="description" content="{{ .Site.Params.meta.description }}" />
-        <meta name="robots" content="{{ .Site.Params.meta.robots }}" />
-        <meta name="googlebot" content="{{ .Site.Params.meta.googlebot }}" />
-		{{ if .Params.nanog }}
-		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.min.css" | relURL }}' />
- 		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.woff.min.css" | relURL }}' />
- 		{{ end }}
 		<!-- CSS -->
-		<link rel="stylesheet" href='{{ "assets/css/bootstrap.min.css" | relURL }}' />
-		<!-- theme CSS -->
 		{{ if .Site.IsServer }}
 		{{ $style := resources.Get "scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/css/main.css" "enableSourceMap" true) }}
 		<link rel="stylesheet" href="{{ ($style).RelPermalink }}">
@@ -27,24 +17,10 @@
 		{{ $style := resources.Get "scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/css/main.css" "enableSourceMap" false) }}
 		<link rel="stylesheet" href="{{ ($style | minify).RelPermalink }}">
 		{{ end }}
-
-		<!-- override theme CSS -->
-		{{ if .Site.IsServer }}
-		{{ $style := resources.Get "custom/scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/custom/css/main.css" "enableSourceMap" true) }}
-		<link rel="stylesheet" href="{{ ($style).RelPermalink }}">
-		{{ else }}
-		{{ $style := resources.Get "custom/scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/custom/css/main.css" "enableSourceMap" false) }}
-		<link rel="stylesheet" href="{{ ($style | minify).RelPermalink }}">
-		{{ end }}
-
-        {{ partial "bg" . }}
 		{{ with .Site.Params.favicon }}
 		<link rel="shortcut icon" href="{{ . }}">
 		{{ end }}
-		<noscript><link rel="stylesheet" href='{{ "assets/css/noscript.css" | relURL }}' /></noscript>
-		{{ template "_internal/google_analytics.html" . }}
-        <meta name="google-site-verification" content="{{ .Site.Params.meta.googlesiteverification }}" />
-		{{ template "partials/opengraph.html" . }}
-		{{ template "partials/twitter_cards.html" . }}
-		<link rel="me" href="https://mastodon.social/@jonkeane" />
+		{{ $noscript := resources.Get "scss/noscript.scss" | resources.ExecuteAsTemplate "noscript.scss" . | toCSS (dict "targetPath" "assets/css/noscript.css" "enableSourceMap" false) }}
+		<noscript><link rel="stylesheet" href='{{ $noscript.RelPermalink }}' /></noscript>
+		{{ partial "htmlhead.custom.html" . }}
 	</head>

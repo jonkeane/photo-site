@@ -1,0 +1,36 @@
+///
+/// Massively by HTML5 UP
+/// html5up.net | @ajlkn
+/// Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+///
+
+/* Nav Panel */
+
+#navPanelToggle {
+    &.alt {
+        font-size: 1.25rem;
+        transition: font-size 0.5s ease, box-shadow 0.5s ease, background-color 0.5s;
+
+        &:hover {
+            background-color: _palette(bg); /// #fff?
+        }
+    }
+}
+
+
+// @media screen and (max-width: 980px) {
+
+//     #navPanelToggle {
+//         display: block;
+//     }
+
+// }
+
+// @media screen and (max-width: 736px) {
+
+//     #navPanelToggle {
+//         font-size: 0.8rem;
+//         padding: 0.25rem 1rem;
+//     }
+
+// }

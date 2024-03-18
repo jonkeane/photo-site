@@ -1,9 +1,15 @@
+# TODO:
+- [ ] Remove the carousel entirely(?)
+- [ ] Figure out why nav is broken
+- [ ] PR passing context: {{ partial "htmlhead.custom.html" . }}
+- [ ] main.js is still overridden
+
 # Edit
 - [x] README.md
 - [x] theme.toml (probably can ignore or not change)
-- [ ] static/assets/css/main.css (or transition out + override?)
+- [x] static/assets/css/main.css (or transition out + override?)
 - [ ] static/assets/js/main.js  (or transition out + override?)
-- [ ] static/assets/sass/libs/_vars.scss
+- [x] static/assets/sass/libs/_vars.scss
 
 # Transition to override
 But still need to figure out which can be re-integrated.
@@ -14,7 +20,7 @@ But still need to figure out which can be re-integrated.
 - [x] layouts/index.html
 - [x] layouts/partials/bg.html
 - [x] layouts/partials/colophon.html
-- [-] layouts/partials/copyright.html (this is deleted from the original and renamed colophon, maybe change it back?)
+- [x] layouts/partials/copyright.html (this is deleted from the original and renamed colophon, maybe change it back?)
 - [x] layouts/partials/footer/index.html
 - [x] layouts/partials/gallerys/featured.html
 - [x] layouts/partials/gallerys/list.html
@@ -73,5 +79,5 @@ But still need to figure out which can be re-integrated.
 
 # Delete / remove
 - [x] .gitignore
-- [ ] static/assets/css/jtk_main.css
-- [ ] static/assets/css/main_old.css
+- [x] static/assets/css/jtk_main.css
+- [x] static/assets/css/main_old.css

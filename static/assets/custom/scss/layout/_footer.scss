@@ -1,0 +1,31 @@
+///
+/// Massively by HTML5 UP
+/// html5up.net | @ajlkn
+/// Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+///
+
+/* Footer */
+
+#footer {
+    @include color(alt);
+}
+
+#copyright {
+    @include color-typography(invert);
+
+    background-color: #363636cc;
+    color: #909498;
+    cursor: default;
+    font-size: 0.9rem;
+    margin: 1rem auto 2rem auto;
+    // TODO: which of these?
+    // margin: 2rem auto 4rem auto; 
+    padding: 0.5rem;
+
+    // // @media screen and (max-width: 850px) { do something with the copyright section ... }
+
+    a {
+        color: inherit;
+        border-bottom-color: inherit;
+    }
+}

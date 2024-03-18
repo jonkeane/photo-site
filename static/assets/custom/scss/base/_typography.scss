@@ -13,3 +13,19 @@
             text-decoration: none;
         }
     }
+
+
+	@mixin color-typography($p: null) {
+		@if $p != null {
+			color: _palette($p, fg);
+		}
+
+		a {
+			&:hover {
+				// border-bottom-color: transparent;
+				color: _palette($p, accent) !important;
+			}
+		}
+	}
+
+	@include color-typography;
