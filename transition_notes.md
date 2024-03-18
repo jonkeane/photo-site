@@ -10,3 +10,11 @@ last other commit: 91ff5ebfbcb8cf014ccabd567f95ab8812e2de12
 Steps: go through those 66 files and see if the changes are good or not, but start from a base of the upstream. Try and put things in the layout over-flows.
 
 Then start bumping
+
+# TODO:
+- [ ] Remove the carousel entirely(?)
+- [ ] Nav: remove contact? remove the first page? ~disappears on store~
+- [x] layouts/index.html + _default (only for background image?) -> deleted
+- [ ] PR passing context: {{ partial "htmlhead.custom.html" . }}
+- [x] main.js is still overridden -> now have a custom.js
+- [ ] break points in scss

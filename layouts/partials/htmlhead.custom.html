@@ -4,8 +4,8 @@
         <meta name="googlebot" content="{{ .Site.Params.meta.googlebot }}" />
 
         {{ if .Params.nanog }}
-		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.min.css" | relURL }}' />
- 		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.woff.min.css" | relURL }}' />
+		<link rel="stylesheet" href='{{ "assets/custom/css/nanogallery2.min.css" | relURL }}' />
+ 		<link rel="stylesheet" href='{{ "assets/custom/css/nanogallery2.woff.min.css" | relURL }}' />
  		{{ end }}
 
         <!-- override theme CSS -->
@@ -23,8 +23,3 @@
 		{{ template "partials/opengraph.html" . }}
 		{{ template "partials/twitter_cards.html" . }}
 		<link rel="me" href="https://mastodon.social/@jonkeane" />
-
-		<!-- TODO: Ideally, these go at the end of the page -->
-		{{ if .Params.nanog }}
-		<script src='{{ "assets/js/nanogallery2/jquery.nanogallery2.min.js" | relURL }}'></script>
-		{{ end }}

@@ -1,11 +1,3 @@
-# TODO:
-- [ ] Remove the carousel entirely(?)
-- [ ] Nav: remove contact? remove the first page? disappears on store
-- [ ] layouts/index.html + _default (only for background image?)
-- [ ] PR passing context: {{ partial "htmlhead.custom.html" . }}
-- [ ] main.js is still overridden
-- [ ] break points in scss
-
 # Edit
 - [x] README.md
 - [x] theme.toml (probably can ignore or not change)
