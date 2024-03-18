@@ -3,6 +3,7 @@
 - [ ] Figure out why nav is broken
 - [ ] PR passing context: {{ partial "htmlhead.custom.html" . }}
 - [ ] main.js is still overridden
+- [ ] break points in scss
 
 # Edit
 - [x] README.md
