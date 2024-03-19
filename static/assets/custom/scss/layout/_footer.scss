@@ -8,6 +8,20 @@
 
 #footer {
     @include color(alt);
+    > section {
+        &.contact {
+            > section {
+                padding: 1rem 4rem 1rem 4rem !important;
+                min-height: 6rem;
+            }
+        }
+    }
+
+    form label,
+    h3,
+    p {
+        font-size: 0.9rem;
+    }
 }
 
 #copyright {

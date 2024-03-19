@@ -12,8 +12,9 @@ Steps: go through those 66 files and see if the changes are good or not, but sta
 Then start bumping
 
 # TODO:
-- [ ] Remove the carousel entirely(?)
-- [ ] Nav: remove contact? remove the first page? ~disappears on store~
+- [x] Remove the carousel entirely(?)
+- [ ] Add a shuffle
+- [x] Nav: remove contact? remove the first page? ~disappears on store~
 - [x] layouts/index.html + _default (only for background image?) -> deleted
 - [ ] PR passing context: {{ partial "htmlhead.custom.html" . }}
 - [x] main.js is still overridden -> now have a custom.js

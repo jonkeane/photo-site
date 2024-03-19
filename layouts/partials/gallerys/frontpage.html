@@ -3,7 +3,7 @@
 {{ $no_dates := .no_dates }}
 {{ range .firstpost }}
 
-<article class="post featured">
+<article class="post featured hidden">
     <header class="major">
         {{- if not ( or ( .Date.IsZero ) ( $no_dates ) ) -}}
             <span class="date">{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
@@ -19,21 +19,18 @@
     <a href="{{ .RelPermalink }}" class="image main">
         <picture>
             <source
-            srcset="{{ $x2700x.RelPermalink }} 3x,
+            data-srcset="{{ $x2700x.RelPermalink }} 3x,
                     {{ $x1800x.RelPermalink }} 2x,
                     {{ $x900x.RelPermalink }} 1x"
             media="(min-width: 630px)"/>
-                <source
-            srcset="{{ $x1800x.RelPermalink }} 3x,
+            <source
+            data-srcset="{{ $x1800x.RelPermalink }} 3x,
                     {{ $x900x.RelPermalink }} 2x,
                     {{ $x400x.RelPermalink }} 1x"
             media="(min-width: 350px)"/>
-            <img src="{{ $x900x.RelPermalink }}"  alt = "{{ $x900x.Exif.Tags.ImageDescription }}">
+            <img data-srcset="{{ $x900x.RelPermalink }}"  alt = "{{ $x900x.Exif.Tags.ImageDescription }}">
         </picture>
     </a>
-    {{- end -}}    <p>{{ .Description }}</p>
-    <ul class="actions">
-        <li><a href="{{ .RelPermalink }}" class="button big">{{ $data.post.linktext }}</a></li>
-    </ul>
+    {{- end -}}
 </article>
 {{ end }}

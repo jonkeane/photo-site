@@ -2,7 +2,7 @@
 @import 'libs/functions';
 // @import 'libs/mixins';
 // @import 'libs/vendor';
-// @import 'libs/breakpoints';
+@import 'libs/breakpoints';
 // @import 'libs/html-grid';
 // @import 'libs/fixed-grid';
 // @import 'font-awesome.min.css';
@@ -66,6 +66,16 @@
 //     }
 // }
 
+// Breakpoints.
+
+@include breakpoints((default: (1681px, null),
+		xlarge: (1281px, 1680px),
+		large: (981px, 1280px),
+		medium: (737px, 980px),
+		small: (481px, 736px),
+		xsmall: (361px, 480px),
+		xxsmall: (null, 360px)));
+
 // Mixins.
 
 @mixin color($p) {
@@ -113,6 +123,5 @@
 // Photo site specific
 
 @import 'custom/gallery.scss';
-@import 'custom/carousel.scss';
 @import 'custom/nanogallery.scss';
 @import 'custom/misc.scss';
