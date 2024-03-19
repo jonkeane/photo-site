@@ -13,9 +13,10 @@ Then start bumping
 
 # TODO:
 - [x] Remove the carousel entirely(?)
-- [ ] Add a shuffle
+- [ ] Add a shuffle button
 - [x] Nav: remove contact? remove the first page? ~disappears on store~
 - [x] layouts/index.html + _default (only for background image?) -> deleted
 - [ ] PR passing context: {{ partial "htmlhead.custom.html" . }}
 - [x] main.js is still overridden -> now have a custom.js
 - [ ] break points in scss
+- [ ] gallery back button
