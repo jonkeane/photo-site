@@ -13,3 +13,69 @@
 p {
     line-height: 1.5;
 }
+
+/* alignment */
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.aln-left {
+    justify-content: flex-start;
+}
+
+.aln-center {
+    justify-content: center;
+}
+
+.aln-right {
+    justify-content: flex-end;
+}
+
+.aln-top {
+    align-items: flex-start;
+}
+
+.aln-middle {
+    align-items: center;
+}
+
+.aln-bottom {
+    align-items: flex-end;
+}
+
+/* intro page special formatting */
+
+#introTop {
+    display: flex;
+    padding: 2rem 4rem 2rem 4rem;
+
+    h1, h2, h3, h4, h5, h6 {
+        margin-bottom: 0rem;
+    }
+
+    .right {
+        margin-left: auto;
+    }
+}
+
+#main {
+    .post {
+        header.no-margin.major {
+            margin: 0rem;
+        
+            h1, h2, h3, h4, h5, h6 {
+                margin: 0rem;
+            }
+        }
+
+        a {
+            margin: 1rem 0rem 1rem 0rem;
+        }
+    }
+}
+
+

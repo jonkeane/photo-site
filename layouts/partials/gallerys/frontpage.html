@@ -4,12 +4,6 @@
 {{ range .firstpost }}
 
 <article class="post featured hidden">
-    <header class="major">
-        {{- if not ( or ( .Date.IsZero ) ( $no_dates ) ) -}}
-            <span class="date">{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
-        {{- end -}}
-        <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
-    </header>
     {{- if .Params.image -}}
     {{- $image := resources.Get .Params.image -}}
     {{- $x2700x := $image.Resize "2700x" -}}
@@ -32,5 +26,11 @@
         </picture>
     </a>
     {{- end -}}
+    <header class="major no-margin">
+        {{- if not ( or ( .Date.IsZero ) ( $no_dates ) ) -}}
+            <span class="date">{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
+        {{- end -}}
+        <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+    </header>
 </article>
 {{ end }}

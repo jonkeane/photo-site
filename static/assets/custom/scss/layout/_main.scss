@@ -26,29 +26,21 @@
             padding: 2rem 4rem;
         }
 
-        /* for ensuring that 2-line titles have aligned photos, change with h2 size */
         > article {
             text-align: left;
 
+            /* for ensuring that 2-line titles have aligned photos, change with h2 size */
             > header {
                 font-size: 1.75rem;
                 min-height: 2.5em;
             }
+
+            /* but go back to as tall as needed when in a single column */
+            @include breakpoint('<=small') {
+                > header {
+                    min-height: 0em;
+                }
+            }
         }
     }
 }
-
-// TODO
-// @media screen and (max-width: 1280px) {
-
-//     #main > .post {
-//         padding: 2rem 4rem 1rem 4rem ;
-//     }
-// }
-
-// @media screen and (max-width: 736px) {
-
-//     #main > .post {
-//         padding: 2rem 2rem 2rem 2rem ;
-//     }
-// }
