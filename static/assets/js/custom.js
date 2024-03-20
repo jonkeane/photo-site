@@ -17,7 +17,7 @@
 		// Change toggle styling once we've scrolled past the header.
 		$header.unscrollex();
 		$header.scrollex({
-			bottom: '5vh',
+			bottom: '500px',
 			enter: function() {
 				$navPanelToggle.removeClass('alt');
 			},
@@ -35,7 +35,7 @@
 			child = $(this);
 			child.attr("srcset", child.data('srcset'));
 			child.removeAttr("data-srcset");
-		
+
 			child.attr("src", child.data('src'));
 			child.removeAttr("data-src");
 		}
@@ -44,7 +44,7 @@
 		function randomInt(min, max) {
 			const minCeiled = Math.ceil(min);
 			const maxFloored = Math.floor(max);
-			return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); 
+			return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 		};
 
 		function showOneFeaturedPost() {

@@ -6,21 +6,21 @@
 
 /* Type */
 
-html {
-	font-size: 16pt;
+	html {
+		font-size: 16pt;
 
-	@include breakpoint('<=xlarge') {
-		font-size: 14pt;
-	}
+		@include breakpoint('<=xlarge') {
+			font-size: 14pt;
+		}
 
-	@include breakpoint('<=large') {
-		font-size: 12pt;
-	}
+		@include breakpoint('<=large') {
+			font-size: 12pt;
+		}
 
-	@include breakpoint('<=xxsmall') {
-		font-size: 11pt;
+		@include breakpoint('<=xxsmall') {
+			font-size: 11pt;
+		}
 	}
-}
 
     body, input, select, textarea {
         font-family: _font(family);
@@ -30,6 +30,17 @@ html {
         }
     }
 
+	@include breakpoint('<=small') {
+		h3 {
+			font-size: 1rem;
+		}
+	}
+
+	@include breakpoint('<=xsmall') {
+		h3 {
+			font-size: 0.9rem;
+		}
+	}
 
 	@mixin color-typography($p: null) {
 		@if $p != null {

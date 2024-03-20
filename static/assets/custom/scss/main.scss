@@ -45,27 +45,6 @@
     font-weight: bold;
     font-style: italic; }
 
-// TODO @media screen and (max-width: ...) { ... font-size: bigger }
-
-// This part is _removed_
-// /*
-// 		@media screen and (orientation: portrait) {
-// 			#wrapper > .bg {
-// 				background-size: auto,								auto,														auto 100%;
-// 			}
-// 		}
-// */
-
-// @media screen and (max-width: 480px) {
-//     #header a {
-//         margin: 0 10px 0 10px;
-//     }
-
-//     #intro h1 {
-//         font-size: 3rem;
-//     }
-// }
-
 // Breakpoints.
 
 @include breakpoints((default: (1681px, null),
@@ -117,7 +96,6 @@
 // Hugo Theme specific
 
 @import 'hugotheme/main.scss';
-
 
 
 // Photo site specific

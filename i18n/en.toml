@@ -15,9 +15,9 @@
 [CONTACT_SOCIAL]
   other = "Social"
 [COPYRIGHT_MESSAGE_1]
-  other = "powered by [blogdown](https://github.com/jonkeane/photo-site) using a [Hugo port](https://github.com/jonkeane/hugo-theme-massively-jtk) with design by [HTML5 UP](https://html5up.net)"
+  other = "powered by [hugo](https://github.com/jonkeane/photo-site)"
 [COPYRIGHT_MESSAGE_2]
-  other = ""
+  other = "[theme](https://github.com/curtistimson/hugo-theme-massively) with design by [HTML5 UP](https://html5up.net)"
 [INTRO_CONTINUE]
   other = "Continue"
 [NAV_CONTACT]

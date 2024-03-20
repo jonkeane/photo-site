@@ -33,10 +33,31 @@
     font-size: 0.9rem;
     margin: 1rem auto 2rem auto;
     // TODO: which of these?
-    // margin: 2rem auto 4rem auto; 
+    // margin: 2rem auto 4rem auto;
     padding: 0.5rem;
 
-    // // @media screen and (max-width: 850px) { do something with the copyright section ... }
+
+    @include breakpoint('<=medium') {
+        #galleryBackBtn, #galleryBackBtn.alt {
+            display: none;
+        }
+    }
+
+
+	@include breakpoint('<=medium') {
+        ul {
+            li {
+                border-left: 0;
+                margin: 1rem 0 0 0;
+                padding-left: 0;
+                display: block;
+
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+        }
+    }
 
     a {
         color: inherit;

@@ -16,3 +16,19 @@
             }
         }
     }
+
+    @include breakpoint('<=xsmall') {
+        #header .logo {
+            margin: 0 10px;
+        }
+    }
+
+    @include breakpoint('<=xxsmall') {
+        #header a {
+            margin: 0 10px 0 10px;
+        }
+
+        #intro h1 {
+            font-size: 3rem;
+        }
+    }
