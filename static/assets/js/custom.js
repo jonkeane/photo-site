@@ -48,16 +48,23 @@
 		};
 
 		function showOneFeaturedPost() {
-			var random = randomInt(0, $(".post.featured.hidden").length);
+			var hiddenPosts = $(".post.featured.hidden");
+			var hiddenPostsUp = hiddenPosts.not('.notit');
 
-			var post_to_reveal = $(".post.featured.hidden").eq(random)
-			post_to_reveal.find("picture").children().each(set_srcset);
-			post_to_reveal.removeClass('hidden');
+			var random = randomInt(0, hiddenPostsUp.length - 1);
+
+			var postToReveal = hiddenPostsUp.eq(random);
+			postToReveal.find("picture").children().each(set_srcset);
+			postToReveal.removeClass('hidden');
+			hiddenPosts.removeClass('notit');
 		}
 
 		function hideAllFeaturedPost() {
-			var post_to_reveal = $(".post.featured")
-			post_to_reveal.addClass('hidden');
+			var featuredPosts = $(".post.featured")
+			var wasHidden = featuredPosts.not('.hidden');
+	
+			wasHidden.addClass('notit');
+			featuredPosts.addClass('hidden');
 		}
 
 		// append a menu always
@@ -66,14 +73,9 @@
 		)
 			.appendTo($("#introTop"))
 			.click(function () {
-				hideAllFeaturedPost()
-				showOneFeaturedPost()
+				hideAllFeaturedPost();
+				showOneFeaturedPost();
 			});
-
-		// show one post to start
-		$(document).ready(function() {
-			showOneFeaturedPost();
-		});
 
 		// Gallery back button
 		var $galleryBackToggle = $('#galleryBackBtn');
@@ -91,4 +93,10 @@
 				}
 			});
 		}
+
+		// Various changes that must run after the document is ready
+		$(document).ready(function() {
+			// show one post to start
+			showOneFeaturedPost();
+		});
 })(jQuery);

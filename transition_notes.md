@@ -21,5 +21,4 @@ Then start bumping
 - [x] break points in scss
   - [x] box at top on mobile needs margin
   - [x] random album for today 
-- [ ] gallery back button
 - [ ] move in-line style into an scss
