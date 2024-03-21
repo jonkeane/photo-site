@@ -8,32 +8,6 @@ googleanalytics = "G-CPQDC0642Z"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 timeout = 600
 
-sectionPagesMenu = "main"
-
-[[menu.main]]
-   identifier="intro"
-   name = "Intro"
-   url  = "/"
-   weight = 1
-
-[[menu.main]]
-   identifier="gallery"
-   name = "gallery"
-   url  = "/gallery/"
-   weight = 2
-
-[[menu.main]]
-   identifier="prints"
-   name = "prints"
-   url  = "/prints/"
-   weight = 3
-
-[[menu.main]]
-   identifier="about"
-   name = "about"
-   url  = "/about/"
-   weight = 4
-
 [params]
   description = "Travelling the world and taking photographs of things that catch my eye. Landscapes, cityscapes, nature, people."
   images = ["photo-jonkeane.jpg"]
@@ -42,6 +16,14 @@ sectionPagesMenu = "main"
   # favicon = "favicon.ico"
   # set to change date format
   dateFormat = "2006-01-02"
+
+[module]
+[[module.mounts]]
+    source = 'static/assets'
+    target = 'assets'
+[[module.mounts]]
+    source = 'assets'
+    target = 'assets'
 
 [taxonomies]
   series = "series"

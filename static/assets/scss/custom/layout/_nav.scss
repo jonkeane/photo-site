@@ -1,0 +1,29 @@
+///
+/// Massively by HTML5 UP
+/// html5up.net | @ajlkn
+/// Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+///
+
+/* Nav */
+
+    #nav {
+        @include color-list(invert);
+        @include color-typography(invert);
+
+        ul {
+			&.links {
+				font-family: _font(family-heading);
+				font-weight: _font(weight-heading);
+
+				li {
+					&.active {
+						a {
+							&:hover {
+								color: _palette(invert, accent) !important;
+							}
+						}
+					}
+				}
+			}
+		}
+    }

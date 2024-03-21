@@ -1,0 +1,39 @@
+/* floating gallery back button */
+/* TODO: get rid of this when the menu is appeared */
+#galleryBackBtn {
+	position: fixed;
+	display: none;
+	/* padding: 0rem 4rem; */
+	width: 60%;
+	margin: 0 auto;
+	width: calc(100% - 12rem);
+	max-width: 64rem;
+	z-index: 1000;
+	top: 1rem;
+	text-decoration: none;
+	-moz-transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	-webkit-transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	-ms-transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	border: 0;
+	color: #ffffff;
+}
+
+#galleryBackBtn.alt {
+	display: inline-block;
+	background-color: rgba(255, 255, 255, 0.875);
+	box-shadow: 0 0.125rem 0.75rem 0 rgba(30, 37, 45, 0.25);
+	color: #212931;
+	font-size: 1.25rem;
+	transition: font-size 0.5s ease, box-shadow 0.5s ease, background-color 0.5s;
+}
+
+#galleryBackBtn.alt:hover {
+	background-color: #ffffff;
+}
+
+@include breakpoint('<=medium') {
+	#galleryBackBtn, #galleryBackBtn.alt {
+		display: none;
+	}
+}

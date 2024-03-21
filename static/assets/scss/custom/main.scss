@@ -1,0 +1,100 @@
+@import 'libs/vars';
+@import 'libs/functions';
+@import 'libs/breakpoints';
+
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:900");
+
+@font-face {
+    font-family: 'Azuro';
+    src: url('type/azuro-regular.eot');
+    src: url('type/azuro-regular.eot?iefix') format('eot'),
+            url('type/azuro-regular.woff') format('woff'),
+            url('type/azuro-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal; }
+
+@font-face {
+    font-family: 'Azuro';
+    src: url('type/azuro-italic.eot');
+    src: url('type/azuro-italic.eot?iefix') format('eot'),
+            url('type/azuro-italic.woff') format('woff'),
+            url('type/azuro-italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic; }
+
+@font-face {
+    font-family: 'Azuro';
+    src: url('type/azuro-bold.eot');
+    src: url('type/azuro-bold.eot?iefix') format('eot'),
+            url('type/azuro-bold.woff') format('woff'),
+            url('type/azuro-bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal; }
+
+@font-face {
+    font-family: 'Azuro';
+    src: url('type/azuro-bolditalic.eot');
+    src: url('type/azuro-bolditalic.eot?iefix') format('eot'),
+            url('type/azuro-bolditalic.woff') format('woff'),
+            url('type/azuro-bolditalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic; }
+
+// Breakpoints.
+
+@include breakpoints((default: (1681px, null),
+		xlarge: (1281px, 1680px),
+		large: (981px, 1280px),
+		medium: (737px, 980px),
+		small: (481px, 736px),
+		xsmall: (361px, 480px),
+		xxsmall: (null, 360px)));
+
+// Mixins.
+
+@mixin color($p) {
+	@include color-typography($p);
+	@include color-box($p);
+	@include color-button($p);
+	@include color-form($p);
+	@include color-list($p);
+	@include color-section($p);
+	@include color-table($p);
+	@include color-pagination($p);
+}
+
+// Base.
+
+@import 'base/typography';
+
+// Component.
+
+@import 'components/box';
+@import 'components/button';
+@import 'components/form';
+@import 'components/image';
+@import 'components/list';
+@import 'components/pagination';
+@import 'components/section';
+@import 'components/table';
+
+// Layout.
+
+@import 'layout/footer';
+@import 'layout/header';
+@import 'layout/intro';
+@import 'layout/main';
+@import 'layout/nav';
+@import 'layout/navPanel';
+
+
+// Hugo Theme specific
+
+@import 'hugotheme/main.scss';
+
+
+// Photo site specific
+
+@import 'custom/gallery.scss';
+@import 'custom/nanogallery.scss';
+@import 'custom/misc.scss';

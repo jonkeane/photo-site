@@ -1,0 +1,16 @@
+.nGY2PopupOneItemText {
+    line-height: 1.5em;
+    font-size: 1em;
+}
+
+.nGY2PopupContent, .nGY2PopupContentCenter, .nGY2PopupContentLeft, .nGY2PopupContentRight {
+    top: 5%;
+    padding: 10px 15px;
+    width: 85%;
+    background: #fff;
+    opacity: 90%;
+    -webkit-transform: translateX(-50%) translateY(-5%);
+    -moz-transform: translateX(-50%) translateY(-5%);
+    -ms-transform: translateX(-50%) translateY(-5%);
+    transform: translateX(-50%) translateY(-5%);
+    }

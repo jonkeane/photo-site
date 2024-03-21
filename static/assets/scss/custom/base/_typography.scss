@@ -1,0 +1,99 @@
+///
+/// Massively by HTML5 UP
+/// html5up.net | @ajlkn
+/// Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+///
+
+/* Type */
+
+	html {
+		font-size: 16pt;
+
+		@include breakpoint('<=xlarge') {
+			font-size: 14pt;
+		}
+
+		@include breakpoint('<=large') {
+			font-size: 12pt;
+		}
+
+		@include breakpoint('<=xxsmall') {
+			font-size: 11pt;
+		}
+	}
+
+    body, input, select, textarea {
+        font-family: _font(family);
+        font-weight: _font(weight);
+        a:hover {
+            text-decoration: none;
+        }
+    }
+
+	@include breakpoint('<=small') {
+		h1 {
+			font-size: 3rem;
+		}
+	
+		h2 {
+			font-size: 1.5rem;
+		}
+	
+		h3 {
+			font-size: 1rem;
+		}
+	
+		h4 {
+			font-size: 0.9rem;
+		}
+	
+		h5 {
+			font-size: 0.8rem;
+		}
+	
+		h6 {
+			font-size: 0.7rem;
+		}
+
+	}
+
+	@include breakpoint('<=xsmall') {
+		h1 {
+			font-size: 2rem;
+		}
+	
+		h2 {
+			font-size: 1rem;
+		}
+	
+		h3 {
+			font-size: 0.9rem;
+		}
+	
+		h4 {
+			font-size: 0.8rem;
+		}
+	
+		h5 {
+			font-size: 0.7rem;
+		}
+	
+		h6 {
+			font-size: 0.6rem;
+		}
+	}
+
+	@mixin color-typography($p: null) {
+		@if $p != null {
+			color: _palette($p, fg);
+		}
+
+		a {
+			&:hover {
+				// border-bottom-color: transparent;
+				color: _palette($p, accent) !important;
+			}
+		}
+	}
+
+	@include color-typography;
