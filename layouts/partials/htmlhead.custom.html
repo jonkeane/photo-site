@@ -4,16 +4,16 @@
         <meta name="googlebot" content="{{ .Site.Params.meta.googlebot }}" />
 
         {{ if .Params.nanog }}
-		<link rel="stylesheet" href='{{ "assets/custom/css/nanogallery2.min.css" | relURL }}' />
- 		<link rel="stylesheet" href='{{ "assets/custom/css/nanogallery2.woff.min.css" | relURL }}' />
+		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.min.css" | relURL }}' />
+ 		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.woff.min.css" | relURL }}' />
  		{{ end }}
 
         <!-- override theme CSS -->
 		{{ if .Site.IsServer }}
-		{{ $style := resources.Get "custom/scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/custom/css/main.css" "enableSourceMap" true) }}
+		{{ $style := resources.Get "scss/custom/main.scss" | resources.ExecuteAsTemplate "scss/custom/main.scss" . | toCSS (dict "targetPath" "assets/css/custom_main.css" "enableSourceMap" true) }}
 		<link rel="stylesheet" href="{{ ($style).RelPermalink }}">
 		{{ else }}
-		{{ $style := resources.Get "custom/scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/custom/css/main.css" "enableSourceMap" false) }}
+		{{ $style := resources.Get "scss/custom/main.scss" | resources.ExecuteAsTemplate "scss/custom/main.scss" . | toCSS (dict "targetPath" "assets/css/custom_main.css" "enableSourceMap" false) }}
 		<link rel="stylesheet" href="{{ ($style | minify).RelPermalink }}">
 		{{ end }}
 

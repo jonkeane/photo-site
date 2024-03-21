@@ -49,14 +49,31 @@
 
 		function showOneFeaturedPost() {
 			var hiddenPosts = $(".post.featured.hidden");
-			var hiddenPostsUp = hiddenPosts.not('.notit');
 
-			var random = randomInt(0, hiddenPostsUp.length - 1);
+			var postToReveal = $(".post.featured.hidden.nextup");
+			if(postToReveal.length > 0) {
+				// already have a next up, so need to randomly select a next up
+				var hiddenPostsUp = hiddenPosts.not('.nextup');
+				var random = randomInt(0, hiddenPostsUp.length - 1);
+				var nextUp = hiddenPostsUp.eq(random);
+			} else {
+				// don't have one, so select a random one
+				var random = randomInt(0, hiddenPosts.length - 1);
+				var postToReveal = hiddenPosts.eq(random);
 
-			var postToReveal = hiddenPostsUp.eq(random);
+				// but then also select a random one of the rest for next up
+				var notNextUp = hiddenPosts.not(postToReveal);
+				var random = randomInt(0, notNextUp.length - 1);
+				var nextUp = notNextUp.eq(random);
+			}
+
 			postToReveal.find("picture").children().each(set_srcset);
 			postToReveal.removeClass('hidden');
-			hiddenPosts.removeClass('notit');
+			postToReveal.removeClass('nextup');
+
+			// Set the next one up, but don't reveal it yet.
+			nextUp.find("picture").children().each(set_srcset);
+			nextUp.addClass('nextup');
 		}
 
 		function hideAllFeaturedPost() {
@@ -73,13 +90,14 @@
 		)
 			.appendTo($("#introTop"))
 			.click(function () {
+				// TODO: fade in fade out
 				hideAllFeaturedPost();
 				showOneFeaturedPost();
 			});
 
 		// Gallery back button
 		var $galleryBackToggle = $('#galleryBackBtn');
-		if ($galleryBackToggle.length > 0) {
+		if($galleryBackToggle.length > 0) {
 			$main.unscrollex();
 
 			// Change toggle styling once we've scrolled past the header.
