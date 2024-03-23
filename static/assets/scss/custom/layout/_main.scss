@@ -12,17 +12,32 @@
         text-align: center;
     }
 
-    > .post {
+    * > .post {
         position: relative;
         padding: 2rem 4rem;
 
+        @include vendor('transition', (
+			'opacity 1s ease',
+		));
+
         &.hidden {
-            display: none;
+            opacity: 0;
         }
     }
 
+    // Overlap the front-gallery images, so they fade in and out on top of each other
+
+    #front-gallery {
+        display: grid;
+        padding: 0;
+    }
+    #front-gallery > .post {
+        @include vendor('grid-column', ('1'));
+        @include vendor('grid-row', ('1'));
+    }
+
     @include breakpoint('<=medium') {
-        > .post {
+        * > .post {
             padding: 1rem 2rem;
         }
 
@@ -30,7 +45,7 @@
             padding: 1rem 2rem;
         }
 
-        > .posts {
+        * > .posts {
             > article {
                 padding: 1rem 2rem;
 
