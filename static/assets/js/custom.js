@@ -78,9 +78,7 @@
 
 		function hideAllFeaturedPost() {
 			var featuredPosts = $(".post.featured")
-			var wasHidden = featuredPosts.not('.hidden');
 	
-			wasHidden.addClass('notit');
 			featuredPosts.addClass('hidden');
 		}
 
@@ -90,7 +88,6 @@
 		)
 			.appendTo($("#introTop"))
 			.click(function () {
-				// TODO: fade in fade out
 				hideAllFeaturedPost();
 				showOneFeaturedPost();
 			});
