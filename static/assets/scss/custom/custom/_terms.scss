@@ -6,6 +6,8 @@
             list-style: none;
             border-top: none !important;
             padding-top: 0 !important;
+            column-gap: 0.5rem;
+            flex-wrap: wrap;
 
             // TODO: responsive shrinking
 
@@ -14,7 +16,6 @@
             }
         }
     }
-
 
     .button {
         &.tag {
