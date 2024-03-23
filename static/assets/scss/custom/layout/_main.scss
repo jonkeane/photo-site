@@ -12,35 +12,32 @@
         text-align: center;
     }
 
-    * > .post {
+    // .post {
+    //     position: relative;
+    //     padding: 2rem 4rem;
+    // }
+    
+    > .post {
         position: relative;
         padding: 2rem 4rem;
+        z-index: 1;
 
         @include vendor('transition', (
-			'opacity 1s ease 1s',
+			'opacity 1s ease-in-out 0.5s',
 		));
 
         &.hidden {
             opacity: 0;
             @include vendor('transition', (
-                'opacity 1s ease',
+                'opacity 1s ease-in-out',
             ));
+            // z-index is important for hover events to not be misdirected
+            z-index: 0;
         }
     }
 
-    // Overlap the front-gallery images, so they fade in and out on top of each other
-
-    #front-gallery {
-        display: grid;
-        padding: 0;
-    }
-    #front-gallery > .post {
-        @include vendor('grid-column', ('1'));
-        @include vendor('grid-row', ('1'));
-    }
-
     @include breakpoint('<=medium') {
-        * > .post {
+        > .post {
             padding: 1rem 2rem;
         }
 
@@ -48,7 +45,7 @@
             padding: 1rem 2rem;
         }
 
-        * > .posts {
+        > .posts {
             > article {
                 padding: 1rem 2rem;
 
@@ -83,4 +80,25 @@
             }
         }
     }
+}
+
+// Overlap the front-gallery images, so they fade in and out on top of each other
+
+.maingrid {
+    display: grid;
+}
+
+.maingrid > #introTop {
+    @include vendor('grid-column', ('1'));
+    @include vendor('grid-row', ('1'));
+}
+
+.maingrid > .post {
+    @include vendor('grid-column', ('1'));
+    @include vendor('grid-row', ('2'));
+}
+
+.maingrid > #introBottom {
+    @include vendor('grid-column', ('1'));
+    @include vendor('grid-row', ('3'));
 }
