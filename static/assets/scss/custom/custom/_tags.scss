@@ -1,0 +1,35 @@
+/* Tags */
+
+    ul {
+        &.tags {
+            column-count: 3;
+            list-style: none;
+
+
+            // TODO: responsive shrinking
+
+            li {
+                padding: 0.5rem 0;
+            }
+        }
+    }
+
+
+    .button {
+        &.tag {
+            padding: 0 1rem;
+        }
+
+        &.count {
+            position: relative;
+            width: 2rem;
+            height: 2rem;
+            line-height: 2rem;
+            border-radius: 4rem;
+            padding: 0;
+            white-space: nowrap;
+            margin-left: 0.5rem;
+            pointer-events: none;
+            // cursor: auto;
+        }
+    }

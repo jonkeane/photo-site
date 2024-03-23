@@ -4,7 +4,7 @@ title = "Jonathan Keane Photography"
 baseURL = "https://photo.jonkeane.com"
 theme = "hugo-theme-massively-jtk"
 googleanalytics = "G-CPQDC0642Z"
-# disableKinds = ["taxonomy", "taxonomyTerm", "section"]
+# disableKinds = ["taxonomy", "section"]
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 timeout = 600
 
@@ -19,14 +19,15 @@ timeout = 600
 
 [module]
 [[module.mounts]]
-    source = 'static/assets'
-    target = 'assets'
+    source = "static/assets"
+    target = "assets"
 [[module.mounts]]
-    source = 'assets'
-    target = 'assets'
+    source = "assets"
+    target = "assets"
 
 [taxonomies]
-  series = "series"
+  category = "categories"
+  tags = "tags"
 
 [params.nanog]
   flickr_userid = "65556368@N00"

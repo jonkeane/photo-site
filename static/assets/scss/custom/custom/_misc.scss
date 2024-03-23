@@ -73,16 +73,13 @@ p {
     .post {
         header.no-margin.major {
             margin: 0rem;
-        
             h1, h2, h3, h4, h5, h6 {
                 margin: 0rem;
             }
         }
 
         a {
-            margin: 1rem 0rem 1rem 0rem;
+            margin: 1rem 0rem;
         }
     }
 }
-
-

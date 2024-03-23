@@ -1,0 +1,55 @@
+{{ partial "htmlhead" . }}
+	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
+
+		{{ $postsPageSize := .Site.Params.Posts.pagesize | default 6 }}
+
+		{{ .Scratch.Set "postsFeaturedPostEnabled" true }}
+		{{ if (or (eq .Site.Params.Posts.featuredpost "false") (eq .Site.Params.Posts.featuredpost false)) }}
+			{{ .Scratch.Set "postsFeaturedPostEnabled" false }}
+		{{ end }}
+		{{ $postsFeaturedPostEnabled := .Scratch.Get "postsFeaturedPostEnabled" }}
+
+		{{ $posts := where .Pages "Params.private" "ne" true  }}
+
+		{{ $firstPost := first 1 $posts }}
+
+		{{ if and (eq $postsFeaturedPostEnabled true) (gt (len $posts) 1) }}
+			{{ .Scratch.Set "postsForPaging" (after 1 $posts) }}
+		{{ else }}
+			{{ .Scratch.Set "postsForPaging" $posts }}
+		{{ end }}
+		{{ $postsForPaging := .Scratch.Get "postsForPaging" }}
+
+		{{ $postsPaging := .Paginate $postsForPaging $postsPageSize }}
+
+
+		<!-- Wrapper -->
+			<div id="wrapper" data-ps="{{ $postsPageSize }}" data-pfp="{{ $postsFeaturedPostEnabled }}">
+			    <div class="bg fixed"></div>
+
+    			{{ partial "header" . }}
+				{{ partial "nav" . }}
+
+				<!-- Main -->
+					<div id="main">
+                        <h2>Tags</h2>
+							<ul class = "tags">
+								{{ range $.Site.Taxonomies.tags.ByCount }}
+								<li>
+									<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">{{ .Page.Title | .Page.RenderString }}</a>
+									<span class="button count">{{ .Count }} {{ if gt .Count 1 }} {{ T "articles" }} {{ else }} {{ T "article" }} {{ end }}</span>
+								</li>
+								{{ end }}
+							</ul>
+                    {{ if eq $.Site.Taxonomies.tags 0 }}
+                        <p class="pt-4">{{- T "emptyTags" }}.</p>
+                    {{ end }}
+					</div>
+
+                    {{ partial "footer/index" . }}
+                    {{ partial "copyright" . }}
+
+            </div>
+            {{ partial "scripts/index" . }}
+	</body>
+</html>
