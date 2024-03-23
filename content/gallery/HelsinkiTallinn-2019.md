@@ -6,5 +6,9 @@ date: "2019-07-15T00:00:00"
 nanog: true
 image: gallery/IMG_5456.jpg
 flickr_album: "72157715832383371"
-tags: ["Europe", "Helsinki", "Finland", "Tallinn", "Estonia"]
+tags: []
+continents: ["Europe"]
+countries: ["Finland", "Estonia"]
+regions: []
+cities: ["Helsinki", "Tallinn"]
 ---

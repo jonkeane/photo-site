@@ -6,5 +6,9 @@ date: "2021-08-01T00:00:00"
 nanog: true
 image: gallery/_DSC1849.jpg
 flickr_album: "72177720295645920"
-tags: ["North America", "United States", "Boise", "Idaho"]
+tags: []
+continents: ["North America"]
+countries: ["United States"]
+regions: ["Idaho"]
+cities: ["Boise"]
 ---

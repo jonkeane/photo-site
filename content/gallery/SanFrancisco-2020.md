@@ -6,5 +6,9 @@ date: "2020-01-30T00:00:00"
 nanog: true
 image: gallery/_DSC1168.jpg
 flickr_album: "72157715832101743"
-tags: ["North America", "United States", "San Francisco", "Marin"]
+tags: []
+continents: ["North America"]
+countries: ["United States"]
+regions: []
+cities: ["San Francisco", "Marin"]
 ---

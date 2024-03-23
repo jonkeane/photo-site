@@ -1,10 +1,11 @@
-/* Tags */
+/* Terms */
 
     ul {
-        &.tags {
+        &.terms {
             column-count: 3;
             list-style: none;
-
+            border-top: none !important;
+            padding-top: 0 !important;
 
             // TODO: responsive shrinking
 
@@ -30,6 +31,20 @@
             white-space: nowrap;
             margin-left: 0.5rem;
             pointer-events: none;
-            // cursor: auto;
+        }
+    }
+
+    // terms on a post
+    #terms {
+        padding: 0 0 1rem 0;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        flex-basis: 150px;
+        flex-shrink: 0;
+        column-gap: 0.5rem;
+
+        > span {
+           padding: 0.5rem 0;
         }
     }

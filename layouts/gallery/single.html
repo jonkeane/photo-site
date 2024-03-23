@@ -24,6 +24,22 @@
 
                             {{ .Content }}
 
+							{{/* Output taxonomies */}}
+							{{ $context := . }}
+							{{ if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
+							<div id="terms" class="flex flex-row flex-wrap items-center">
+							  {{ range $taxonomy, $terms := .Site.Taxonomies }}
+							  {{ if and (not (eq $taxonomy "authors")) (not (eq $taxonomy "series"))}}
+							  {{ if (gt (len ($context.GetTerms $taxonomy)) 0) }}
+							  {{ range $context.GetTerms $taxonomy }}
+								<span><a class="button primary tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></span>
+							  {{ end }}
+							  {{ end }}
+							  {{ end }}
+							  {{ end }}
+							</div>
+							{{ end }}
+
                             {{ partial "postcustom" . }}
 
 														<div id="nanogallery2">

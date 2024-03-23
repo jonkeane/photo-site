@@ -32,18 +32,22 @@
 
 				<!-- Main -->
 					<div id="main">
-                        <h2>Tags</h2>
-							<ul class = "tags">
-								{{ range $.Site.Taxonomies.tags.ByCount }}
+						{{ range $foo := (slice "continent" "country" "region" "city" "tags") }}
+						{{ $.Site.Taxonomies.foo }}
+						{{ end }}
+						{{ range $key, $taxonomy := .Site.Taxonomies }}
+						{{ if ne (len $taxonomy) 0 }}
+                        <h2 id="{{ $key }}">{{ $key }}</h2>
+							<ul class = "terms">
+								{{ range $taxonomy.ByCount }}
 								<li>
 									<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">{{ .Page.Title | .Page.RenderString }}</a>
 									<span class="button count">{{ .Count }} {{ if gt .Count 1 }} {{ T "articles" }} {{ else }} {{ T "article" }} {{ end }}</span>
 								</li>
 								{{ end }}
 							</ul>
-                    {{ if eq $.Site.Taxonomies.tags 0 }}
-                        <p class="pt-4">{{- T "emptyTags" }}.</p>
-                    {{ end }}
+						{{ end }}
+					{{ end }}
 					</div>
 
                     {{ partial "footer/index" . }}

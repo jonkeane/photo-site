@@ -26,8 +26,12 @@ timeout = 600
     target = "assets"
 
 [taxonomies]
-  category = "categories"
-  tags = "tags"
+  continent = "continents"
+  country = "countries"
+  region = "regions"
+  city = "cities"
+  tag = "tags"
+
 
 [params.nanog]
   flickr_userid = "65556368@N00"
