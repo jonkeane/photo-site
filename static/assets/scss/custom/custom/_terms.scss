@@ -9,10 +9,19 @@
             column-gap: 0.5rem;
             flex-wrap: wrap;
 
-            // TODO: responsive shrinking
+            @include breakpoint('<=small') {
+                column-count: 2;
+            }
+
+            @include breakpoint('<=xsmall') {
+                column-count: 1;
+            }
 
             li {
                 padding: 0.5rem 0;
+                // necessary to avoid every other column being slightly off
+                display: inline-block;
+                width: 100%;
             }
         }
     }
