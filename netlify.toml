@@ -11,3 +11,9 @@ function = "og-image"
 
 [dev]
 framework = "hugo"
+
+# Not ready for this yet, but this mostly works — still some scripts inline (need to hash)
+# [[headers]]
+#   for = "/*"
+#   [headers.values]
+#     Content-Security-Policy = "default-src 'self'; script-src 'self' https://api.flickr.com/services/ https://fineartamerica.com/ https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://api.ipdata.co; img-src 'self' http://localhost:1313/ https://live.staticflickr.com/; font-src 'self' http://localhost:1313/ https://fonts.gstatic.com; style-src-elem 'self' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline'; frame-src https://fineartamerica.com/;"
