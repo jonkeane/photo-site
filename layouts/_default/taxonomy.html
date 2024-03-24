@@ -1,30 +1,7 @@
 {{ partial "htmlhead" . }}
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
-
-		{{ $postsPageSize := .Site.Params.Posts.pagesize | default 6 }}
-
-		{{ .Scratch.Set "postsFeaturedPostEnabled" true }}
-		{{ if (or (eq .Site.Params.Posts.featuredpost "false") (eq .Site.Params.Posts.featuredpost false)) }}
-			{{ .Scratch.Set "postsFeaturedPostEnabled" false }}
-		{{ end }}
-		{{ $postsFeaturedPostEnabled := .Scratch.Get "postsFeaturedPostEnabled" }}
-
-		{{ $posts := where .Pages "Params.private" "ne" true  }}
-
-		{{ $firstPost := first 1 $posts }}
-
-		{{ if and (eq $postsFeaturedPostEnabled true) (gt (len $posts) 1) }}
-			{{ .Scratch.Set "postsForPaging" (after 1 $posts) }}
-		{{ else }}
-			{{ .Scratch.Set "postsForPaging" $posts }}
-		{{ end }}
-		{{ $postsForPaging := .Scratch.Get "postsForPaging" }}
-
-		{{ $postsPaging := .Paginate $postsForPaging $postsPageSize }}
-
-
 		<!-- Wrapper -->
-			<div id="wrapper" data-ps="{{ $postsPageSize }}" data-pfp="{{ $postsFeaturedPostEnabled }}">
+			<div id="wrapper">
 			    <div class="bg fixed"></div>
 
     			{{ partial "header" . }}
@@ -32,10 +9,8 @@
 
 				<!-- Main -->
 					<div id="main">
-						{{ range $foo := (slice "continent" "country" "region" "city" "tags") }}
-						{{ $.Site.Taxonomies.foo }}
-						{{ end }}
-						{{ range $key, $taxonomy := .Site.Taxonomies }}
+						{{ range $key := (slice "tags" "continents" "countries" "regions" "cities") }}
+						{{ $taxonomy := index $.Site.Taxonomies $key }}
 						{{ if ne (len $taxonomy) 0 }}
                         <h2 id="{{ $key }}">{{ $key }}</h2>
 							<ul class = "terms">

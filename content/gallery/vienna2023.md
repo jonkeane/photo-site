@@ -6,7 +6,7 @@ date: "2023-03-16T00:00:00"
 nanog: true
 image: gallery/_DSC8331-HDR.jpg
 flickr_album: "72177720312790472"
-tags: []
+tags: ["Sony A7RIV"]
 continents: ["Europe"]
 countries: [ "Austria"]
 regions: []

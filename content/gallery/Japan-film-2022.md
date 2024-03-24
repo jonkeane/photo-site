@@ -6,7 +6,7 @@ date: "2022-12-15T00:00:00"
 nanog: true
 image: gallery/000001130012.jpg
 flickr_album: "72177720315315409"
-tags: ["film"]
+tags: ["film", "Hasselblad", "6x6"]
 continents: ["Asia"]
 countries: ["Japan"]
 regions: []

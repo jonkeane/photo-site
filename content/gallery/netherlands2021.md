@@ -6,7 +6,7 @@ date: "2021-08-13T00:00:00"
 nanog: true
 image: gallery/_DSC2353.jpg
 flickr_album: "72177720313747212"
-tags: []
+tags: ["Sony A7RIV"]
 continents: ["Europe"]
 countries: ["The Netherlands"]
 regions: []

@@ -25,6 +25,7 @@ timeout = 600
     source = "assets"
     target = "assets"
 
+# If adding any taxonomies here, also need to add to layout/_default/taxonomy.html
 [taxonomies]
   continent = "continents"
   country = "countries"
