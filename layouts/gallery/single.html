@@ -27,7 +27,7 @@
 							    {{- end }}
 							</div>
 							{{- end }}
-						<div id="nanogallery2" flickrAlbum="{{ .Params.flickr_album }}" tagBlockList="{{ .Site.Params.nanog.tagBlockList }}" />
+						<div id="nanogallery2" flickrAlbum="{{ .Params.flickr_album }}" tagBlockList="{{ .Site.Params.nanog.tagBlockList }}"></div>
 						<a href=".." class="button" id="galleryBackBtnBtm">back to gallery</a>
 						{{- if not (eq .Params.disableComments true) -}}
                         {{- template "_internal/disqus.html" . -}}
