@@ -7,7 +7,7 @@ nanog: true
 flickr_album: "72157707309712114"
 image: gallery/IMG_3148.jpg
 tags: []
-continents: ["Pacific", "Asia"]
+continents: ["Oceania", "Asia"]
 countries: ["Australia"]
 regions: ["Tasmania"]
 cities: ["Hong Kong", "Melbourne", "Hobart"]
