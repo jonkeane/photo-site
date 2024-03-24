@@ -1,15 +1,15 @@
-{{ partial "htmlhead" . }}
+{{- partial "htmlhead" . -}}
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
 		{{- $postsFoldername := .Site.Params.Posts.foldername | default "gallery" }}
 
-		{{ .Scratch.Set "postsFeaturedPostEnabled" true }}
-		{{ if (or (eq .Site.Params.Posts.featuredpost "false") (eq .Site.Params.Posts.featuredpost false)) }}
-			{{ .Scratch.Set "postsFeaturedPostEnabled" false }}
-		{{ end }}
-		{{ $postsFeaturedPostEnabled := .Scratch.Get "postsFeaturedPostEnabled" }}
-		{{ $no_dates := .Params.no_dates }}
+		{{- .Scratch.Set "postsFeaturedPostEnabled" true -}}
+		{{- if (or (eq .Site.Params.Posts.featuredpost "false") (eq .Site.Params.Posts.featuredpost false)) -}}
+			{{- .Scratch.Set "postsFeaturedPostEnabled" false -}}
+		{{- end -}}
+		{{- $postsFeaturedPostEnabled := .Scratch.Get "postsFeaturedPostEnabled" -}}
+		{{- $no_dates := .Params.no_dates -}}
 
-		{{ $posts := where .Pages "Params.private" "ne" true  }}
+		{{- $posts := where .Pages "Params.private" "ne" true  -}}
 
 
 		<!-- This is not needed at all??? -->
@@ -17,16 +17,12 @@
 		{{- $posts = where .Site.RegularPages "Type" $postsFoldername -}}
 		{{- $posts = where $posts "Params.private" "ne" true  -}}
 		{{- end }}
-
-		<!-- Wrapper -->
 			<div id="wrapper" class="fade-in" data-pfn="{{ $postsFoldername }}"  data-ps="3" data-pfp="1">
 
 				{{- partial "intro.html" . -}}
 
 				{{- partial "header" . -}}
 				{{- partial "nav" . }}
-
-				<!-- Main -->
 					<div id="main" class="maingrid">
 						{{ .Content }}
 						<div id="introTop" class="aln-middle"><h3>A random album for today</h3></div>
@@ -36,13 +32,9 @@
 							<a href="/prints/" class="button big fullwidth">Prints available</a>
 						</section>
 					</div>
-
 					{{- partial "footer/index" . }}
 					{{- partial "copyright" . }}
 			</div>
-
-			{{- template "_internal/google_analytics.html" . }}
 			{{- partial "scripts/index" . }}
-
 	</body>
 </html>

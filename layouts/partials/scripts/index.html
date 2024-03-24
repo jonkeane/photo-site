@@ -1,19 +1,15 @@
-{{ $jQuery := resources.Get "js/jquery.min.js" }}
-{{ $scrollex := resources.Get "js/jquery.scrollex.min.js" }}
-{{ $scrolly := resources.Get "js/jquery.scrolly.min.js" }}
-{{ $browser := resources.Get "js/browser.min.js" }}
-{{ $breakpoints := resources.Get "js/breakpoints.min.js" }}
-{{ $util := resources.Get "js/util.js" }}
-{{ $main := resources.Get "js/main.js" }}
+{{- $jQuery := resources.Get "js/jquery.min.js" -}}
+{{- $scrollex := resources.Get "js/jquery.scrollex.min.js" -}}
+{{- $scrolly := resources.Get "js/jquery.scrolly.min.js" -}}
+{{- $browser := resources.Get "js/browser.min.js" -}}
+{{- $breakpoints := resources.Get "js/breakpoints.min.js" -}}
+{{- $util := resources.Get "js/util.js" -}}
+{{- $main := resources.Get "js/main.js" -}}
 
-{{ $js := slice $jQuery $scrollex $scrolly $browser $breakpoints $util $main | resources.Concat "assets/js/bundle.js" }}
-
-<!-- Scripts -->
+{{- $js := slice $jQuery $scrollex $scrolly $browser $breakpoints $util $main | resources.Concat "assets/js/bundle.js" }}
 <script src='{{ $js.RelPermalink }}'></script>
-
 <script src='{{ "assets/js/custom.js" | relURL }}'></script>
 
-<!-- TODO: Ideally, these go at the end of the page -->
-{{ if .Params.nanog }}
+{{- if .Params.nanog }}
 <script src='{{ "assets/js/nanogallery2/jquery.nanogallery2.min.js" | relURL }}'></script>
-{{ end }}
+{{- end -}}

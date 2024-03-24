@@ -3,23 +3,23 @@
         <meta name="robots" content="{{ .Site.Params.meta.robots }}" />
         <meta name="googlebot" content="{{ .Site.Params.meta.googlebot }}" />
 
-        {{ if .Params.nanog }}
+        {{- if .Params.nanog }}
 		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.min.css" | relURL }}' />
  		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.woff.min.css" | relURL }}' />
- 		{{ end }}
+ 		{{ end -}}
 
         <!-- override theme CSS -->
-		{{ if .Site.IsServer }}
-		{{ $style := resources.Get "scss/custom/main.scss" | resources.ExecuteAsTemplate "scss/custom/main.scss" . | toCSS (dict "targetPath" "assets/css/custom_main.css" "enableSourceMap" true) }}
+		{{- if .Site.IsServer -}}
+		{{- $style := resources.Get "scss/custom/main.scss" | resources.ExecuteAsTemplate "scss/custom/main.scss" . | toCSS (dict "targetPath" "assets/css/custom_main.css" "enableSourceMap" true) -}}
 		<link rel="stylesheet" href="{{ ($style).RelPermalink }}">
-		{{ else }}
-		{{ $style := resources.Get "scss/custom/main.scss" | resources.ExecuteAsTemplate "scss/custom/main.scss" . | toCSS (dict "targetPath" "assets/css/custom_main.css" "enableSourceMap" false) }}
+		{{- else -}}
+		{{- $style := resources.Get "scss/custom/main.scss" | resources.ExecuteAsTemplate "scss/custom/main.scss" . | toCSS (dict "targetPath" "assets/css/custom_main.css" "enableSourceMap" false) -}}
 		<link rel="stylesheet" href="{{ ($style | minify).RelPermalink }}">
-		{{ end }}
+		{{- end -}}
 
-        {{ partial "bg" . }}
-		{{ template "_internal/google_analytics.html" . }}
+        {{- partial "bg" . -}}
+		{{- template "_internal/google_analytics.html" . -}}
         <meta name="google-site-verification" content="{{ .Site.Params.meta.googlesiteverification }}" />
-		{{ template "partials/opengraph.html" . }}
-		{{ template "partials/twitter_cards.html" . }}
+		{{- template "partials/opengraph.html" . -}}
+		{{- template "partials/twitter_cards.html" . -}}
 		<link rel="me" href="https://mastodon.social/@jonkeane" />
