@@ -63,6 +63,7 @@
 			) 
 			-}}
 			{{- $js = $js | js.Build $opts -}}
-			<script src="{{ $js.Permalink }}"></script>
+			<script src="{{ $js.RelPermalink }}"></script>
+
 	</body>
 </html>
