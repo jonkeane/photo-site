@@ -19,216 +19,33 @@
 <!-- removing the gradient shifts the photo -->
 {{ $overlayGradient := safeCSS "url('/images/overlay.png'), linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))," }}
 
-<style>
-    /* <!-- default --> */
 
-    @media screen {
+<!-- "enableSourceMap" true when not .Site.IsServer -->
+{{ $vars := dict
+    "overlayGradient" $overlayGradient
+    "Landscape2560Permalink" $2560x.Permalink
+    "Landscape7560Permalink" $7560x.Permalink
+    "Landscape5040Permalink" $5040x.Permalink
+    "Landscape3360Permalink" $3360x.Permalink
+    "Landscape1680Permalink" $1680x.Permalink
+    "Landscape1120Permalink" $1120x.Permalink
+    "Portrait3574Permalink" $x3574.Permalink
+    "Portrait2732Permalink" $x2732.Permalink
+    "Portrait2388Permalink" $x2388.Permalink
+    "Portrait2048Permalink" $x2048.Permalink
+    "Portrait1024Permalink" $x1024.Permalink
+}}
 
-        #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $2560x.Permalink }}");
-        }
-    }
+{{ $options := dict
+    "targetPath" "assets/css/background.css" 
+    "enableSourceMap" true 
+    "vars" $vars
+}}
 
-    /* <!-- orientation and covering --> */
-    @media screen and (min-aspect-ratio: 1/1) {
-        #wrapper > .bg {
-    	    background-size: auto, auto, cover;
-        }
-    }
+{{ $style := resources.Get "scss/custom/background.scss" | resources.ExecuteAsTemplate "scss/custom/background.scss" . | toCSS $options }}
 
-    @media screen and (max-aspect-ratio: 1/1) {
-        #wrapper > .bg {
-    	    background-size: auto, auto, auto 100%;
-        }
-    }
-
-
-    /* <!-- >= 3:4 --> */
-    @media only screen and (max-width: 7560px) and (-webkit-max-device-pixel-ratio: 1),
-           only screen and (max-width: 7560px) and (   max--moz-device-pixel-ratio: 1),
-           only screen and (max-width: 7560px) and (     -o-max-device-pixel-ratio: 1/1),
-           only screen and (max-width: 7560px) and (        max-device-pixel-ratio: 1),
-           only screen and (max-width: 3780px) and (-webkit-max-device-pixel-ratio: 2),
-           only screen and (max-width: 3780px) and (   max--moz-device-pixel-ratio: 2),
-           only screen and (max-width: 3780px) and (     -o-max-device-pixel-ratio: 2/1),
-           only screen and (max-width: 3780px) and (        max-device-pixel-ratio: 2),
-           only screen and (max-width: 2520px) and (-webkit-max-device-pixel-ratio: 3),
-           only screen and (max-width: 2520px) and (   max--moz-device-pixel-ratio: 3),
-           only screen and (max-width: 2520px) and (     -o-max-device-pixel-ratio: 3/1),
-           only screen and (max-width: 2520px) and (        max-device-pixel-ratio: 3) {
-      #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $7560x.Permalink }}");
-        }
-    }
-
-    @media only screen and (max-width: 5040px) and (-webkit-max-device-pixel-ratio: 1),
-           only screen and (max-width: 5040px) and (   max--moz-device-pixel-ratio: 1),
-           only screen and (max-width: 5040px) and (     -o-max-device-pixel-ratio: 1/1),
-           only screen and (max-width: 5040px) and (        max-device-pixel-ratio: 1),
-           only screen and (max-width: 2520px) and (-webkit-max-device-pixel-ratio: 2),
-           only screen and (max-width: 2520px) and (   max--moz-device-pixel-ratio: 2),
-           only screen and (max-width: 2520px) and (     -o-max-device-pixel-ratio: 2/1),
-           only screen and (max-width: 2520px) and (        max-device-pixel-ratio: 2),
-           only screen and (max-width: 1680px) and (-webkit-max-device-pixel-ratio: 3),
-           only screen and (max-width: 1680px) and (   max--moz-device-pixel-ratio: 3),
-           only screen and (max-width: 1680px) and (     -o-max-device-pixel-ratio: 3/1),
-           only screen and (max-width: 1680px) and (        max-device-pixel-ratio: 3) {
-      #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $5040x.Permalink }}");
-        }
-    }
-
-    @media only screen and (max-width: 3360px) and (-webkit-max-device-pixel-ratio: 1),
-           only screen and (max-width: 3360px) and (   max--moz-device-pixel-ratio: 1),
-           only screen and (max-width: 3360px) and (     -o-max-device-pixel-ratio: 1/1),
-           only screen and (max-width: 3360px) and (        max-device-pixel-ratio: 1),
-           only screen and (max-width: 1680px) and (-webkit-max-device-pixel-ratio: 2),
-           only screen and (max-width: 1680px) and (   max--moz-device-pixel-ratio: 2),
-           only screen and (max-width: 1680px) and (     -o-max-device-pixel-ratio: 2/1),
-           only screen and (max-width: 1680px) and (        max-device-pixel-ratio: 2),
-           only screen and (max-width: 1120px) and (-webkit-max-device-pixel-ratio: 3),
-           only screen and (max-width: 1120px) and (   max--moz-device-pixel-ratio: 3),
-           only screen and (max-width: 1120px) and (     -o-max-device-pixel-ratio: 3/1),
-           only screen and (max-width: 1120px) and (        max-device-pixel-ratio: 3) {
-      #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $3360x.Permalink }}");
-        }
-    }
-
-    @media only screen and (max-width: 2560px) and (-webkit-max-device-pixel-ratio: 1),
-           only screen and (max-width: 2560px) and (   max--moz-device-pixel-ratio: 1),
-           only screen and (max-width: 2560px) and (     -o-max-device-pixel-ratio: 1/1),
-           only screen and (max-width: 2560px) and (        max-device-pixel-ratio: 1),
-           only screen and (max-width: 1280px) and (-webkit-max-device-pixel-ratio: 2),
-           only screen and (max-width: 1280px) and (   max--moz-device-pixel-ratio: 2),
-           only screen and (max-width: 1280px) and (     -o-max-device-pixel-ratio: 2/1),
-           only screen and (max-width: 1280px) and (        max-device-pixel-ratio: 2),
-           only screen and (max-width: 853px) and (-webkit-max-device-pixel-ratio: 3),
-           only screen and (max-width: 853px) and (   max--moz-device-pixel-ratio: 3),
-           only screen and (max-width: 853px) and (     -o-max-device-pixel-ratio: 3/1),
-           only screen and (max-width: 853px) and (        max-device-pixel-ratio: 3) {
-      #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $2560x.Permalink }}");
-        }
-    }
-
-    @media only screen and (max-width: 1680px) and (-webkit-max-device-pixel-ratio: 1),
-           only screen and (max-width: 1680px) and (   max--moz-device-pixel-ratio: 1),
-           only screen and (max-width: 1680px) and (     -o-max-device-pixel-ratio: 1/1),
-           only screen and (max-width: 1680px) and (        max-device-pixel-ratio: 1),
-           only screen and (max-width: 840px) and (-webkit-max-device-pixel-ratio: 2),
-           only screen and (max-width: 840px) and (   max--moz-device-pixel-ratio: 2),
-           only screen and (max-width: 840px) and (     -o-max-device-pixel-ratio: 2/1),
-           only screen and (max-width: 840px) and (        max-device-pixel-ratio: 2),
-           only screen and (max-width: 560px) and (-webkit-max-device-pixel-ratio: 3),
-           only screen and (max-width: 560px) and (   max--moz-device-pixel-ratio: 3),
-           only screen and (max-width: 560px) and (     -o-max-device-pixel-ratio: 3/1),
-           only screen and (max-width: 560px) and (        max-device-pixel-ratio: 3) {
-      #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $1680x.Permalink }}");
-        }
-    }
-
-    @media only screen and (max-width: 1120px) and (-webkit-max-device-pixel-ratio: 1),
-           only screen and (max-width: 1120px) and (   max--moz-device-pixel-ratio: 1),
-           only screen and (max-width: 1120px) and (     -o-max-device-pixel-ratio: 1/1),
-           only screen and (max-width: 1120px) and (        max-device-pixel-ratio: 1),
-           only screen and (max-width: 560px) and (-webkit-max-device-pixel-ratio: 2),
-           only screen and (max-width: 560px) and (   max--moz-device-pixel-ratio: 2),
-           only screen and (max-width: 560px) and (     -o-max-device-pixel-ratio: 2/1),
-           only screen and (max-width: 560px) and (        max-device-pixel-ratio: 2),
-           only screen and (max-width: 373px) and (-webkit-max-device-pixel-ratio: 3),
-           only screen and (max-width: 373px) and (   max--moz-device-pixel-ratio: 3),
-           only screen and (max-width: 373px) and (     -o-max-device-pixel-ratio: 3/1),
-           only screen and (max-width: 373px) and (        max-device-pixel-ratio: 3) {
-      #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $1120x.Permalink }}");
-        }
-    }
-
-    /* <!-- < 3:4 using 7:8 here to catch devices that are 3:4, but have headers --> */
-    @media only screen and (max-height: 3574px) and (-webkit-max-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 3574px) and (   max--moz-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 3574px) and (     -o-max-device-pixel-ratio: 1/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 3574px) and (        max-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1787px) and (-webkit-max-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1787px) and (   max--moz-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1787px) and (     -o-max-device-pixel-ratio: 2/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1787px) and (        max-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1191px) and (-webkit-max-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1191px) and (   max--moz-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1191px) and (     -o-max-device-pixel-ratio: 3/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1191px) and (        max-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4) {
-      #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $x3574.Permalink }}");
-        }
-    }
-
-    @media only screen and (max-height: 2732px) and (-webkit-max-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 2732px) and (   max--moz-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 2732px) and (     -o-max-device-pixel-ratio: 1/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 2732px) and (        max-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1366px) and (-webkit-max-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1366px) and (   max--moz-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1366px) and (     -o-max-device-pixel-ratio: 2/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1366px) and (        max-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 910px) and (-webkit-max-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 910px) and (   max--moz-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 910px) and (     -o-max-device-pixel-ratio: 3/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 910px) and (        max-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4) {
-      #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $x2732.Permalink }}");
-        }
-    }
-
-    @media only screen and (max-height: 2388px) and (-webkit-max-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 2388px) and (   max--moz-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 2388px) and (     -o-max-device-pixel-ratio: 1/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 2388px) and (        max-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1194px) and (-webkit-max-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1194px) and (   max--moz-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1194px) and (     -o-max-device-pixel-ratio: 2/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1194px) and (        max-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 796px) and (-webkit-max-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 796px) and (   max--moz-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 796px) and (     -o-max-device-pixel-ratio: 3/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 796px) and (        max-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4) {
-      #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $x2388.Permalink }}");
-        }
-    }
-
-    @media only screen and (max-height: 2048px) and (-webkit-max-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 2048px) and (   max--moz-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 2048px) and (     -o-max-device-pixel-ratio: 1/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 2048px) and (        max-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1024px) and (-webkit-max-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1024px) and (   max--moz-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1024px) and (     -o-max-device-pixel-ratio: 2/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1024px) and (        max-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 683px) and (-webkit-max-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 683px) and (   max--moz-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 683px) and (     -o-max-device-pixel-ratio: 3/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 683px) and (        max-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4) {
-      #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $x2048.Permalink }}");
-        }
-    }
-
-    @media only screen and (max-height: 1024px) and (-webkit-max-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1024px) and (   max--moz-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1024px) and (     -o-max-device-pixel-ratio: 1/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 1024px) and (        max-device-pixel-ratio: 1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 512px) and (-webkit-max-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 512px) and (   max--moz-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 512px) and (     -o-max-device-pixel-ratio: 2/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 512px) and (        max-device-pixel-ratio: 2) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 341px) and (-webkit-max-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 341px) and (   max--moz-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 341px) and (     -o-max-device-pixel-ratio: 3/1) and (max-aspect-ratio: 3/4),
-           only screen and (max-height: 341px) and (        max-device-pixel-ratio: 3) and (max-aspect-ratio: 3/4) {
-      #wrapper > .bg {
-    	    background-image: {{ $overlayGradient }} url("{{ $x1024.Permalink }}");
-        }
-    }
-</style>
+{{ if .Site.IsServer }} 
+<link rel="stylesheet" href="{{ ($style).RelPermalink }}"> 
+{{ else }} 
+<link rel="stylesheet" href="{{ ($style | minify).RelPermalink }}">
+{{ end }}
