@@ -1,6 +1,10 @@
 import params from "@params";
 
-jQuery("#nanogallery2").nanogallery2({
+var gallery = jQuery("#nanogallery2");
+var flickrAlbum = gallery.attr("flickrAlbum");
+var tagBlockList = gallery.attr("tagBlockList");
+
+gallery.nanogallery2({
 	"viewerToolbar":   {
 			"standard":   "label, linkOriginalButton, infoButton",
 			"minimized":  "label, linkOriginalButton, infoButton, cart" },
@@ -69,8 +73,8 @@ jQuery("#nanogallery2").nanogallery2({
 		return {content: content, title: title}; },
 	"thumbnailHeight":  300,
 	"thumbnailWidth":   "auto",
-	"album": params.flickr_album,
-	"tagBlockList": params.tagBlockList,
+	"album": flickrAlbum,
+	"tagBlockList": tagBlockList,
 	"thumbnailBorderVertical": 0,
 	"thumbnailBorderHorizontal": 0,
 	"thumbnailHoverEffect2": "imageScale105",

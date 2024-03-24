@@ -38,7 +38,7 @@
 
                             {{ partial "postcustom" . }}
 
-														<div id="nanogallery2">
+														<div id="nanogallery2" flickrAlbum="{{- .Params.flickr_album -}}" tagBlockList="{{- .Site.Params.nanog.tagBlockList -}}">
 														</div>
 
                             <a href=".." class="button" id="galleryBackBtnBtm">back to gallery</a>
@@ -58,8 +58,6 @@
 			"params" (dict 
 				"flickr_userid" .Site.Params.nanog.flickr_userid 
 				"flickr_apikey" .Site.Params.nanog.flickr_apikey
-				"flickr_album" .Params.flickr_album 
-				"tagBlockList" .Site.Params.nanog.tagBlockList
 			) 
 			-}}
 			{{- $js = $js | js.Build $opts -}}
