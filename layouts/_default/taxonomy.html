@@ -1,34 +1,34 @@
-{{ partial "htmlhead" . }}
-	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
+{{- partial "htmlhead" . -}}
+	<body lang='{{- .Site.Language.Lang | default "en-us" -}}' class="is-preload">
 		<!-- Wrapper -->
 			<div id="wrapper">
 			    <div class="bg fixed"></div>
 
-    			{{ partial "header" . }}
-				{{ partial "nav" . }}
+    			{{- partial "header" . -}}
+				{{- partial "nav" . -}}
 
 				<!-- Main -->
 					<div id="main">
-						{{ range $key := (slice "tags" "continents" "countries" "regions" "cities") }}
-						{{ $taxonomy := index $.Site.Taxonomies $key }}
-						{{ if ne (len $taxonomy) 0 }}
+						{{- range $key := (slice "tags" "continents" "countries" "regions" "cities") -}}
+						{{- $taxonomy := index $.Site.Taxonomies $key -}}
+						{{- if ne (len $taxonomy) 0 -}}
                         <h2 id="{{ $key }}">{{ $key }}</h2>
 							<ul class = "terms">
-								{{ range $taxonomy.ByCount }}
+								{{- range $taxonomy.ByCount -}}
 								<li>
 									<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">{{ .Page.Title | .Page.RenderString }}</a>
-									<span class="button count">{{ .Count }} {{ if gt .Count 1 }} {{ T "articles" }} {{ else }} {{ T "article" }} {{ end }}</span>
+									<span class="button count">{{ .Count }}</span>
 								</li>
-								{{ end }}
+								{{- end -}}
 							</ul>
-						{{ end }}
-					{{ end }}
+						{{- end -}}
+					{{- end -}}
 					</div>
 
-                    {{ partial "footer/index" . }}
-                    {{ partial "copyright" . }}
+                    {{- partial "footer/index" . -}}
+                    {{- partial "copyright" . -}}
 
             </div>
-            {{ partial "scripts/index" . }}
+            {{- partial "scripts/index" . -}}
 	</body>
 </html>

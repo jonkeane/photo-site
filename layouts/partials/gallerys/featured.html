@@ -1,7 +1,6 @@
-<!-- Featured Post -->
-{{ $data := .siteData }}
-{{ $no_dates := .no_dates }}
-{{ range .firstpost }}
+{{- $data := .siteData -}}
+{{- $no_dates := .no_dates -}}
+{{- range .firstpost -}}
 
 <article class="post featured">
     <header class="major">
@@ -31,9 +30,10 @@
             <img src="{{ $x900x.RelPermalink }}"  alt = "{{ $x900x.Exif.Tags.ImageDescription }}">
         </picture>
     </a>
-    {{- end -}}    <p>{{ .Description }}</p>
+    {{- end }}
+    <p>{{ .Description }}</p>
     <ul class="actions">
         <li><a href="{{ .RelPermalink }}" class="button big">{{ $data.post.linktext }}</a></li>
     </ul>
 </article>
-{{ end }}
+{{- end -}}

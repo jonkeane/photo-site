@@ -1,64 +1,49 @@
-{{ partial "htmlhead" . }}
+{{- partial "htmlhead" . -}}
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
 
-		<!-- Wrapper -->
 			<div id="wrapper">
 			    <div class="bg fixed"></div>
 
-                {{ partial "header" . }}
-                {{ partial "nav" . }}
-
-				<!-- Main -->
+                {{- partial "header" . -}}
+                {{- partial "nav" . }}
 					<div id="main">
-
-						<!-- Post -->
-                        <section class="page"> <!-- used to be class="post"-->
+                        <section class="page">
 							<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
                             <header class="major">
-                                {{ if not ( or ( .Date.IsZero ) ( .Parent.Params.no_dates ) ) }}
+                                {{- if not ( or ( .Date.IsZero ) ( .Parent.Params.no_dates ) ) -}}
                                     <span class="date">{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
-                                {{ end }}
+                                {{- end -}}
                                 <h1>{{ .Title }}</h1>
                                 <p>{{ .Description }}</p>
                             </header>
-
                             {{ .Content }}
-
-							{{/* Output taxonomies */}}
-							{{ $context := . }}
-							{{ if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
+							{{- $context := . -}}
+							{{- if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
 							<div id="terms" class="flex flex-row flex-wrap items-center">
-								{{ range $key := (slice "continents" "countries" "regions" "cities" "tags") }}
-							    	{{ range $context.GetTerms $key }}
-										<span><a class="button primary tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></span>
-							    	{{ end }}
-							    {{ end }}
+								{{- range $key := (slice "continents" "countries" "regions" "cities" "tags") -}}
+							    {{- range $context.GetTerms $key }}
+								<span><a class="button primary tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></span>
+							    {{- end -}}
+							    {{- end }}
 							</div>
-							{{ end }}
-
-                            {{ partial "postcustom" . }}
-
-														<div id="nanogallery2" flickrAlbum="{{- .Params.flickr_album -}}" tagBlockList="{{- .Site.Params.nanog.tagBlockList -}}">
-														</div>
-
-                            <a href=".." class="button" id="galleryBackBtnBtm">back to gallery</a>
-
-                            {{ if not (eq .Params.disableComments true) }}
-                            {{ template "_internal/disqus.html" . }}
-                            {{ end }}
-
+							{{- end }}
+						<div id="nanogallery2" flickrAlbum="{{ .Params.flickr_album }}" tagBlockList="{{ .Site.Params.nanog.tagBlockList }}" />
+						<a href=".." class="button" id="galleryBackBtnBtm">back to gallery</a>
+						{{- if not (eq .Params.disableComments true) -}}
+                        {{- template "_internal/disqus.html" . -}}
+						{{- end }}
 					</div>
 
-                    {{ partial "footer/index" . }}
-                    {{ partial "copyright" . }}
+                    {{- partial "footer/index" . -}}
+                    {{- partial "copyright" . -}}
             </div>
-            {{ partial "scripts/index" . }}
+            {{- partial "scripts/index" . -}}
 			{{- $js := resources.Get "js/gallery.js" -}}
-			{{- $opts := dict 
-			"params" (dict 
-				"flickr_userid" .Site.Params.nanog.flickr_userid 
+			{{- $opts := dict
+			"params" (dict
+				"flickr_userid" .Site.Params.nanog.flickr_userid
 				"flickr_apikey" .Site.Params.nanog.flickr_apikey
-			) 
+			)
 			-}}
 			{{- $js = $js | js.Build $opts -}}
 			<script src="{{ $js.RelPermalink }}"></script>

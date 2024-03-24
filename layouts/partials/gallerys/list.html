@@ -1,21 +1,20 @@
-<!-- Posts -->
-{{ $data := .siteData }}
-{{ $no_dates := .no_dates }}
+{{- $data := .siteData -}}
+{{- $no_dates := .no_dates -}}
 
 <section class="posts">
-    {{ range .posts.Pages }}
+    {{- range .posts.Pages }}
     <article>
         <header>
-            {{ if not ( or ( .Date.IsZero ) ( $no_dates ) ) }}
+            {{ if not ( or ( .Date.IsZero ) ( $no_dates ) ) -}}
                 <span class="date">{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
-            {{ end }}
+            {{- end -}}
             <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
         </header>
-        {{ if .Params.image }}
-        {{ $image := resources.Get .Params.image }}
-        {{ $x1600x := $image.Resize "1800x" }}
-        {{ $x800x := $image.Resize "900x" }}
-        {{ $x400x := $image.Resize "400x" }}
+        {{ if .Params.image -}}
+        {{- $image := resources.Get .Params.image -}}
+        {{- $x1600x := $image.Resize "1800x" -}}
+        {{- $x800x := $image.Resize "900x" -}}
+        {{- $x400x := $image.Resize "400x" -}}
         <a href="{{ .RelPermalink }}" class="image main">
             <picture>
                 <source
@@ -25,11 +24,11 @@
                 <img src="{{ $x800x.RelPermalink }}" alt = "{{ $x800x.Exif.Tags.ImageDescription }}">
             </picture>
         </a>
-        {{ end }}
+        {{- end }}
         <p>{{ .Description }}</p>
         <ul class="actions">
             <li><a href="{{ .RelPermalink }}" class="button">{{ $data.post.linktext }}</a></li>
         </ul>
     </article>
-    {{ end }}
+    {{- end }}
 </section>

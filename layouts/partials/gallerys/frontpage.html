@@ -1,8 +1,6 @@
-<!-- Featured Post -->
-{{ $data := .siteData }}
-{{ $no_dates := .no_dates }}
-{{ range .firstpost }}
-
+{{- $data := .siteData -}}
+{{- $no_dates := .no_dates -}}
+{{- range .firstpost }}
 <article class="post featured hidden">
     {{- if .Params.image -}}
     {{- $image := resources.Get .Params.image -}}
@@ -25,12 +23,12 @@
             <img data-srcset="{{ $x900x.RelPermalink }}"  alt = "{{ $x900x.Exif.Tags.ImageDescription }}">
         </picture>
     </a>
-    {{- end -}}
+    {{- end }}
     <header class="major no-margin">
         {{- if not ( or ( .Date.IsZero ) ( $no_dates ) ) -}}
             <span class="date">{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
-        {{- end -}}
+        {{- end }}
         <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
     </header>
 </article>
-{{ end }}
+{{- end }}

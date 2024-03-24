@@ -1,27 +1,26 @@
 <!-- reactive, resized and optimized backgrounds -->
-{{ $bgimage := resources.Get "bg/IMG_4941.jpg" }}
+{{- $bgimage := resources.Get "bg/IMG_4941.jpg" -}}
 
 <!-- >= 3:4 -->
-{{ $7560x := $bgimage.Resize "7560x" }} <!-- 3x @ 2560 -->
-{{ $5040x := $bgimage.Resize "5040x" }} <!-- 2x @ 2560, 3x @ 1680 -->
-{{ $3360x := $bgimage.Resize "3360x" }} <!-- 2x @ 1680, 3x @ 1120 -->
-{{ $2560x := $bgimage.Resize "2560x" }} <!-- 1x @ 2560, 2x @ 1280, 3x @ 853 --> <!-- 2x @ 1120, 3x @ 747 -->
-{{ $1680x := $bgimage.Resize "1680x" }} <!-- 1x @ 1680, 2x @ 840, 3x @ 560 --> <!-- 2x @ 747, 3x @ 498 -->
-{{ $1120x := $bgimage.Resize "1120x" }} <!-- 1x @ 1120, 2x @ 560, 3x @ 373 -->
+{{- $7560x := $bgimage.Resize "7560x" -}} <!-- 3x @ 2560 -->
+{{- $5040x := $bgimage.Resize "5040x" -}} <!-- 2x @ 2560, 3x @ 1680 -->
+{{- $3360x := $bgimage.Resize "3360x" -}} <!-- 2x @ 1680, 3x @ 1120 -->
+{{- $2560x := $bgimage.Resize "2560x" -}} <!-- 1x @ 2560, 2x @ 1280, 3x @ 853 --> <!-- 2x @ 1120, 3x @ 747 -->
+{{- $1680x := $bgimage.Resize "1680x" -}} <!-- 1x @ 1680, 2x @ 840, 3x @ 560 --> <!-- 2x @ 747, 3x @ 498 -->
+{{- $1120x := $bgimage.Resize "1120x" -}} <!-- 1x @ 1120, 2x @ 560, 3x @ 373 -->
 
 <!-- < 3:4 -->
-{{ $x3574 := $bgimage.Fill "2680x3574" }}
-{{ $x2732 := $bgimage.Fill "2049x2732" }} <!-- 12inch ipad pro -->
-{{ $x2388 := $bgimage.Fill "1791x2388" }} <!-- 10.5inch ipad pro -->
-{{ $x2048 := $bgimage.Fill "1536x2048" }}
-{{ $x1024 := $bgimage.Fill "768x1024" }}
+{{- $x3574 := $bgimage.Fill "2680x3574" -}}
+{{- $x2732 := $bgimage.Fill "2049x2732" -}} <!-- 12inch ipad pro -->
+{{- $x2388 := $bgimage.Fill "1791x2388" -}} <!-- 10.5inch ipad pro -->
+{{- $x2048 := $bgimage.Fill "1536x2048" -}}
+{{- $x1024 := $bgimage.Fill "768x1024" -}}
 
 <!-- removing the gradient shifts the photo -->
-{{ $overlayGradient := safeCSS "url('/images/overlay.png'), linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))," }}
+{{- $overlayGradient := safeCSS "url('/images/overlay.png'), linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))," -}}
 
 
-<!-- "enableSourceMap" true when not .Site.IsServer -->
-{{ $vars := dict
+{{- $vars := dict
     "overlayGradient" $overlayGradient
     "Landscape2560Permalink" $2560x.Permalink
     "Landscape7560Permalink" $7560x.Permalink
@@ -36,16 +35,16 @@
     "Portrait1024Permalink" $x1024.Permalink
 }}
 
-{{ $options := dict
-    "targetPath" "assets/css/background.css" 
-    "enableSourceMap" true 
+{{- $options := dict
+    "targetPath" "assets/css/background.css"
+    "enableSourceMap" (not .Site.IsServer)
     "vars" $vars
 }}
 
-{{ $style := resources.Get "scss/custom/background.scss" | resources.ExecuteAsTemplate "scss/custom/background.scss" . | toCSS $options }}
+{{- $style := resources.Get "scss/custom/background.scss" | resources.ExecuteAsTemplate "scss/custom/background.scss" . | toCSS $options -}}
 
-{{ if .Site.IsServer }} 
-<link rel="stylesheet" href="{{ ($style).RelPermalink }}"> 
-{{ else }} 
-<link rel="stylesheet" href="{{ ($style | minify).RelPermalink }}">
-{{ end }}
+{{- if .Site.IsServer -}}
+<link rel="stylesheet" href="{{- ($style).RelPermalink -}}">
+{{- else -}}
+<link rel="stylesheet" href="{{- ($style | minify).RelPermalink -}}">
+{{- end -}}
