@@ -2,7 +2,6 @@ languageCode = "en-us"
 title = "Jonathan Keane Photography"
 # Supposedly: if specified, it messes up some links on the preview site, is it needed at all?
 baseURL = "https://photo.jonkeane.com"
-theme = "hugo-theme-massively-jtk"
 googleanalytics = "G-CPQDC0642Z"
 # disableKinds = ["taxonomy", "section"]
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
@@ -24,6 +23,9 @@ timeout = 600
 [[module.mounts]]
     source = "assets"
     target = "assets"
+[[module.imports]]
+    path = "github.com/curtiscde/hugo-theme-massively"
+
 
 # If adding any taxonomies here, also need to add to layout/_default/taxonomy.html
 [taxonomies]
