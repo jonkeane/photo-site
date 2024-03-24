@@ -2,9 +2,8 @@ languageCode = "en-us"
 title = "Jonathan Keane Photography"
 # Supposedly: if specified, it messes up some links on the preview site, is it needed at all?
 baseURL = "https://photo.jonkeane.com"
-theme = "hugo-theme-massively-jtk"
 googleanalytics = "G-CPQDC0642Z"
-# disableKinds = ["taxonomy", "taxonomyTerm", "section"]
+# disableKinds = ["taxonomy", "section"]
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 timeout = 600
 
@@ -19,14 +18,23 @@ timeout = 600
 
 [module]
 [[module.mounts]]
-    source = 'static/assets'
-    target = 'assets'
+    source = "static/assets"
+    target = "assets"
 [[module.mounts]]
-    source = 'assets'
-    target = 'assets'
+    source = "assets"
+    target = "assets"
+[[module.imports]]
+    path = "github.com/curtiscde/hugo-theme-massively"
 
+
+# If adding any taxonomies here, also need to add to layout/_default/taxonomy.html
 [taxonomies]
-  series = "series"
+  continent = "continents"
+  country = "countries"
+  region = "regions"
+  city = "cities"
+  tag = "tags"
+
 
 [params.nanog]
   flickr_userid = "65556368@N00"

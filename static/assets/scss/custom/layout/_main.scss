@@ -7,15 +7,18 @@
 /* Main */
 
 #main {
-    > footer {
+    > * {
         padding: 2rem 4rem;
+    }
+
+    > footer {
         text-align: center;
     }
-    
+
     > .post {
         position: relative;
-        padding: 2rem 4rem;
         z-index: 1;
+        padding: 2rem 4rem;
 
         @include vendor('transition', (
 			'opacity 1s ease-in-out 0.5s',
@@ -32,11 +35,19 @@
     }
 
     @include breakpoint('<=medium') {
+        > * {
+            padding: 1rem 2rem;
+        }
+
         > .post {
             padding: 1rem 2rem;
         }
 
         > #introTop {
+            padding: 1rem 2rem;
+        }
+
+        > #introBottom {
             padding: 1rem 2rem;
         }
 

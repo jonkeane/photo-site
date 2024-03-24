@@ -29,6 +29,7 @@
 
 				&:hover {
 					background-color: _palette($p, accent);
+					color: _palette($p, fg-bold) !important;
 				}
 			}
 		}

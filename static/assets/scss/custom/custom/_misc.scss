@@ -10,12 +10,6 @@
     white-space: normal;
 }
 
-#main {
-    > p {
-        margin: 0 0 1rem 0;
-    }
-}
-
 p {
     line-height: 1.5;
     margin: 0 0 1rem 0;
@@ -73,16 +67,24 @@ p {
     .post {
         header.no-margin.major {
             margin: 0rem;
-        
             h1, h2, h3, h4, h5, h6 {
                 margin: 0rem;
             }
         }
 
         a {
-            margin: 1rem 0rem 1rem 0rem;
+            margin: 1rem 0rem;
+        }
+    }
+
+    > p {
+        margin: 0 0 1rem 0;
+        padding: 4rem 4rem 2rem;
+    }
+
+    @include breakpoint('<=small') {
+        > p {
+            padding: 2rem 2rem .1rem;;
         }
     }
 }
-
-
