@@ -6,11 +6,11 @@ var tagBlockList = gallery.attr("tagBlockList");
 
 gallery.nanogallery2({
 	"viewerToolbar":   {
-			"standard":   "label, linkOriginalButton, infoButton",
-			"minimized":  "label, linkOriginalButton, infoButton, cart" },
+			"standard":   "label, copyURL, infoButton",
+			"minimized":  "label, copyURL, infoButton, cart" },
 	"viewerTools":    {
 			"topLeft":   "fullscreenButton, zoomButton",
-			"topRight":  "info, linkOriginalButton, playPauseButton, closeButton" },
+			"topRight":  "info, copyURL, playPauseButton, closeButton" },
 	"kind":             "flickr",
 	"thumbnailLabel": {displayDescription: false, display: false},
 	"userID":           params.flickr_userid,
