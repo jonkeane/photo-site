@@ -1,4 +1,4 @@
-/* nanogallery2 - v3.0.5 - 2024-03-16 - https://nanogallery2.nanostudio.org */
+/* nanogallery2 - v3.0.5 - 2024-04-17 - https://nanogallery2.nanostudio.org */
 /*!
  * @preserve nanogallery2 - javascript photo / video gallery and lightbox
  * Homepage: http://nanogallery2.nanostudio.org
@@ -9342,6 +9342,14 @@
           StopPropagationPreventDefault(e);
           OpenOriginal( G.VOM.content.current.NGY2Item() );
           break;
+        case 'copyURL':
+          StopPropagationPreventDefault(e);
+          navigator.clipboard.writeText(window.location.href);
+          e.currentTarget.children[0].className = "nGY2Icon-ok";
+          setTimeout(function(){
+            e.currentTarget.children[0].className = "nGY2Icon-ngy2_external2";
+          }, 2000);
+          break;
         case 'rotateLeft':
           StopPropagationPreventDefault(e);
           ViewerImageRotate(-90);
@@ -9498,6 +9506,10 @@
         case 'share':
           r += 'nGEvent" data-ngy2action="share">'+ G.O.icons.viewerShare +'</div>';
           break;
+        case 'copyURLButton':
+        case 'copyURL':
+          r += 'nGEvent" data-ngy2action="copyURL">'+ G.O.icons.viewerLinkOriginal +'</div>';
+          break;              
         case 'label':
           r += '"><div class="label"><div class="title nGEvent" itemprop="name"></div><div class="description nGEvent" itemprop="description"></div></div></div>';
           break;
