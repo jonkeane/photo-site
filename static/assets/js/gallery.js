@@ -53,9 +53,16 @@ gallery.nanogallery2({
 			const emulsions = [
 				'Cat Labs',
 				'Fuji Pro 400H',
+				'Fujifilm Pro 400H',
+				'Fujifilm Pro H',
 				'Fuji Provia',
+				'Fujifilm Provia',
+				'Fujifilm Provia F',
 				'Fuji Velvia',
+				'Fujifilm Velvia',
+				'Ilford Delta',
 				'Kodak E100',
+				'Kodak Ektachrome E'
 				'Kodak Ektar',
 				'Kodak Gold',
 				'Kodak Portra',
