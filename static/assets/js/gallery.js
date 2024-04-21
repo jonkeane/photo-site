@@ -19,58 +19,105 @@ gallery.nanogallery2({
 	"minimalSlug":       true,
 	"fnPopupMediaInfo": function (item, title, content) {
 		var title = item.title;
-				function unescape(str){
-					return str.replace(/&lt;/g, "<")
-								.replace(/&gt;/g, ">")
-								.replace(/&quot;/g, '"')
-								.replace(/&amp;/g, "&");
-				}
+		function unescape(str){
+			return str.replace(/&lt;/g, "<")
+						.replace(/&gt;/g, ">")
+						.replace(/&quot;/g, '"')
+						.replace(/&amp;/g, "&");
+		}
 
-			content = '<div class="nGY2PopupOneItemText">' + unescape(item.description);
-			if( item.author != '' ) {
+		function removeSubstringsFromString(string, substringsToRemove) {
+			let removedSubstring = '';
+			let modifiedString = string;
+
+			for (let i = 0; i < substringsToRemove.length; i++) {
+				const substring = substringsToRemove[i];
+				if (modifiedString.includes(substring)) {
+					modifiedString = modifiedString.replace(substring, '').trim();
+					removedSubstring = substring;
+					break; // Stop loop after first substring removal
+				}
+			}
+
+			return [ removedSubstring, modifiedString ];
+		}
+
+		var content = '<div class="nGY2PopupOneItemText">' + unescape(item.description);
+		if( item.author != '' ) {
 			content += '<br/>' + 'by ' + item.author;
-			}
-				content += '</div>'
-				var sexif = '';
-			if( item.exif.model != '' || item.exif.lens != '' ) {
-			sexif  += '📷'
-					sexif += item.exif.model  == '' ? '' : '&nbsp;' + item.exif.model
-					if( item.exif.model != '' && item.exif.lens != '' ) {
-						sexif += '&nbsp;·'
-					}
-					sexif += item.exif.lens  == '' ? '' : '&nbsp;' + item.exif.lens;
-			}
-			if( item.exif.focallength != '' || item.exif.fstop != '' || item.exif.exposure != '' || item.exif.iso != '' || item.exif.time != '' ) {
+		};
+		content += '</div>';
+		var sexif = '';
+		if( item.exif.model != '' || item.exif.lens != '' ) {
+			// Extract film emulsion form the model name (a convention from filmshots, carried through lightroom)
+			// the longest substrings should be first
+			const emulsions = [
+				'Cat Labs',
+				'Fuji Pro 400H',
+				'Fujifilm Pro 400H',
+				'Fujifilm Pro H',
+				'Fuji Provia',
+				'Fujifilm Provia F',
+				'Fujifilm Provia',
+				'Fuji Velvia',
+				'Fujifilm Velvia',
+				'Ilford Delta',
+				'Kodak E100',
+				'Kodak Ektachrome E',
+				'Kodak Ektar',
+				'Kodak Gold',
+				'Kodak Portra',
+				'Kodak T-Max'
+			];
+			const [ emulsion, model ] = removeSubstringsFromString(item.exif.model, emulsions);
+
+			if (emulsion != '') {
+				sexif  += '🎞';
+				sexif += '&nbsp;' + emulsion;
 				sexif += '<br/>';
-				sexif += '📸';
-				var sexif_items = [];
+			};
+
+			// Add model + lens
+			sexif  += '📷';
+			sexif += model  == '' ? '' : '&nbsp;' + model;
+			if( model != '' && item.exif.lens != '' ) {
+				sexif += '&nbsp;·';
+			};
+			sexif += item.exif.lens  == '' ? '' : '&nbsp;' + item.exif.lens;
+		};
+		if( item.exif.focallength != '' || item.exif.fstop != '' || item.exif.exposure != '' || item.exif.iso != '' || item.exif.time != '' ) {
+			sexif += '<br/>';
+			sexif += '📸';
+			var sexif_items = [];
 			sexif_items.push(item.exif.focallength == '' ? '' : '&nbsp; ' + item.exif.focallength);
-				sexif_items.push(item.exif.exposure == '' ? '' : '&nbsp; ' + item.exif.exposure+'s');
+			sexif_items.push(item.exif.exposure == '' ? '' : '&nbsp; ' + item.exif.exposure+'s');
 			sexif_items.push(item.exif.fstop == '' ? '' : '&nbsp; f/' + item.exif.fstop);
 			sexif_items.push(item.exif.iso == '' ? '' : '&nbsp; ' + item.exif.iso+'iso');
-				sexif += sexif_items.join('&nbsp;·')
-				if( item.exif.flash != '' ) {
-					sexif += '<br>';
-					sexif += item.exif.flash == '' ? '' : 'flash: ' + item.exif.flash;
-				}
+			sexif_items = sexif_items.filter((word) => word != '');
+
+			sexif += sexif_items.join('&nbsp;·');
+			if( item.exif.flash != '' ) {
+				sexif += '<br>';
+				sexif += item.exif.flash == '' ? '' : 'flash: ' + item.exif.flash;
+			}
 			if( item.exif.time != '' ) {
 					sexif += '<br/>';
 			// var date = new Date(parseInt(item.exif.time));
 			// sexif += ' &nbsp; '+date.toLocaleDateString();
 			sexif += 'Captured at&nbsp; ' + item.exif.time;
 			}
+		}
+		content += '<div class="nGY2PopupOneItemText">' + sexif + '</div>';
+		if( item.tags.length > 0 ) {
+			tags = '';
+			for(var i = 0; i < item.tags.length; i++) {
+				tags += '#' + item.tags[i] + '&emsp;&emsp;';
 			}
-				content += '<div class="nGY2PopupOneItemText">' + sexif + '</div>';
+			content += '<div class="nGY2PopupOneItemText">' + tags + '</div>';
+		}
 
-				if( item.tags.length > 0 ) {
-					tags = ''
-					for(var i = 0; i < item.tags.length; i++) {
-						tags += '#' + item.tags[i] + '&emsp;&emsp;';
-					}
-					content += '<div class="nGY2PopupOneItemText">' + tags + '</div>';
-				}
-
-		return {content: content, title: title}; },
+		return {content: content, title: title};
+	},
 	"thumbnailHeight":  300,
 	"thumbnailWidth":   "auto",
 	"album": flickrAlbum,
