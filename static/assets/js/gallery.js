@@ -50,19 +50,20 @@ gallery.nanogallery2({
 		var sexif = '';
 		if( item.exif.model != '' || item.exif.lens != '' ) {
 			// Extract film emulsion form the model name (a convention from filmshots, carried through lightroom)
+			// the longest substrings should be first
 			const emulsions = [
 				'Cat Labs',
 				'Fuji Pro 400H',
 				'Fujifilm Pro 400H',
 				'Fujifilm Pro H',
 				'Fuji Provia',
-				'Fujifilm Provia',
 				'Fujifilm Provia F',
+				'Fujifilm Provia',
 				'Fuji Velvia',
 				'Fujifilm Velvia',
 				'Ilford Delta',
 				'Kodak E100',
-				'Kodak Ektachrome E'
+				'Kodak Ektachrome E',
 				'Kodak Ektar',
 				'Kodak Gold',
 				'Kodak Portra',
