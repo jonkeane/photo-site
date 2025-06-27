@@ -1,7 +1,7 @@
 ---
 Title: Iceland on film 2022
-Description: Reykjavík and the Golden Circle in Iceland on film in 2022
-slug: IcelandFilm2017
+Description: Iceland on film in 2022
+slug: IcelandFilm2022
 date: "2022-08-15T00:00:00"
 nanog: true
 image: gallery/3943-010.jpg
