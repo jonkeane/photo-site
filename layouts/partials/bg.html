@@ -37,13 +37,13 @@
 
 {{- $options := dict
     "targetPath" "assets/css/background.css"
-    "enableSourceMap" (not .Site.IsServer)
+    "enableSourceMap" (not hugo.IsServer)
     "vars" $vars
 }}
 
 {{- $style := resources.Get "scss/custom/background.scss" | resources.ExecuteAsTemplate "scss/custom/background.scss" . | toCSS $options -}}
 
-{{- if .Site.IsServer -}}
+{{- if hugo.IsServer -}}
 <link rel="stylesheet" href="{{- ($style).RelPermalink -}}">
 {{- else -}}
 <link rel="stylesheet" href="{{- ($style | minify).RelPermalink -}}">
