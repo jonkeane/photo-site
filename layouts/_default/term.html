@@ -1,4 +1,4 @@
-{{- partial "htmlhead" . -}}
+{{- partial "htmlhead.html" . -}}
 	<body lang='{{- .Site.Language.Lang | default "en-us" -}}' class="is-preload">
 
 		{{- $postsPageSize := .Site.Params.Posts.pagesize | default 6 -}}

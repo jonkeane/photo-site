@@ -9,7 +9,7 @@
  		{{ end -}}
 
         <!-- override theme CSS -->
-		{{- if .Site.IsServer -}}
+		{{- if hugo.IsServer -}}
 		{{- $style := resources.Get "scss/custom/main.scss" | resources.ExecuteAsTemplate "scss/custom/main.scss" . | toCSS (dict "targetPath" "assets/css/custom_main.css" "enableSourceMap" true) -}}
 		<link rel="stylesheet" href="{{ ($style).RelPermalink }}">
 		{{- else -}}
@@ -20,6 +20,6 @@
         {{- partial "bg" . -}}
 		{{- template "_internal/google_analytics.html" . -}}
         <meta name="google-site-verification" content="{{ .Site.Params.meta.googlesiteverification }}" />
-		{{- template "partials/opengraph.html" . -}}
-		{{- template "partials/twitter_cards.html" . -}}
+		{{- partial "opengraph.html" . -}}
+		{{- partial "twitter_cards.html" . -}}
 		<link rel="me" href="https://mastodon.social/@jonkeane" />
