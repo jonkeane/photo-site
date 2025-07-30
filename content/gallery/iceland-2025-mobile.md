@@ -13,3 +13,5 @@ regions: []
 cities: []
 private: true
 ---
+
+These are all from a few mobile devices, but a few selfies — "look it's a glacier!" More to come later, I have 23 rolls of film to develop and digitize.
