@@ -1,0 +1,315 @@
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"flag"
+	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"os"
+	"path/filepath"
+	"regexp"
+	"sort"
+	"strings"
+	"time"
+)
+
+// Minimal, dependency-free Flickr importer that:
+// - Scans content/gallery/* for gallery pages with a flickr_album param
+// - Calls flickr.photosets.getPhotos with rich `extras` once per photoset (with pagination)
+// - Optionally fetches photos.getInfo and photos.getExif (config flags)
+// - Writes raw JSON responses under data/flickr/photosets/{slug}.json
+// - Generates minimal per-image stubs: content/gallery/{slug}/{photo_id}.md
+// - Does NOT download any images; uses remote staticflickr URLs in templates.
+
+// Environment / flags
+//   FLICKR_API_KEY env var or -apikey flag
+//   -onlySet <photoset_id> optional to limit run
+//   -refresh re-fetch even if data exists
+//   -exif fetch exif per photo (default false)
+//   -info fetch photo info per photo (default false)
+//   -timeout http timeout (default 20s)
+
+const (
+	baseAPI = "https://api.flickr.com/services/rest/"
+)
+
+type PhotosetsGetPhotosResp struct {
+	Photoset struct {
+		ID     string `json:"id"`
+		Owner  string `json:"owner"`
+		Photo  []Photo `json:"photo"`
+		Page   json.Number `json:"page"`
+		Pages  json.Number `json:"pages"`
+		PerPage json.Number `json:"perpage"`
+	Total  json.Number `json:"total"`
+	} `json:"photoset"`
+	Stat string `json:"stat"`
+	Message string `json:"message,omitempty"`
+	Code int `json:"code,omitempty"`
+}
+
+type Photo struct {
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	Description struct { _ string `json:"_content"` } `json:"description"`
+	Tags        string `json:"tags"`
+	DateUpload  string `json:"dateupload"`
+	DateTaken   string `json:"datetaken"`
+	OwnerName   string `json:"ownername"`
+	License     string `json:"license"`
+	PathAlias   string `json:"pathalias"`
+	URLSq       string `json:"url_sq"`
+	URLT        string `json:"url_t"`
+	URLS        string `json:"url_s"`
+	URLN        string `json:"url_n"`
+	URLM        string `json:"url_m"`
+	URLZ        string `json:"url_z"`
+	URLC        string `json:"url_c"`
+	URLL        string `json:"url_l"`
+	URLH        string `json:"url_h"`
+	URLK        string `json:"url_k"`
+	URLO        string `json:"url_o"`
+}
+
+type PhotoInfoResp struct {
+	Photo json.RawMessage `json:"photo"`
+	Stat string `json:"stat"`
+}
+
+type PhotoExifResp struct {
+	Photo json.RawMessage `json:"photo"`
+	Stat string `json:"stat"`
+}
+
+type Config struct {
+	APIKey string
+	HTTPTimeout time.Duration
+	FetchInfo bool
+	FetchExif bool
+	OnlySet string
+	Refresh bool
+	ForceSlug string
+	ForceSetID string
+	SkipStubs bool
+}
+
+func main() {
+	cfg := loadConfig()
+	if cfg.APIKey == "" {
+		fmt.Fprintln(os.Stderr, "FLICKR_API_KEY not set; pass -apikey or env var")
+		os.Exit(1)
+	}
+
+	ctx := context.Background()
+	client := &http.Client{Timeout: cfg.HTTPTimeout}
+
+	// Direct mode: fetch a specific set and write to a specific slug.
+	if cfg.ForceSetID != "" {
+		slug := cfg.ForceSlug
+		if slug == "" { slug = cfg.ForceSetID }
+		ps, err := fetchPhotosetAll(ctx, client, cfg.APIKey, cfg.ForceSetID)
+		if err != nil { fatal(err) }
+		if err := writePhotosetJSON(slug, ps); err != nil { fatal(err) }
+		if !cfg.SkipStubs {
+			if err := writeStubs(slug, cfg.ForceSetID, ps.Photoset.Photo); err != nil { fatal(err) }
+		}
+		fmt.Println("Done.")
+		return
+	}
+
+	// Discover galleries by scanning content/gallery for .md with flickr_album
+	galleries, err := findGalleries("content/gallery")
+	if err != nil { fatal(err) }
+	if len(galleries) == 0 { fmt.Println("No galleries found."); return }
+
+	for _, g := range galleries {
+		if cfg.OnlySet != "" && g.PhotosetID != cfg.OnlySet { continue }
+		fmt.Printf("Ingesting photoset %s (%s)\n", g.PhotosetID, g.Slug)
+
+		// Fetch all photos in set with extras
+		ps, err := fetchPhotosetAll(ctx, client, cfg.APIKey, g.PhotosetID)
+		if err != nil { fatal(err) }
+
+		// Optionally enrich with info/exif (kept raw for now)
+		// We keep the base payload as returned by photosets.getPhotos for simplicity.
+
+		// Persist raw JSON for Hugo data consumption
+		if err := writePhotosetJSON(g.Slug, ps); err != nil { fatal(err) }
+
+		// Generate minimal stubs per image
+		if err := writeStubs(g.Slug, g.PhotosetID, ps.Photoset.Photo); err != nil { fatal(err) }
+	}
+
+	fmt.Println("Done.")
+}
+
+func loadConfig() Config {
+	var cfg Config
+	apikey := os.Getenv("FLICKR_API_KEY")
+	flag.StringVar(&apikey, "apikey", apikey, "Flickr API key")
+	flag.DurationVar(&cfg.HTTPTimeout, "timeout", 20*time.Second, "HTTP timeout")
+	flag.BoolVar(&cfg.FetchInfo, "info", false, "Fetch photos.getInfo per photo")
+	flag.BoolVar(&cfg.FetchExif, "exif", false, "Fetch photos.getExif per photo")
+	flag.StringVar(&cfg.OnlySet, "onlySet", "", "Limit to a single photoset id")
+	flag.BoolVar(&cfg.Refresh, "refresh", false, "Re-fetch even if data exists")
+	flag.StringVar(&cfg.ForceSlug, "slug", "", "Explicit slug for writing data (bypass discovery)")
+	flag.StringVar(&cfg.ForceSetID, "set", "", "Explicit photoset id (bypass discovery)")
+	flag.BoolVar(&cfg.SkipStubs, "skipStubs", false, "Do not generate per-photo content stubs")
+	flag.Parse()
+	cfg.APIKey = apikey
+	return cfg
+}
+type Gallery struct {
+	Slug string
+	PhotosetID string
+}
+
+var fmSetRe = regexp.MustCompile(`(?m)^flickr_album:\s*"?([0-9]+)"?`)
+
+func findGalleries(root string) ([]Gallery, error) {
+	var out []Gallery
+	// Strategy:
+	// 1. Prefer _index.md inside a directory (content/gallery/{slug}/_index.md)
+	// 2. Fallback to legacy flat file (content/gallery/{slug}.md)
+	entries, err := os.ReadDir(root)
+	if err != nil { return nil, err }
+	for _, e := range entries {
+		name := e.Name()
+		// Skip top-level index or non-md files
+		if e.IsDir() {
+			// Look for _index.md within directory
+			idx := filepath.Join(root, name, "_index.md")
+			if b, err := os.ReadFile(idx); err == nil {
+				if m := fmSetRe.FindStringSubmatch(string(b)); len(m) == 2 {
+					out = append(out, Gallery{Slug: name, PhotosetID: m[1]})
+					continue
+				}
+			}
+		}
+		// Legacy: flat markdown file named {slug}.md
+		if strings.HasSuffix(name, ".md") && !strings.HasPrefix(name, "_") {
+			path := filepath.Join(root, name)
+			b, err := os.ReadFile(path)
+			if err != nil { continue }
+			if m := fmSetRe.FindStringSubmatch(string(b)); len(m) == 2 {
+				slug := strings.TrimSuffix(name, filepath.Ext(name))
+				out = append(out, Gallery{Slug: slug, PhotosetID: m[1]})
+			}
+		}
+	}
+	return out, nil
+}
+
+func fetchPhotosetAll(ctx context.Context, client *http.Client, apiKey, setID string) (*PhotosetsGetPhotosResp, error) {
+	perPage := 500
+	page := 1
+	var all []Photo
+	var header PhotosetsGetPhotosResp
+	for {
+		resp, err := fetchPhotosetPage(ctx, client, apiKey, setID, page, perPage)
+		if err != nil { return nil, err }
+		if resp.Stat != "ok" {
+			return nil, fmt.Errorf("flickr error: code=%d message=%s", resp.Code, resp.Message)
+		}
+		if page == 1 { header = *resp }
+		all = append(all, resp.Photoset.Photo...)
+		pagesInt, err := resp.Photoset.Pages.Int64()
+		if err != nil {
+			return nil, fmt.Errorf("invalid pages value: %v", err)
+		}
+		if int64(page) >= pagesInt || len(resp.Photoset.Photo) == 0 { break }
+		page++
+		time.Sleep(120 * time.Millisecond) // be polite
+	}
+	header.Photoset.Photo = all
+	return &header, nil
+}
+
+func fetchPhotosetPage(ctx context.Context, client *http.Client, apiKey, setID string, page, perPage int) (*PhotosetsGetPhotosResp, error) {
+	q := url.Values{}
+	q.Set("method", "flickr.photosets.getPhotos")
+	q.Set("api_key", apiKey)
+	q.Set("photoset_id", setID)
+	q.Set("format", "json")
+	q.Set("nojsoncallback", "1")
+	q.Set("page", fmt.Sprintf("%d", page))
+	q.Set("per_page", fmt.Sprintf("%d", perPage))
+	q.Set("extras", strings.Join([]string{
+		"date_upload","date_taken","tags","owner_name","license","path_alias",
+		"url_sq","url_t","url_s","url_n","url_m","url_z","url_c","url_l","url_h","url_k","url_o",
+	}, ","))
+
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, baseAPI+"?"+q.Encode(), nil)
+	res, err := client.Do(req)
+	if err != nil { return nil, err }
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		b, _ := io.ReadAll(res.Body)
+		return nil, fmt.Errorf("http %d: %s", res.StatusCode, string(b))
+	}
+	var data PhotosetsGetPhotosResp
+	dec := json.NewDecoder(res.Body)
+	if err := dec.Decode(&data); err != nil { return nil, err }
+	return &data, nil
+}
+
+func writePhotosetJSON(slug string, ps *PhotosetsGetPhotosResp) error {
+	dir := filepath.Join("data", "flickr", "photosets")
+	if err := os.MkdirAll(dir, 0o755); err != nil { return err }
+	path := filepath.Join(dir, slug+".json")
+	b, err := json.MarshalIndent(ps, "", "  ")
+	if err != nil { return err }
+	return os.WriteFile(path, b, 0o644)
+}
+
+func writeStubs(slug, setID string, photos []Photo) error {
+	// Ensure content/gallery/{slug}/ exists; if slug points to a file like "iceland-2022", we want that as a folder.
+	dir := filepath.Join("content", "gallery", slug)
+	if err := os.MkdirAll(dir, 0o755); err != nil { return err }
+	// Sort photos by taken date if present; fallback to ID for stability.
+	sort.SliceStable(photos, func(i, j int) bool {
+		if photos[i].DateTaken != "" && photos[j].DateTaken != "" {
+			return photos[i].DateTaken < photos[j].DateTaken
+		}
+		return photos[i].ID < photos[j].ID
+	})
+	for _, p := range photos {
+		stub := filepath.Join(dir, p.ID+".md")
+		if _, err := os.Stat(stub); err == nil { continue } // don’t overwrite
+		fm := fmt.Sprintf(`---
+Title: %q
+slug: %s
+gallery_slug: %s
+type: gallery
+layout: single
+flickr_id: %q
+flickr_album: %s
+# date from datetaken if provided; Hugo accepts string
+Date: %q
+---
+`, safeTitle(p.Title), p.ID, slug, p.ID, setID, p.DateTaken)
+		if err := os.WriteFile(stub, []byte(fm), 0o644); err != nil { return err }
+	}
+	return nil
+}
+
+func safeTitle(s string) string {
+	s = strings.TrimSpace(s)
+	if s == "" { return "Untitled" }
+	return s
+}
+
+func fatal(err error) {
+	if err == nil { return }
+	var e *url.Error
+	if errors.As(err, &e) {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", e)
+	} else {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	os.Exit(1)
+}

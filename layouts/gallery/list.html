@@ -30,8 +30,22 @@
     			{{- partial "header" . -}}
 				{{- partial "nav" . -}}
 
-					<div id="main">
-					    {{ .Content }}
+				<div id="main">
+					{{ .Content }}
+
+					{{/* If this section corresponds to a Flickr photoset, render a thumbnail grid. */}}
+					{{ $slug := "" }}
+					{{ with .File }}
+					{{ $slug = .BaseFileName }}
+					{{ if or (eq $slug "index") (eq $slug "_index") }}
+					{{ $slug = (path.Base (trim (replaceRE "^content/gallery/" "" .Dir) "/")) }}
+					{{ end }}
+					{{ end }}
+					{{ $ps := index site.Data.flickr.photosets $slug }}
+					{{ if $ps }}
+					{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photoset" $ps "Slug" $slug) }}
+					{{/* Skip legacy posts list if we have a photoset */}}
+					{{ else }}
 
 						{{- if and (eq $postsFeaturedPostEnabled true) (eq .Paginator.PageNumber 1) -}}
 						{{- partial "gallerys/featured.html" (dict "firstpost" $firstPost "no_dates" $no_dates "siteData" (index .Site.Data .Site.Language.Lang)) -}}
@@ -40,6 +54,7 @@
 						{{- if (not (and (eq (len $posts) 1) (eq $postsFeaturedPostEnabled true))) -}}
 							{{- partial "gallerys/list.html" (dict "posts" $postsPaging "no_dates" $no_dates "siteData" (index .Site.Data .Site.Language.Lang)) -}}
 						{{- end -}}
+						{{ end }}
 
 						{{- $paginator := .Paginator -}}
 						{{- $outer := . -}}

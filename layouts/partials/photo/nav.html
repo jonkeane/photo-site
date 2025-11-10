@@ -1,0 +1,28 @@
+{{/* Navigation partial: expects dict with Page, Photos, Current */}}
+{{ $page := .Page }}
+{{ $photos := .Photos }}
+{{ $current := .Current }}
+{{/* Determine ordering as given in the JSON (already sorted during stub generation) */}}
+{{ $ids := slice }}
+{{ range $photos }}{{ $ids = $ids | append .id }}{{ end }}
+{{ $idx := -1 }}
+{{ range $i, $id := $ids }}{{ if eq $id $current.id }}{{ $idx = $i }}{{ end }}{{ end }}
+{{ if ge $idx 0 }}
+<nav class="photo-nav">
+  <ul>
+    <li>
+    {{ if gt $idx 0 }}
+      {{ $prevID := index $ids (sub $idx 1) }}
+      <a href="{{ printf "%s%s/" $page.CurrentSection.Permalink $prevID }}" rel="prev">← Prev</a>
+    {{ end }}
+    </li>
+    <li><a href="{{ $page.CurrentSection.Permalink }}">Gallery Index</a></li>
+    <li>
+    {{ if lt $idx (sub (len $ids) 1) }}
+      {{ $nextID := index $ids (add $idx 1) }}
+      <a href="{{ printf "%s%s/" $page.CurrentSection.Permalink $nextID }}" rel="next">Next →</a>
+    {{ end }}
+    </li>
+  </ul>
+</nav>
+{{ end }}

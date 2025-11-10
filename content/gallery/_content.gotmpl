@@ -1,0 +1,43 @@
+{{/*
+Fully dynamic content adapter: generate one page per Flickr photo
+from all photoset JSON data files in site.Data.flickr.photosets.
+
+Constraints:
+- No image downloading; pages embed remote Flickr CDN URLs.
+- Reuse existing gallery single layout (type: gallery, layout: single).
+*/}}
+
+{{ $photosets := site.Data.flickr.photosets }}
+{{ if not $photosets }}
+  {{ warnf "gallery adapter: no photosets found in site.Data.flickr.photosets" }}
+{{ else }}
+  {{ range $slug, $ps := $photosets }}
+    {{ if not ($ps.photoset.photo) }}
+      {{ warnf "gallery adapter: photoset %q missing photo array" $slug }}
+    {{ else }}
+      {{ $setID := $ps.photoset.id }}
+      {{ range $p := $ps.photoset.photo }}
+        {{ $fid := string $p.id }}
+        {{ $content := dict "mediaType" "text/markdown" "value" "" }}
+        {{ $dates := dict }}
+        {{ with $p.datetaken }}{{ $dates = dict "date" (time.AsTime .) }}{{ end }}
+        {{ $params := dict
+            "flickr_id" $fid
+            "flickr_album" $setID
+            "gallery_slug" $slug
+          }}
+        {{ $page := dict
+            "content" $content
+            "dates" $dates
+            "kind" "page"
+            "path" (printf "%s/%s" $slug $fid)
+            "title" ($p.title | default (printf "Photo %s" $fid))
+            "type" "gallery"
+            "layout" "single"
+            "params" $params
+          }}
+        {{ $.AddPage $page }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}

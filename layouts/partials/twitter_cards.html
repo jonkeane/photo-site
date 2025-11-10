@@ -4,8 +4,10 @@
 <!-- Specifically to grab that (resized) gallery images -->
 <meta name="twitter:card" content="summary_large_image"/>
 {{ $image := resources.Get . }}
+{{ if $image }}
 {{ $x1200x := $image.Resize "1200x" }}
 <meta name="twitter:image" content="{{ $x1200x.RelPermalink | absURL }}"/>
+{{ end }}
 {{- else -}}
 {{- with $.Params.images -}}
 <meta name="twitter:card" content="summary_large_image"/>

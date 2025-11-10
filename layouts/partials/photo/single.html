@@ -1,0 +1,40 @@
+{{/* Partial for individual photo rendering - expects page context with flickr_id, flickr_album, and gallery_slug */}}
+{{ $fid := .Params.flickr_id | string }}
+{{ $album := .Params.flickr_album }}
+{{ $slug := .Params.gallery_slug }}
+{{ $ps := index site.Data.flickr.photosets $slug }}
+{{ if not $ps }}
+  <section class="page">
+  <p>Metadata not found for photoset (photoset key: {{ $slug }}).</p>
+  </section>
+{{ else }}
+  {{/* Find photo object by ID */}}
+  {{ $photos := $ps.photoset.photo }}
+  {{ $filtered := where $photos "id" $fid }}
+  {{ $photo := index $filtered 0 }}
+  {{ if not $photo }}
+    <section class="page">
+    <p>Photo {{ $fid }} not in dataset.</p>
+    </section>
+  {{ else }}
+  <section class="page">
+  <a href=".." class="button", id="galleryBackBtn">back to gallery</a>
+  <article class="photo-single">
+    <header class="major">
+      <h1>{{ or .Title $photo.title }}</h1>
+    </header>
+    {{/* Size preference chain */}}
+    {{ $url := or $photo.url_h $photo.url_k $photo.url_l $photo.url_c $photo.url_z $photo.url_m $photo.url_o $photo.url_sq }}
+    <figure>
+      <img src="{{ $url }}" alt="{{ or $photo.title (printf "Photo %s" $fid) }}" loading="eager"/>
+      {{ if $photo.description._content }}
+      <figcaption>{{ $photo.description._content | safeHTML }}</figcaption>
+      {{ end }}
+    </figure>
+    {{ partial "photo/exif" (dict "Photo" $photo) }}
+    {{ partial "photo/nav" (dict "Page" . "Photos" $photos "Current" $photo) }}
+  </article>
+  <a href=".." class="button" id="galleryBackBtnBtm">back to gallery</a>
+  </section>
+  {{ end }}
+{{ end }}

@@ -1,0 +1,14 @@
+{{/* EXIF partial - expects dict Photo */}}
+{{ $p := .Photo }}
+{{/* Raw photosets.getPhotos doesn't include EXIF fields unless later extended; placeholder logic */}}
+{{ if or $p.dateupload $p.datetaken $p.ownername }}
+<div class="photo-meta">
+  <ul>
+    {{ if $p.datetaken }}<li>Taken: {{ $p.datetaken }}</li>{{ end }}
+    {{ if $p.dateupload }}<li>Uploaded: {{ $p.dateupload }}</li>{{ end }}
+    {{ if $p.ownername }}<li>By: {{ $p.ownername }}</li>{{ end }}
+    {{ if $p.license }}<li>License: {{ $p.license }}</li>{{ end }}
+    {{ if $p.tags }}<li>Tags: {{ range $i, $t := (split $p.tags " ") }}{{ if $t }}<span class="tag">#{{ $t }}</span>{{ end }}{{ end }}</li>{{ end }}
+  </ul>
+</div>
+{{ end }}
