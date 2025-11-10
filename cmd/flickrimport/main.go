@@ -184,7 +184,7 @@ func main() {
 		for i := range ps.Photoset.Photo {
 			photo := &ps.Photoset.Photo[i]
 			oldDate, exists := oldPhotos[photo.ID]
-			if exists && oldDate == photo.DateUpload && oldExif[photo.ID] != nil && len(oldTags[photo.ID]) > 0 {
+			if exists && oldDate == photo.DateUpload && oldExif[photo.ID] != nil {
 				// No change, reuse old EXIF and tags
 				photo.Exif = oldExif[photo.ID]
 				photo.Tags = oldTags[photo.ID]
