@@ -18,8 +18,8 @@ Constraints:
       {{ $setID := $ps.photoset.id }}
       {{ range $p := $ps.photoset.photo }}
         {{ $fid := string $p.id }}
-        {{ $tags := (split $p.tags " ") }}
-        {{ if not (in $tags "nogallery") }}
+  {{ $tags := $p.tags }}
+  {{ if not (in $tags "nogallery") }}
           {{ $content := dict "mediaType" "text/markdown" "value" "" }}
           {{ $dates := dict }}
           {{ with $p.datetaken }}{{ $dates = dict "date" (time.AsTime .) }}{{ end }}

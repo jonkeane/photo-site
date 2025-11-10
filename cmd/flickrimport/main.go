@@ -60,7 +60,7 @@ type Photo struct {
 	Description struct {
 		_ string `json:"_content"`
 	} `json:"description"`
-	Tags       string           `json:"tags"`
+	Tags       []string         `json:"tags"`
 	DateUpload string           `json:"dateupload"`
 	DateTaken  string           `json:"datetaken"`
 	OwnerName  string           `json:"ownername"`
@@ -159,10 +159,10 @@ func main() {
 		jsonPath := filepath.Join("data", "flickr", "photosets", g.Slug+".json")
 		var oldPhotos map[string]string // photoID -> dateupload
 		var oldExif map[string]*PhotoExifFields
-		var oldTags map[string]string // photoID -> tags
+		var oldTags map[string][]string // photoID -> tags
 		oldPhotos = make(map[string]string)
 		oldExif = make(map[string]*PhotoExifFields)
-		oldTags = make(map[string]string)
+		oldTags = make(map[string][]string)
 		if _, err := os.Stat(jsonPath); err == nil {
 			// JSON exists, load it
 			b, err := os.ReadFile(jsonPath)
@@ -184,7 +184,7 @@ func main() {
 		for i := range ps.Photoset.Photo {
 			photo := &ps.Photoset.Photo[i]
 			oldDate, exists := oldPhotos[photo.ID]
-			if exists && oldDate == photo.DateUpload && oldExif[photo.ID] != nil && oldTags[photo.ID] != "" {
+			if exists && oldDate == photo.DateUpload && oldExif[photo.ID] != nil && len(oldTags[photo.ID]) > 0 {
 				// No change, reuse old EXIF and tags
 				photo.Exif = oldExif[photo.ID]
 				photo.Tags = oldTags[photo.ID]
@@ -204,8 +204,7 @@ func main() {
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Warning: failed to fetch info for photo %s: %v\n", photo.ID, err)
 			} else {
-				tags := extractTagsFromInfo(infoRaw)
-				photo.Tags = tags
+				photo.Tags = extractTagsFromInfo(infoRaw)
 			}
 			time.Sleep(120 * time.Millisecond) // be polite
 		}
@@ -318,7 +317,7 @@ func fetchPhotosetPage(ctx context.Context, client *http.Client, apiKey, setID s
 	q.Set("page", fmt.Sprintf("%d", page))
 	q.Set("per_page", fmt.Sprintf("%d", perPage))
 	q.Set("extras", strings.Join([]string{
-		"date_upload", "date_taken", "tags", "owner_name", "license", "path_alias", "last_update",
+		"date_upload", "date_taken", "owner_name", "license", "path_alias", "last_update",
 		"url_sq", "url_t", "url_s", "url_n", "url_m", "url_z", "url_c", "url_l", "url_h", "url_k", "url_o",
 	}, ","))
 
@@ -417,7 +416,7 @@ func fetchPhotoInfo(ctx context.Context, client *http.Client, apiKey, photoID st
 }
 
 // Extract tags from photo info JSON
-func extractTagsFromInfo(raw json.RawMessage) string {
+func extractTagsFromInfo(raw json.RawMessage) []string {
 	var parsed struct {
 		Tags struct {
 			Tag []struct {
@@ -426,13 +425,13 @@ func extractTagsFromInfo(raw json.RawMessage) string {
 		} `json:"tags"`
 	}
 	if err := json.Unmarshal(raw, &parsed); err != nil {
-		return ""
+		return nil
 	}
 	var tags []string
 	for _, t := range parsed.Tags.Tag {
 		tags = append(tags, t.Raw)
 	}
-	return strings.Join(tags, " ")
+	return tags
 }
 
 // Extract only the requested EXIF fields from the raw JSON
