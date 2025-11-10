@@ -14,9 +14,11 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/cenkalti/backoff/v5"
 )
 
-// Minimal, dependency-free Flickr importer that:
+// Minimal, dependency-light Flickr importer that:
 // - Scans content/gallery/* for gallery pages with a flickr_album param
 // - Calls flickr.photosets.getPhotos with rich `extras` once per photoset (with pagination)
 // - Optionally fetches photos.getExif (config flags)
@@ -34,9 +36,31 @@ const (
 	baseAPI = "https://api.flickr.com/services/rest/"
 )
 
-// Fetch photo info (for accurate tags)
+// doRequestWithBackoff performs an HTTP request with exponential backoff on 429 and transient errors.
+func doRequestWithBackoff(client *http.Client, req *http.Request) (*http.Response, error) {
+	operation := func() (*http.Response, error) {
+		r, err := client.Do(req)
+		if err != nil {
+			return nil, err
+		}
+		// Retry on 429 Too Many Requests
+		if r.StatusCode == http.StatusTooManyRequests {
+			r.Body.Close()
+			return nil, backoff.Permanent(fmt.Errorf("http 429: too many requests"))
+		}
+		// Retry on 5xx errors (except 501 Not Implemented)
+		if r.StatusCode >= 500 && r.StatusCode != http.StatusNotImplemented {
+			r.Body.Close()
+			return nil, fmt.Errorf("http %d: server error", r.StatusCode)
+		}
+		return r, nil
+	}
 
-// Extract tags from photo info JSON
+	b := backoff.NewExponentialBackOff()
+	ctx := context.Background()
+	resp, err := backoff.Retry(ctx, operation, backoff.WithBackOff(b), backoff.WithMaxElapsedTime(30*time.Second))
+	return resp, err
+}
 
 type PhotosetsGetPhotosResp struct {
 	Photoset struct {
@@ -322,7 +346,7 @@ func fetchPhotosetPage(ctx context.Context, client *http.Client, apiKey, setID s
 	}, ","))
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, baseAPI+"?"+q.Encode(), nil)
-	res, err := client.Do(req)
+	res, err := doRequestWithBackoff(client, req)
 	if err != nil {
 		return nil, err
 	}
@@ -362,7 +386,7 @@ func fetchPhotoExif(ctx context.Context, client *http.Client, apiKey, photoID st
 	q.Set("nojsoncallback", "1")
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, baseAPI+"?"+q.Encode(), nil)
-	res, err := client.Do(req)
+	res, err := doRequestWithBackoff(client, req)
 	if err != nil {
 		return nil, err
 	}
@@ -392,7 +416,7 @@ func fetchPhotoInfo(ctx context.Context, client *http.Client, apiKey, photoID st
 	q.Set("nojsoncallback", "1")
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, baseAPI+"?"+q.Encode(), nil)
-	res, err := client.Do(req)
+	res, err := doRequestWithBackoff(client, req)
 	if err != nil {
 		return nil, err
 	}

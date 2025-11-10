@@ -1,3 +1,5 @@
+github.com/cenkalti/backoff/v5 v5.0.3 h1:ZN+IMa753KfX5hd8vVaMixjnqRZ3y8CuJKRKj1xcsSM=
+github.com/cenkalti/backoff/v5 v5.0.3/go.mod h1:rkhZdG3JZukswDf7f0cwqPNk4K0sa+F97BxZthm/crw=
 github.com/curtiscde/hugo-theme-massively v6.7.0+incompatible h1:frygJNP8dBwIsjZSzUMtNOu6MNSiL13M73BvsVWW6eI=
 github.com/curtiscde/hugo-theme-massively v6.7.0+incompatible/go.mod h1:DOftslpILieqXeMMJv0kPliwlTGVJwBZJ6JUIYU92wo=
 github.com/curtiscde/hugo-theme-massively v6.7.1-0.20250307083046-ef8edc4d9a3c+incompatible h1:vrDmj/CB2uqxKbIyDkmOiuSRSWRIdZtOBzZoKWM2Tlw=
