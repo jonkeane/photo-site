@@ -19,7 +19,7 @@ import (
 // Minimal, dependency-free Flickr importer that:
 // - Scans content/gallery/* for gallery pages with a flickr_album param
 // - Calls flickr.photosets.getPhotos with rich `extras` once per photoset (with pagination)
-// - Optionally fetches photos.getInfo and photos.getExif (config flags)
+// - Optionally fetches photos.getExif (config flags)
 // - Writes raw JSON responses under data/flickr/photosets/{slug}.json
 // - Does NOT generate per-image markdown stubs.
 // - Does NOT download any images; uses remote staticflickr URLs in templates.
@@ -27,9 +27,7 @@ import (
 // Environment / flags
 //   FLICKR_API_KEY env var or -apikey flag
 //   -onlySet <photoset_id> optional to limit run
-//   -refresh re-fetch even if data exists
-//   -exif fetch exif per photo (default false)
-//   -info fetch photo info per photo (default false)
+//   (always fetch exif per photo)
 //   -timeout http timeout (default 20s)
 
 const (
@@ -46,9 +44,10 @@ type PhotosetsGetPhotosResp struct {
 		PerPage json.Number `json:"perpage"`
 		Total   json.Number `json:"total"`
 	} `json:"photoset"`
-	Stat    string `json:"stat"`
-	Message string `json:"message,omitempty"`
-	Code    int    `json:"code,omitempty"`
+	Stat    string                     `json:"stat"`
+	Message string                     `json:"message,omitempty"`
+	Code    int                        `json:"code,omitempty"`
+	Exif    map[string]json.RawMessage `json:"exif,omitempty"`
 }
 
 type Photo struct {
@@ -57,28 +56,37 @@ type Photo struct {
 	Description struct {
 		_ string `json:"_content"`
 	} `json:"description"`
-	Tags       string `json:"tags"`
-	DateUpload string `json:"dateupload"`
-	DateTaken  string `json:"datetaken"`
-	OwnerName  string `json:"ownername"`
-	License    string `json:"license"`
-	PathAlias  string `json:"pathalias"`
-	URLSq      string `json:"url_sq"`
-	URLT       string `json:"url_t"`
-	URLS       string `json:"url_s"`
-	URLN       string `json:"url_n"`
-	URLM       string `json:"url_m"`
-	URLZ       string `json:"url_z"`
-	URLC       string `json:"url_c"`
-	URLL       string `json:"url_l"`
-	URLH       string `json:"url_h"`
-	URLK       string `json:"url_k"`
-	URLO       string `json:"url_o"`
+	Tags       string           `json:"tags"`
+	DateUpload string           `json:"dateupload"`
+	DateTaken  string           `json:"datetaken"`
+	OwnerName  string           `json:"ownername"`
+	License    string           `json:"license"`
+	PathAlias  string           `json:"pathalias"`
+	URLSq      string           `json:"url_sq"`
+	URLT       string           `json:"url_t"`
+	URLS       string           `json:"url_s"`
+	URLN       string           `json:"url_n"`
+	URLM       string           `json:"url_m"`
+	URLZ       string           `json:"url_z"`
+	URLC       string           `json:"url_c"`
+	URLL       string           `json:"url_l"`
+	URLH       string           `json:"url_h"`
+	URLK       string           `json:"url_k"`
+	URLO       string           `json:"url_o"`
+	LastUpdate string           `json:"last_update"`
+	Exif       *PhotoExifFields `json:"exif,omitempty"`
 }
 
-type PhotoInfoResp struct {
-	Photo json.RawMessage `json:"photo"`
-	Stat  string          `json:"stat"`
+type PhotoExifFields struct {
+	Model       string `json:"model,omitempty"`
+	Lens        string `json:"lens,omitempty"`
+	Flash       string `json:"flash,omitempty"`
+	FocalLength string `json:"focallength,omitempty"`
+	FStop       string `json:"fstop,omitempty"`
+	Exposure    string `json:"exposure,omitempty"`
+	ISO         string `json:"iso,omitempty"`
+	Time        string `json:"time,omitempty"`
+	Location    string `json:"location,omitempty"`
 }
 
 type PhotoExifResp struct {
@@ -90,9 +98,7 @@ type Config struct {
 	APIKey      string
 	HTTPTimeout time.Duration
 	FetchInfo   bool
-	FetchExif   bool
 	OnlySet     string
-	Refresh     bool
 	ForceSlug   string
 	ForceSetID  string
 }
@@ -146,14 +152,51 @@ func main() {
 			fatal(err)
 		}
 
-		// Optionally enrich with info/exif (kept raw for now)
-		// We keep the base payload as returned by photosets.getPhotos for simplicity.
+		// Detector: check for existing JSON and compare dateupload
+		jsonPath := filepath.Join("data", "flickr", "photosets", g.Slug+".json")
+		var oldPhotos map[string]string // photoID -> dateupload
+		var oldExif map[string]*PhotoExifFields
+		oldPhotos = make(map[string]string)
+		oldExif = make(map[string]*PhotoExifFields)
+		if _, err := os.Stat(jsonPath); err == nil {
+			// JSON exists, load it
+			b, err := os.ReadFile(jsonPath)
+			if err == nil {
+				var oldData PhotosetsGetPhotosResp
+				if err := json.Unmarshal(b, &oldData); err == nil {
+					for _, p := range oldData.Photoset.Photo {
+						oldPhotos[p.ID] = p.DateUpload
+						if p.Exif != nil {
+							oldExif[p.ID] = p.Exif
+						}
+					}
+				}
+			}
+		}
+
+		// Only fetch EXIF for new/updated photos
+		for i := range ps.Photoset.Photo {
+			photo := &ps.Photoset.Photo[i]
+			oldDate, exists := oldPhotos[photo.ID]
+			if exists && oldDate == photo.DateUpload && oldExif[photo.ID] != nil {
+				// No change, reuse old EXIF
+				photo.Exif = oldExif[photo.ID]
+				continue
+			}
+			exifRaw, err := fetchPhotoExif(ctx, client, cfg.APIKey, photo.ID)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Warning: failed to fetch exif for photo %s: %v\n", photo.ID, err)
+				continue
+			}
+			exifFields := extractExifFields(exifRaw)
+			photo.Exif = exifFields
+			time.Sleep(120 * time.Millisecond) // be polite
+		}
 
 		// Persist raw JSON for Hugo data consumption
 		if err := writePhotosetJSON(g.Slug, ps); err != nil {
 			fatal(err)
 		}
-
 	}
 
 	fmt.Println("Done.")
@@ -165,9 +208,7 @@ func loadConfig() Config {
 	flag.StringVar(&apikey, "apikey", apikey, "Flickr API key")
 	flag.DurationVar(&cfg.HTTPTimeout, "timeout", 20*time.Second, "HTTP timeout")
 	flag.BoolVar(&cfg.FetchInfo, "info", false, "Fetch photos.getInfo per photo")
-	flag.BoolVar(&cfg.FetchExif, "exif", false, "Fetch photos.getExif per photo")
 	flag.StringVar(&cfg.OnlySet, "onlySet", "", "Limit to a single photoset id")
-	flag.BoolVar(&cfg.Refresh, "refresh", false, "Re-fetch even if data exists")
 	flag.StringVar(&cfg.ForceSlug, "slug", "", "Explicit slug for writing data (bypass discovery)")
 	flag.StringVar(&cfg.ForceSetID, "set", "", "Explicit photoset id (bypass discovery)")
 	flag.Parse()
@@ -261,7 +302,7 @@ func fetchPhotosetPage(ctx context.Context, client *http.Client, apiKey, setID s
 	q.Set("page", fmt.Sprintf("%d", page))
 	q.Set("per_page", fmt.Sprintf("%d", perPage))
 	q.Set("extras", strings.Join([]string{
-		"date_upload", "date_taken", "tags", "owner_name", "license", "path_alias",
+		"date_upload", "date_taken", "tags", "owner_name", "license", "path_alias", "last_update",
 		"url_sq", "url_t", "url_s", "url_n", "url_m", "url_z", "url_c", "url_l", "url_h", "url_k", "url_o",
 	}, ","))
 
@@ -296,7 +337,84 @@ func writePhotosetJSON(slug string, ps *PhotosetsGetPhotosResp) error {
 	return os.WriteFile(path, b, 0o644)
 }
 
-// Note: per-photo markdown stub generation has been removed by request.
+// Fetch EXIF data for a photo
+func fetchPhotoExif(ctx context.Context, client *http.Client, apiKey, photoID string) (json.RawMessage, error) {
+	q := url.Values{}
+	q.Set("method", "flickr.photos.getExif")
+	q.Set("api_key", apiKey)
+	q.Set("photo_id", photoID)
+	q.Set("format", "json")
+	q.Set("nojsoncallback", "1")
+
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, baseAPI+"?"+q.Encode(), nil)
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		b, _ := io.ReadAll(res.Body)
+		return nil, fmt.Errorf("http %d: %s", res.StatusCode, string(b))
+	}
+	var data PhotoExifResp
+	dec := json.NewDecoder(res.Body)
+	if err := dec.Decode(&data); err != nil {
+		return nil, err
+	}
+	if data.Stat != "ok" {
+		return nil, fmt.Errorf("flickr error: %s", data.Stat)
+	}
+	return data.Photo, nil
+}
+
+// Extract only the requested EXIF fields from the raw JSON
+func extractExifFields(raw json.RawMessage) *PhotoExifFields {
+	var parsed struct {
+		Camera string `json:"camera"`
+		Exif   []struct {
+			Tag string `json:"tag"`
+			Raw struct {
+				Content string `json:"_content"`
+			} `json:"raw"`
+			Cleaned struct {
+				Content string `json:"_content"`
+			} `json:"clean"`
+		} `json:"exif"`
+	}
+	if err := json.Unmarshal(raw, &parsed); err != nil {
+		return nil
+	}
+	fields := &PhotoExifFields{}
+	if parsed.Camera != "" {
+		fields.Model = parsed.Camera
+	}
+	for _, e := range parsed.Exif {
+		raw_val := e.Raw.Content
+		cleaned_val := e.Cleaned.Content
+		if cleaned_val == "" {
+			cleaned_val = raw_val
+		}
+		switch e.Tag {
+		case "LensModel":
+			fields.Lens = cleaned_val
+		case "Flash":
+			fields.Flash = cleaned_val
+		case "FocalLength":
+			fields.FocalLength = cleaned_val
+		case "FNumber":
+			fields.FStop = cleaned_val
+		case "ExposureTime":
+			fields.Exposure = raw_val
+		case "ISO":
+			fields.ISO = cleaned_val
+		case "DateTimeOriginal":
+			fields.Time = cleaned_val
+		case "LOLcation":
+			fields.Location = cleaned_val
+		}
+	}
+	return fields
+}
 
 func safeTitle(s string) string {
 	s = strings.TrimSpace(s)
