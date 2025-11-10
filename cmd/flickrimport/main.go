@@ -34,6 +34,10 @@ const (
 	baseAPI = "https://api.flickr.com/services/rest/"
 )
 
+// Fetch photo info (for accurate tags)
+
+// Extract tags from photo info JSON
+
 type PhotosetsGetPhotosResp struct {
 	Photoset struct {
 		ID      string      `json:"id"`
@@ -97,7 +101,6 @@ type PhotoExifResp struct {
 type Config struct {
 	APIKey      string
 	HTTPTimeout time.Duration
-	FetchInfo   bool
 	OnlySet     string
 	ForceSlug   string
 	ForceSetID  string
@@ -156,8 +159,10 @@ func main() {
 		jsonPath := filepath.Join("data", "flickr", "photosets", g.Slug+".json")
 		var oldPhotos map[string]string // photoID -> dateupload
 		var oldExif map[string]*PhotoExifFields
+		var oldTags map[string]string // photoID -> tags
 		oldPhotos = make(map[string]string)
 		oldExif = make(map[string]*PhotoExifFields)
+		oldTags = make(map[string]string)
 		if _, err := os.Stat(jsonPath); err == nil {
 			// JSON exists, load it
 			b, err := os.ReadFile(jsonPath)
@@ -169,20 +174,23 @@ func main() {
 						if p.Exif != nil {
 							oldExif[p.ID] = p.Exif
 						}
+						oldTags[p.ID] = p.Tags
 					}
 				}
 			}
 		}
 
-		// Only fetch EXIF for new/updated photos
+		// Only fetch EXIF and tags for new/updated photos
 		for i := range ps.Photoset.Photo {
 			photo := &ps.Photoset.Photo[i]
 			oldDate, exists := oldPhotos[photo.ID]
-			if exists && oldDate == photo.DateUpload && oldExif[photo.ID] != nil {
-				// No change, reuse old EXIF
+			if exists && oldDate == photo.DateUpload && oldExif[photo.ID] != nil && oldTags[photo.ID] != "" {
+				// No change, reuse old EXIF and tags
 				photo.Exif = oldExif[photo.ID]
+				photo.Tags = oldTags[photo.ID]
 				continue
 			}
+			// Fetch EXIF
 			exifRaw, err := fetchPhotoExif(ctx, client, cfg.APIKey, photo.ID)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Warning: failed to fetch exif for photo %s: %v\n", photo.ID, err)
@@ -190,6 +198,15 @@ func main() {
 			}
 			exifFields := extractExifFields(exifRaw)
 			photo.Exif = exifFields
+
+			// Fetch accurate tags
+			infoRaw, err := fetchPhotoInfo(ctx, client, cfg.APIKey, photo.ID)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Warning: failed to fetch info for photo %s: %v\n", photo.ID, err)
+			} else {
+				tags := extractTagsFromInfo(infoRaw)
+				photo.Tags = tags
+			}
 			time.Sleep(120 * time.Millisecond) // be polite
 		}
 
@@ -207,7 +224,6 @@ func loadConfig() Config {
 	apikey := os.Getenv("FLICKR_API_KEY")
 	flag.StringVar(&apikey, "apikey", apikey, "Flickr API key")
 	flag.DurationVar(&cfg.HTTPTimeout, "timeout", 20*time.Second, "HTTP timeout")
-	flag.BoolVar(&cfg.FetchInfo, "info", false, "Fetch photos.getInfo per photo")
 	flag.StringVar(&cfg.OnlySet, "onlySet", "", "Limit to a single photoset id")
 	flag.StringVar(&cfg.ForceSlug, "slug", "", "Explicit slug for writing data (bypass discovery)")
 	flag.StringVar(&cfg.ForceSetID, "set", "", "Explicit photoset id (bypass discovery)")
@@ -365,6 +381,58 @@ func fetchPhotoExif(ctx context.Context, client *http.Client, apiKey, photoID st
 		return nil, fmt.Errorf("flickr error: %s", data.Stat)
 	}
 	return data.Photo, nil
+}
+
+// Fetch photo info (for accurate tags)
+func fetchPhotoInfo(ctx context.Context, client *http.Client, apiKey, photoID string) (json.RawMessage, error) {
+	q := url.Values{}
+	q.Set("method", "flickr.photos.getInfo")
+	q.Set("api_key", apiKey)
+	q.Set("photo_id", photoID)
+	q.Set("format", "json")
+	q.Set("nojsoncallback", "1")
+
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, baseAPI+"?"+q.Encode(), nil)
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		b, _ := io.ReadAll(res.Body)
+		return nil, fmt.Errorf("http %d: %s", res.StatusCode, string(b))
+	}
+	var data struct {
+		Photo json.RawMessage `json:"photo"`
+		Stat  string          `json:"stat"`
+	}
+	dec := json.NewDecoder(res.Body)
+	if err := dec.Decode(&data); err != nil {
+		return nil, err
+	}
+	if data.Stat != "ok" {
+		return nil, fmt.Errorf("flickr error: %s", data.Stat)
+	}
+	return data.Photo, nil
+}
+
+// Extract tags from photo info JSON
+func extractTagsFromInfo(raw json.RawMessage) string {
+	var parsed struct {
+		Tags struct {
+			Tag []struct {
+				Raw string `json:"raw"`
+			} `json:"tag"`
+		} `json:"tags"`
+	}
+	if err := json.Unmarshal(raw, &parsed); err != nil {
+		return ""
+	}
+	var tags []string
+	for _, t := range parsed.Tags.Tag {
+		tags = append(tags, t.Raw)
+	}
+	return strings.Join(tags, " ")
 }
 
 // Extract only the requested EXIF fields from the raw JSON

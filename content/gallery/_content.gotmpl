@@ -18,25 +18,29 @@ Constraints:
       {{ $setID := $ps.photoset.id }}
       {{ range $p := $ps.photoset.photo }}
         {{ $fid := string $p.id }}
-        {{ $content := dict "mediaType" "text/markdown" "value" "" }}
-        {{ $dates := dict }}
-        {{ with $p.datetaken }}{{ $dates = dict "date" (time.AsTime .) }}{{ end }}
-        {{ $params := dict
-            "flickr_id" $fid
-            "flickr_album" $setID
-            "gallery_slug" $slug
-          }}
-        {{ $page := dict
-            "content" $content
-            "dates" $dates
-            "kind" "page"
-            "path" (printf "%s/%s" $slug $fid)
-            "title" ($p.title | default (printf "Photo %s" $fid))
-            "type" "gallery"
-            "layout" "single"
-            "params" $params
-          }}
-        {{ $.AddPage $page }}
+        {{ $tags := (split $p.tags " ") }}
+        {{ if not (in $tags "nogallery") }}
+          {{ $content := dict "mediaType" "text/markdown" "value" "" }}
+          {{ $dates := dict }}
+          {{ with $p.datetaken }}{{ $dates = dict "date" (time.AsTime .) }}{{ end }}
+          {{ $params := dict
+              "flickr_id" $fid
+              "flickr_album" $setID
+              "gallery_slug" $slug
+              "tags" $tags
+            }}
+          {{ $page := dict
+              "content" $content
+              "dates" $dates
+              "kind" "page"
+              "path" (printf "%s/%s" $slug $fid)
+              "title" ($p.title | default (printf "Photo %s" $fid))
+              "type" "gallery"
+              "layout" "single"
+              "params" $params
+            }}
+          {{ $.AddPage $page }}
+        {{ end }}
       {{ end }}
     {{ end }}
   {{ end }}
