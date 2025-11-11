@@ -45,57 +45,66 @@
 .photoset-grid .grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 2px;
     justify-content: center;
-    margin: 32px 0;
+    margin: 16px 0;
 }
 
 .photoset-grid .grid-item {
-    display: block;
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    background: #111;
-    transition: transform 0.2s, box-shadow 0.2s;
-    width: 220px;
-    height: 160px;
-}
-
-.photoset-grid .grid-item:hover {
-    transform: scale(1.04);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-    z-index: 2;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	grid-auto-rows: 180px;
+	gap: 2px;
+	justify-items: stretch;
+	align-items: stretch;
+	margin: 8px 0;
+    width: auto;
+    height: auto;
+    aspect-ratio: unset;
+	display: block;
+	position: relative;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+	transition: transform 0.2s, box-shadow 0.2s;
+	aspect-ratio: unset;
 }
 
 .photoset-grid .grid-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    border-radius: 8px;
-    transition: opacity 0.2s;
+    height: auto;
+
+	object-fit: cover;
+	display: block;
+	border-radius: 0;
+	transition: opacity 0.2s;
+}
+
+.photoset-grid {
+  display: flex;
+  flex-wrap: wrap;
+  /* Removes default whitespace issues between inline-block items */
+  font-size: 0; 
+  gap: 5px; /* Adjust spacing between images */
+}
+
+.photoset-grid .grid-item {
+  /* This makes items grow and shrink to fill the space in a row */
+  flex: 1 1 auto; 
+  height: 200px; /* Set your desired consistent row height */
+  overflow: hidden; /* Ensures images don't spill out */
+  position: relative; /* For centering the image */
+}
+
+.photoset-grid .grid-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* This is crucial. It covers the container while maintaining aspect ratio (crops as needed) */
+  display: block;
 }
 
 .photoset-grid .grid-item:hover img {
     opacity: 0.92;
 }
 
-/* Optional: add a simple caption overlay if you want titles */
-.photoset-grid .grid-item::after {
-    content: attr(alt);
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    background: rgba(34,34,34,0.75);
-    color: #fff;
-    font-size: 0.95em;
-    padding: 6px 10px;
-    opacity: 0;
-    transition: opacity 0.2s;
-    pointer-events: none;
-    border-radius: 0 0 8px 8px;
-}
-
-.photoset-grid .grid-item:hover::after {
-    opacity: 1;
+.photoset-grid a {
+	border-bottom: none;
 }
