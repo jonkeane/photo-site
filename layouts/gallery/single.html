@@ -13,10 +13,7 @@
 						{{ else }}
                         <section class="page">
 							<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
-                            <header class="major">
-                                {{- if not ( or ( .Date.IsZero ) ( .Parent.Params.no_dates ) ) -}}
-                                    <span class="date">{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
-                                {{- end -}}
+							<header class="major">
                                 <h1>{{ .Title }}</h1>
                                 <p>{{ .Description }}</p>
                             </header>

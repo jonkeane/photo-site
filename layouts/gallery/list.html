@@ -63,7 +63,7 @@
 					{{ else }}
 
 						{{- if and (eq $postsFeaturedPostEnabled true) (eq .Paginator.PageNumber 1) -}}
-						{{- partial "gallerys/featured.html" (dict "firstpost" $firstPost "siteData" (index .Site.Data .Site.Language.Lang)) -}}
+							{{- partial "gallerys/featured.html" (dict "firstpost" $firstPost "siteData" (index .Site.Data .Site.Language.Lang)) -}}
 						{{- end -}}
 
 						{{- if (not (and (eq (len $posts) 1) (eq $postsFeaturedPostEnabled true))) -}}

@@ -1,13 +1,9 @@
 {{- $data := .siteData -}}
-{{- $no_dates := .no_dates -}}
 
 <section class="posts">
     {{- range .posts.Pages }}
     <article>
         <header>
-            {{ if not ( or ( .Date.IsZero ) ( $no_dates ) ) -}}
-                <span class="date">{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
-            {{- end -}}
             <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
         </header>
         {{ if .Params.image -}}
