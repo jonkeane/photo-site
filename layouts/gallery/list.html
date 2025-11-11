@@ -8,7 +8,6 @@
 			{{- .Scratch.Set "postsFeaturedPostEnabled" false -}}
 		{{- end -}}
 		{{- $postsFeaturedPostEnabled := .Scratch.Get "postsFeaturedPostEnabled" -}}
-		{{- $no_dates := or .Params.no_dates (and .Parent (index .Parent.Params "no_dates")) -}}
 
 		{{- $posts := where .Pages "Params.private" "ne" true  -}}
 
@@ -34,9 +33,6 @@
                     <section class="page"></section>
 						<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
 						<header class="major">
-							{{- if not ( or ( .Date.IsZero ) ( .Parent.Params.no_dates ) ) -}}
-								<span class="date">{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
-							{{- end -}}
                             <h1>{{ .Title }}</h1>
                             <p>{{ .Description }}</p>
                         </header>
@@ -68,11 +64,11 @@
 					{{ else }}
 
 						{{- if and (eq $postsFeaturedPostEnabled true) (eq .Paginator.PageNumber 1) -}}
-						{{- partial "gallerys/featured.html" (dict "firstpost" $firstPost "no_dates" $no_dates "siteData" (index .Site.Data .Site.Language.Lang)) -}}
+						{{- partial "gallerys/featured.html" (dict "firstpost" $firstPost "siteData" (index .Site.Data .Site.Language.Lang)) -}}
 						{{- end -}}
 
 						{{- if (not (and (eq (len $posts) 1) (eq $postsFeaturedPostEnabled true))) -}}
-							{{- partial "gallerys/list.html" (dict "posts" $postsPaging "no_dates" $no_dates "siteData" (index .Site.Data .Site.Language.Lang)) -}}
+							{{- partial "gallerys/list.html" (dict "posts" $postsPaging "siteData" (index .Site.Data .Site.Language.Lang)) -}}
 						{{- end -}}
 						{{ end }}
 

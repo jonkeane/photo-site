@@ -37,3 +37,65 @@
 		display: none;
 	}
 }
+
+/* gallery overrides */
+
+
+/* Custom nanogallery-inspired styles for .photoset-grid .grid and .grid-item */
+.photoset-grid .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    margin: 32px 0;
+}
+
+.photoset-grid .grid-item {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    background: #111;
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 220px;
+    height: 160px;
+}
+
+.photoset-grid .grid-item:hover {
+    transform: scale(1.04);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    z-index: 2;
+}
+
+.photoset-grid .grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+    transition: opacity 0.2s;
+}
+
+.photoset-grid .grid-item:hover img {
+    opacity: 0.92;
+}
+
+/* Optional: add a simple caption overlay if you want titles */
+.photoset-grid .grid-item::after {
+    content: attr(alt);
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background: rgba(34,34,34,0.75);
+    color: #fff;
+    font-size: 0.95em;
+    padding: 6px 10px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.photoset-grid .grid-item:hover::after {
+    opacity: 1;
+}
