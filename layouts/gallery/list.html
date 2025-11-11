@@ -30,11 +30,12 @@
 				{{- partial "nav" . -}}
 
 				<div id="main">
-					<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
-					<header class="major">
-						<h1>{{ .Title }}</h1>
-						<p>{{ .Description }}</p>
-					</header>
+                    <section class="page">
+						<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
+						<header class="major">
+                            <h1>{{ .Title }}</h1>
+                            <p>{{ .Description }}</p>
+                        </header>
 					{{ .Content }}
 					{{- $context := . -}}
 					{{- if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
@@ -46,7 +47,6 @@
 						{{- end }}
 					</div>
 					{{- end }}
-					</section>
 
 					{{/* If this section corresponds to a Flickr photoset, render a thumbnail grid. */}}
 					{{ $slug := "" }}
@@ -74,6 +74,8 @@
 						{{- $paginator := .Paginator -}}
 						{{- $outer := . -}}
 						{{- partial "posts/pagination.html" (dict "paginator" $paginator "outer" $outer) }}
+					</section>
+
 					</div>
 
                     {{- partial "footer/index" . -}}
