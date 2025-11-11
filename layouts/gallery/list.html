@@ -30,12 +30,11 @@
 				{{- partial "nav" . -}}
 
 				<div id="main">
-                    <section class="page"></section>
-						<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
-						<header class="major">
-                            <h1>{{ .Title }}</h1>
-                            <p>{{ .Description }}</p>
-                        </header>
+					<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
+					<header class="major">
+						<h1>{{ .Title }}</h1>
+						<p>{{ .Description }}</p>
+					</header>
 					{{ .Content }}
 					{{- $context := . -}}
 					{{- if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
