@@ -3,7 +3,6 @@ Title: Japan 2018
 Description: Scenes from Hokkaidō, Kansai, Kantō, and Tōkyō Japan 
 slug: Japan2018
 date: "2019-01-01T00:00:00"
-nanog: true
 image: gallery/IMG_4384.jpg
 flickr_album: "72157710752833412"
 tags: []

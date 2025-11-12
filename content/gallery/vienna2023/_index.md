@@ -3,7 +3,6 @@ Title: Vienna 2023
 Description: a few shots from a brief stop in Vienna
 slug: Vienna2023
 date: "2023-03-16T00:00:00"
-nanog: true
 image: gallery/_DSC8331-HDR.jpg
 flickr_album: "72177720312790472"
 tags: ["Sony A7RIV"]

@@ -41,12 +41,12 @@
 					    	{{ $pages := .Pages }}
 							{{- $pagedImages := .Paginate $pages 25 -}}
 							{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photosubset" $pagedImages.Pages "Slug" $slug) }}
+					</section>
 
 						{{- $paginator := .Paginator -}}
 						{{- $outer := . -}}
 						{{- partial "posts/pagination.html" (dict "paginator" $paginator "outer" $outer) }}
 						{{ end }}
-					</section>
 
 					</div>
 

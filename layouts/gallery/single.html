@@ -8,42 +8,36 @@
                 {{- partial "nav" . }}
 					<div id="main">
 						{{ if .Params.flickr_id }}
-						{{/* Individual image page */}}
-						{{ partial "photo/single" . }}
+							{{/* Individual image page */}}
+							{{ partial "photo/single" . }}
 						{{ else }}
-                        <section class="page">
-							<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
-							<header class="major">
-                                <h1>{{ .Title }}</h1>
-                                <p>{{ .Description }}</p>
-                            </header>
-                            {{ .Content }}
-							{{- $context := . -}}
-							{{- if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
-							<div id="terms" class="flex flex-row flex-wrap items-center">
-								{{- range $key := (slice "continents" "countries" "regions" "cities" "tags") -}}
-							    {{- range $context.GetTerms $key }}
-								<span><a class="button primary tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></span>
-							    {{- end -}}
-							    {{- end }}
-							</div>
-							{{- end }}
-						{{/* Prefer static grid if data exists */}}
-						{{ $slug := .File.BaseFileName }}
-						{{ if eq $slug "index" }}
-						{{ $slug = (path.Base (trim (replaceRE "^content/gallery/" "" .File.Dir) "/")) }}
-						{{ end }}
-						{{ with (index site.Data.flickr.photosets $slug) }}
-						{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photoset" . "Slug" $slug) }}
-						{{ else }}
-						<div id="nanogallery2" flickrAlbum="{{ .Params.flickr_album }}" tagBlockList="{{ .Site.Params.nanog.tagBlockList }}">
-						</div>
-						{{ end }}
-						<a href=".." class="button" id="galleryBackBtnBtm">back to gallery</a>
-						{{- if not (eq .Params.disableComments true) -}}
-                        {{- template "_internal/disqus.html" . -}}
-						{{- end }}
-						</section>
+							<section class="page">
+								<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
+								<header class="major">
+									<h1>{{ .Title }}</h1>
+									<p>{{ .Description }}</p>
+								</header>
+								{{ .Content }}
+								{{- $context := . -}}
+								{{- if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
+								<div id="terms" class="flex flex-row flex-wrap items-center">
+									{{- range $key := (slice "continents" "countries" "regions" "cities" "tags") -}}
+									{{- range $context.GetTerms $key }}
+									<span><a class="button primary tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></span>
+									{{- end -}}
+									{{- end }}
+								</div>
+								{{- end }}
+								{{/* Prefer static grid if data exists */}}
+								{{ $slug := .File.BaseFileName }}
+								{{ if eq $slug "index" }}
+									{{ $slug = (path.Base (trim (replaceRE "^content/gallery/" "" .File.Dir) "/")) }}
+								{{ end }}
+								{{ with (index site.Data.flickr.photosets $slug) }}
+									{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photoset" . "Slug" $slug) }}
+								{{ end }}
+								<a href=".." class="button" id="galleryBackBtnBtm">back to gallery</a>
+							</section>
 						{{ end }}
 					</div>
 
@@ -51,15 +45,5 @@
                     {{- partial "copyright" . -}}
             </div>
             {{- partial "scripts/index" . -}}
-			{{- $js := resources.Get "js/gallery.js" -}}
-			{{- $opts := dict
-			"params" (dict
-				"flickr_userid" .Site.Params.nanog.flickr_userid
-				"flickr_apikey" .Site.Params.nanog.flickr_apikey
-			)
-			-}}
-			{{- $js = $js | js.Build $opts -}}
-			<script src="{{ $js.RelPermalink }}"></script>
-
 	</body>
 </html>

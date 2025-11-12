@@ -103,3 +103,28 @@
 .photoset-grid a {
 	border-bottom: none;
 }
+
+.photo-nav ul {
+  display: flex; /* Makes the ul a flex container */
+  justify-content: space-between; /* Distributes space between items, pushing them to the ends and center */
+  align-items: center; /* Vertically centers items if the container has a defined height */
+  list-style: none; /* Removes default list bullets */
+  padding: 0; /* Removes default padding */
+  margin: 0; /* Removes default margin */
+  width: 100%; /* Ensures the container takes full width */
+}
+
+.photo-nav .gallery {
+	padding: 0 1.75rem;
+}
+
+.exposure-meta ul,
+.camera-meta ul {
+	display: flex; /* Makes the ul a flex container */
+	justify-content: space-between; /* Distributes space between items, pushing them to the ends and center */
+	align-items: center; /* Vertically centers items if the container has a defined height */
+	list-style: none; /* Removes default list bullets */
+	padding: 0; /* Removes default padding */
+	margin: 0; /* Removes default margin */
+	width: 50%; /* Ensures the container takes full width */
+}

@@ -3,7 +3,6 @@ Title: Ciudad de México
 Description: Scenes from Ciudad de México
 slug: cdmx2016
 date: "2018-01-01T00:00:00"
-nanog: true
 flickr_album: "72157705707640241"
 image: gallery/IMG_3277.jpg
 tags: []

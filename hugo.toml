@@ -35,12 +35,6 @@ timeout = 600
   city = "cities"
   tag = "tags"
 
-
-[params.nanog]
-  flickr_userid = "65556368@N00"
-  # flickr_userid = "jonkeane"
-  tagBlockList = "nogallery"
-
 [params.slider]
     enable = true
 

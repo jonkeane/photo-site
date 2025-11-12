@@ -3,7 +3,6 @@ Title: "Thailand 2023 on film"
 Description: "A December trip to Thailand, captured on film"
 slug: "Thailand2023film"
 date: "2023-12-15T18:08:20-05:00"
-nanog: true
 image: "gallery/000057160002.jpg"
 flickr_album: "72177720316238640"
 tags: ["film", "Hasselblad", "6x6", "Architecture", "temples", "city", "night"]

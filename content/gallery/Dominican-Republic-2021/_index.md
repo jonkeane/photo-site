@@ -3,7 +3,6 @@ Title: Dominican Republic 2021
 Description: Mostly Santo Domingo
 slug: DominicanRepublic2021
 date: "2021-12-15T00:00:00"
-nanog: true
 image: gallery/_DSC3428-HDR.jpg
 flickr_album: "72177720315294472"
 tags: ["Sony A7RIV"]

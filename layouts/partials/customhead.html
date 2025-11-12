@@ -3,11 +3,6 @@
         <meta name="robots" content="{{ .Site.Params.meta.robots }}" />
         <meta name="googlebot" content="{{ .Site.Params.meta.googlebot }}" />
 
-        {{- if .Params.nanog }}
-		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.min.css" | relURL }}' />
- 		<link rel="stylesheet" href='{{ "assets/css/nanogallery2.woff.min.css" | relURL }}' />
- 		{{ end -}}
-
         <!-- override theme CSS -->
 		{{- if hugo.IsServer -}}
 		{{- $style := resources.Get "scss/custom/main.scss" | resources.ExecuteAsTemplate "scss/custom/main.scss" . | toCSS (dict "targetPath" "assets/css/custom_main.css" "enableSourceMap" true) -}}

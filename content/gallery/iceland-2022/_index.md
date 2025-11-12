@@ -3,7 +3,6 @@ Title: Iceland 2022
 Description: Reykjavík and the Golden Circle in 2022
 slug: Iceland2022
 date: "2022-08-16T00:00:00"
-nanog: true
 image: gallery/_DSC5007.jpg
 flickr_album: "72177720327085511"
 tags: []

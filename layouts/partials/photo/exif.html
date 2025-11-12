@@ -1,18 +1,14 @@
-{{/* EXIF partial - expects dict Photo */}}
 {{ $p := .Photo }}
-{{/* Raw photosets.getPhotos doesn't include EXIF fields unless later extended; placeholder logic */}}
-{{ if or $p.dateupload $p.datetaken $p.ownername }}
-<div class="camera-meta">
-  <ul>
-  {{ if $p.exif.model }}<li>Camera: {{ $p.exif.model }}</li>{{ end }}
-  {{ if $p.exif.lens }}<li>Lens: {{ $p.exif.lens }}</li>{{ end }}
-  </ul>
-</div>
 <div class="exposure-meta">
   <ul>
-  {{ if $p.exif.exposure }}<li>{{ $p.exif.exposure }}</li>{{ end }}
-  {{ if $p.exif.iso }}<li>{{ $p.exif.iso }}</li>{{ end }}
+  {{ if $p.exif.exposure }}<li>{{ $p.exif.exposure }} sec</li>{{ end }}
   {{ if $p.exif.fstop }}<li>{{ $p.exif.fstop }}</li>{{ end }}
+  {{ if $p.exif.iso }}<li>{{ $p.exif.iso }} iso</li>{{ end }}
   </ul>
 </div>
-{{ end }}
+<div class="camera-meta">
+  <ul>
+  {{ if $p.exif.model }}<li>{{ $p.exif.model }}</li>{{ end }}
+  {{ if $p.exif.lens }}<li>{{ $p.exif.lens }}</li>{{ end }}
+  </ul>
+</div>

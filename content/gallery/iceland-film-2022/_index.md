@@ -3,7 +3,6 @@ Title: Iceland on film 2022
 Description: Iceland on film in 2022
 slug: IcelandFilm2022
 date: "2022-08-15T00:00:00"
-nanog: true
 image: gallery/3943-010.jpg
 flickr_album: "72177720302347089"
 tags: ["film", "Hasselblad", "6x6"]

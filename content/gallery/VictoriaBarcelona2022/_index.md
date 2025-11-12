@@ -3,7 +3,6 @@ Title: "Seattle, Victoria, New York, Barcelona 2022"
 Description: "A few trips on film"
 slug: "VictoriaBarcelona2022"
 date: "2022-07-01T00:00:00-05:00"
-nanog: true
 image: "gallery/000459670007.jpg"
 flickr_album: "72177720300297911"
 tags: ["film", "Hasselblad", "6x6", "Architecture"]

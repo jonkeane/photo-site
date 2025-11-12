@@ -1,10 +1,6 @@
 {{/*
-Fully dynamic content adapter: generate one page per Flickr photo
-from all photoset JSON data files in site.Data.flickr.photosets.
-
-Constraints:
-- No image downloading; pages embed remote Flickr CDN URLs.
-- Reuse existing gallery single layout (type: gallery, layout: single).
+content adapter: generate one page per Flickr photo from all 
+photoset JSON files in site.Data.flickr.photosets.
 */}}
 
 {{ $photosets := site.Data.flickr.photosets }}

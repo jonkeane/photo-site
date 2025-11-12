@@ -3,7 +3,6 @@
 		$wrapper = $('#wrapper'),
 		$header = $('#header'),
 		$main = $('#main'),
-		$nanogallery = $('#nanogallery2'),
 		$navPanelToggle = $('#navPanelToggle');
 
 		$.fn._parallax = null;
@@ -96,17 +95,6 @@
 		var $galleryBackToggle = $('#galleryBackBtn');
 		if($galleryBackToggle.length > 0) {
 			$main.unscrollex();
-
-			// Change toggle styling once we've scrolled past the header.
-			$nanogallery.scrollex({
-				mode: 'top',
-				enter: function() {
-					$galleryBackToggle.addClass('alt');
-				},
-				leave: function() {
-					$galleryBackToggle.removeClass('alt');
-				}
-			});
 		}
 
 		// Various changes that must run after the document is ready

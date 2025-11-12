@@ -1,4 +1,4 @@
-{{/* Partial for individual photo rendering - expects page context with flickr_id, flickr_album, and gallery_slug */}}
+{{/* TODO: this could probably use .Params directly rather than going through site.Data.flickr.photosets */}}
 {{ $fid := .Params.flickr_id | string }}
 {{ $album := .Params.flickr_album }}
 {{ $slug := .Params.gallery_slug }}
@@ -20,10 +20,7 @@
   <section class="page">
   <a href=".." class="button", id="galleryBackBtn">back to gallery</a>
   <article class="photo-single">
-    <header class="major">
-      <h1>{{ or .Title $photo.title }}</h1>
-    </header>
-    {{/* Size preference chain */}}
+    {{/* TODO: devicce-dependent sizing? */}}
     {{ $url := or $photo.url_h $photo.url_k $photo.url_l $photo.url_c $photo.url_z $photo.url_m $photo.url_o $photo.url_sq }}
     <figure>
       <img src="{{ $url }}" alt="{{ or $photo.title (printf "Photo %s" $fid) }}" loading="eager"/>
@@ -40,8 +37,10 @@
     </figure>
     {{ partial "photo/exif" (dict "Photo" $photo) }}
     {{ partial "photo/nav" (dict "Page" . "Photos" $photos "Current" $photo) }}
+    <header class="major">
+      <h1>{{ or .Title $photo.title }}</h1>
+    </header>
   </article>
-  <a href=".." class="button" id="galleryBackBtnBtm">back to gallery</a>
   </section>
   {{ end }}
 {{ end }}
