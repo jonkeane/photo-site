@@ -3,27 +3,7 @@
 
 		{{- $postsPageSize := .Site.Params.Posts.pagesize | default 6 -}}
 
-		{{- .Scratch.Set "postsFeaturedPostEnabled" true -}}
-		{{- if (or (eq .Site.Params.Posts.featuredpost "false") (eq .Site.Params.Posts.featuredpost false)) -}}
-			{{- .Scratch.Set "postsFeaturedPostEnabled" false -}}
-		{{- end -}}
-		{{- $postsFeaturedPostEnabled := .Scratch.Get "postsFeaturedPostEnabled" -}}
-
-		{{- $posts := where .Pages "Params.private" "ne" true  -}}
-
-		{{- $firstPost := first 1 $posts -}}
-
-		{{- if and (eq $postsFeaturedPostEnabled true) (gt (len $posts) 1) -}}
-			{{- .Scratch.Set "postsForPaging" (after 1 $posts) -}}
-		{{- else -}}
-			{{- .Scratch.Set "postsForPaging" $posts -}}
-		{{- end -}}
-		{{- $postsForPaging := .Scratch.Get "postsForPaging" -}}
-
-		{{- $postsPaging := .Paginate $postsForPaging $postsPageSize -}}
-
-
-			<div id="wrapper" data-ps="{{ $postsPageSize }}" data-pfp="{{ $postsFeaturedPostEnabled }}">
+			<div id="wrapper" data-ps="{{ $postsPageSize }}" data-pfp="false">
 			    <div class="bg fixed"></div>
 
     			{{- partial "header" . -}}
@@ -36,44 +16,36 @@
                             <h1>{{ .Title }}</h1>
                             <p>{{ .Description }}</p>
                         </header>
-					{{ .Content }}
-					{{- $context := . -}}
-					{{- if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
-					<div id="terms" class="flex flex-row flex-wrap items-center">
-						{{- range $key := (slice "continents" "countries" "regions" "cities" "tags") -}}
-						{{- range $context.GetTerms $key }}
-						<span><a class="button primary tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></span>
-						{{- end -}}
+						{{ .Content }}
+						{{- $context := . -}}
+						{{- if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
+						<div id="terms" class="flex flex-row flex-wrap items-center">
+							{{- range $key := (slice "continents" "countries" "regions" "cities" "tags") -}}
+							{{- range $context.GetTerms $key }}
+							<span><a class="button primary tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></span>
+							{{- end -}}
+							{{- end }}
+						</div>
 						{{- end }}
-					</div>
-					{{- end }}
 
-					{{/* If this section corresponds to a Flickr photoset, render a thumbnail grid. */}}
-					{{ $slug := "" }}
-					{{ with .File }}
-					{{ $slug = .BaseFileName }}
-					{{ if or (eq $slug "index") (eq $slug "_index") }}
-					{{ $slug = (path.Base (trim (replaceRE "^content/gallery/" "" .Dir) "/")) }}
-					{{ end }}
-					{{ end }}
-					{{ $ps := index site.Data.flickr.photosets $slug }}
-					{{ if $ps }}
-					{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photoset" $ps "Slug" $slug) }}
-					{{/* Skip legacy posts list if we have a photoset */}}
-					{{ else }}
-
-						{{- if and (eq $postsFeaturedPostEnabled true) (eq .Paginator.PageNumber 1) -}}
-							{{- partial "gallerys/featured.html" (dict "firstpost" $firstPost "siteData" (index .Site.Data .Site.Language.Lang)) -}}
-						{{- end -}}
-
-						{{- if (not (and (eq (len $posts) 1) (eq $postsFeaturedPostEnabled true))) -}}
-							{{- partial "gallerys/list.html" (dict "posts" $postsPaging "siteData" (index .Site.Data .Site.Language.Lang)) -}}
-						{{- end -}}
+						{{/* If this section corresponds to a Flickr photoset, render a thumbnail grid. */}}
+						{{ $slug := "" }}
+						{{ with .File }}
+							{{ $slug = .BaseFileName }}
+							{{ if or (eq $slug "index") (eq $slug "_index") }}
+								{{ $slug = (path.Base (trim (replaceRE "^content/gallery/" "" .Dir) "/")) }}
+							{{ end }}
 						{{ end }}
+						{{ $ps := index site.Data.flickr.photosets $slug }}
+						{{ if $ps }}
+					    	{{ $pages := .Pages }}
+							{{- $pagedImages := .Paginate $pages 25 -}}
+							{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photosubset" $pagedImages.Pages "Slug" $slug) }}
 
 						{{- $paginator := .Paginator -}}
 						{{- $outer := . -}}
 						{{- partial "posts/pagination.html" (dict "paginator" $paginator "outer" $outer) }}
+						{{ end }}
 					</section>
 
 					</div>

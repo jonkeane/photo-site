@@ -76,7 +76,6 @@
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
 	aspect-ratio: unset;
 	flex: 1 1 auto;
-		height: 200px;
 }
 
 .photoset-grid .grid-item img {
@@ -98,7 +97,7 @@
 
 .photoset-grid .grid-item:hover img {
 	opacity: 0.92;
-	transform: scale(1.035); // subtle zoom to match other gallery thumbs
+	transform: scale(1.05); // subtle zoom to match other gallery thumbs
 }
 
 .photoset-grid a {

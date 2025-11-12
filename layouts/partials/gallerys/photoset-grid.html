@@ -1,13 +1,12 @@
 {{/* Renders a grid for a photoset JSON. Expects dict: Page, Photoset, Slug */}}
 {{ $page := .Page }}
-{{ $ps := .Photoset }}
-{{ $photos := $ps.photoset.photo }}
+{{ $ps := .Photosubset }}
 <section class="photoset-grid">
   <div class="grid">
-  {{ range $photos }}
-    {{ $thumb := or .url_n .url_m .url_z .url_s .url_t .url_sq }}
-    <a class="grid-item" href="{{ printf "%s%s/" $page.Permalink .id }}">
-      <img src="{{ $thumb }}" alt="{{ .title }}" loading="lazy" />
+  {{ range $ps }}
+    {{ $thumb := or .Params.url_n .Params.url_m .Params.url_z .Params.url_s .Params.url_t .Params.url_sq }}
+    <a class="grid-item" href="{{ .Permalink }}">
+      <img src="{{ $thumb }}" alt="{{ .Params.title }}" loading="lazy" />
     </a>
   {{ end }}
   </div>
