@@ -1,14 +1,16 @@
 {{ $p := .Photo }}
-<div class="exposure-meta">
-  <ul>
-  {{ if $p.exif.exposure }}<li>{{ $p.exif.exposure }} sec</li>{{ end }}
-  {{ if $p.exif.fstop }}<li>{{ $p.exif.fstop }}</li>{{ end }}
-  {{ if $p.exif.iso }}<li>{{ $p.exif.iso }} iso</li>{{ end }}
-  </ul>
-</div>
-<div class="camera-meta">
-  <ul>
-  {{ if $p.exif.model }}<li>{{ $p.exif.model }}</li>{{ end }}
-  {{ if $p.exif.lens }}<li>{{ $p.exif.lens }}</li>{{ end }}
-  </ul>
+<div class="meta-row">
+  <div class="exposure-meta">
+    <ul>
+    {{ if $p.exif.exposure }}<li>{{ $p.exif.exposure }} sec</li>{{ end }}
+    {{ if $p.exif.fstop }}<li>{{ $p.exif.fstop }}</li>{{ end }}
+    {{ if $p.exif.iso }}<li>{{ $p.exif.iso }} iso</li>{{ end }}
+    </ul>
+  </div>
+  <div class="camera-meta">
+    <ul>
+    {{ if $p.exif.model }}<li>{{ $p.exif.model }}</li>{{ end }}
+    {{ if $p.exif.lens }}<li>{{ $p.exif.lens }}</li>{{ end }}
+    </ul>
+  </div>
 </div>

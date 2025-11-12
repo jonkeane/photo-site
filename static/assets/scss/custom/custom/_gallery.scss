@@ -118,6 +118,9 @@
 	padding: 0 1.75rem;
 }
 
+
+
+// Single photo page
 .exposure-meta ul,
 .camera-meta ul {
 	display: flex; /* Makes the ul a flex container */
@@ -126,5 +129,91 @@
 	list-style: none; /* Removes default list bullets */
 	padding: 0; /* Removes default padding */
 	margin: 0; /* Removes default margin */
-	width: 50%; /* Ensures the container takes full width */
+	// width: 50%; /* Ensures the container takes full width */
 }
+
+/* Layout for photo metadata: exposure (left) and camera (right) on a single line */
+#photo-single {
+	/* Fill the viewport height and use a column flex layout so image stacks above metadata.
+	   Structure inside is expected to be: image block (or container), .meta-row (exposure/camera), and nav/footer.
+	   All flexible white space should be at the bottom. */
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding-top: 0.25rem;
+	padding-bottom: 0.25rem;
+	height: 100vh; /* full viewport */
+	min-height: 100vh;
+
+	/* Ensure direct children layout: everything sized to content */
+	> figure {
+		/* This block should wrap the image element(s). Don't grow, only shrink if needed */
+		flex: 0 1 auto;
+		display: flex;
+		align-items: center; /* center image vertically if smaller */
+		justify-content: center; /* center horizontally */
+		width: 100%;
+		overflow: hidden; /* prevent image overflow */
+	}
+
+	/* Keep metadata sized to content, and push flexible space below it */
+	> .meta-row {
+		flex: 0 0 auto;
+		/* Add auto margin at bottom to push all flexible space below the EXIF data */
+		margin-bottom: auto;
+	}
+	/* Nav at top should be sized to content */
+	> .photo-nav,
+	> footer,
+	> .nav {
+		flex: 0 0 auto;
+	}
+}
+
+#photo-single > .meta-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between; /* exposure group left, camera group right */
+	width: 100%;
+	gap: 0.5rem;
+}
+
+/* ensure the two meta blocks themselves group their list items tightly */
+#photo-single .exposure-meta,
+#photo-single .camera-meta {
+	display: flex;
+	align-items: center;
+}
+
+#photo-single .exposure-meta ul,
+#photo-single .camera-meta ul {
+	display: flex;
+	gap: 0.75rem; /* keep items close together */
+	margin: 0;
+}
+
+/* Responsive: on small screens stack the meta blocks under the image */
+@include breakpoint('<=small') {
+	#photo-single > .meta-row {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.25rem;
+	}
+	#photo-single .exposure-meta ul,
+	#photo-single .camera-meta ul {
+		gap: 0.25rem;
+	}
+}
+
+#photo-single > * > img,
+#photo-single figure img {
+	display: block; /* ensure margin: 0 auto will center */
+	max-width: 100%;
+	max-height: 100%; /* constrain to the flex parent (figure) height */
+	width: auto;
+	height: auto;
+	margin: 0 auto; /* horizontally center */
+	object-fit: contain; /* ensure the whole image is visible when constrained */
+}
+
+

@@ -97,6 +97,24 @@
 			$main.unscrollex();
 		}
 
+		// Keyboard navigation for photo galleries
+		$(document).on('keydown', function(e) {
+			// Left arrow key (37) - go to previous
+			if (e.keyCode === 37) {
+				var prevLink = $('a.previous[rel="prev"]');
+				if (prevLink.length > 0) {
+					window.location.href = prevLink.attr('href');
+				}
+			}
+			// Right arrow key (39) - go to next
+			else if (e.keyCode === 39) {
+				var nextLink = $('a.next[rel="next"]');
+				if (nextLink.length > 0) {
+					window.location.href = nextLink.attr('href');
+				}
+			}
+		});
+
 		// Various changes that must run after the document is ready
 		$(document).ready(function() {
 			// show one post to start

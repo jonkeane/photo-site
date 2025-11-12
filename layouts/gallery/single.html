@@ -1,49 +1,50 @@
 {{- partial "htmlhead.html" . -}}
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
+	{{ if .Params.flickr_id }}
+		<div id="main">
+		{{/* Individual image page */}}
+		{{ partial "photo/single" . }}
+		</div>
+	{{ else }}
+		<div id="wrapper">
+			<div class="bg fixed"></div>
 
-			<div id="wrapper">
-			    <div class="bg fixed"></div>
-
-                {{- partial "header" . -}}
-                {{- partial "nav" . }}
-					<div id="main">
-						{{ if .Params.flickr_id }}
-							{{/* Individual image page */}}
-							{{ partial "photo/single" . }}
-						{{ else }}
-							<section class="page">
-								<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
-								<header class="major">
-									<h1>{{ .Title }}</h1>
-									<p>{{ .Description }}</p>
-								</header>
-								{{ .Content }}
-								{{- $context := . -}}
-								{{- if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
-								<div id="terms" class="flex flex-row flex-wrap items-center">
-									{{- range $key := (slice "continents" "countries" "regions" "cities" "tags") -}}
-									{{- range $context.GetTerms $key }}
-									<span><a class="button primary tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></span>
-									{{- end -}}
-									{{- end }}
-								</div>
-								{{- end }}
-								{{/* Prefer static grid if data exists */}}
-								{{ $slug := .File.BaseFileName }}
-								{{ if eq $slug "index" }}
-									{{ $slug = (path.Base (trim (replaceRE "^content/gallery/" "" .File.Dir) "/")) }}
-								{{ end }}
-								{{ with (index site.Data.flickr.photosets $slug) }}
-									{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photoset" . "Slug" $slug) }}
-								{{ end }}
-								<a href=".." class="button" id="galleryBackBtnBtm">back to gallery</a>
-							</section>
+			{{- partial "header" . -}}
+			{{- partial "nav" . }}
+			<div id="main">
+					<section class="page">
+						<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
+						<header class="major">
+							<h1>{{ .Title }}</h1>
+							<p>{{ .Description }}</p>
+						</header>
+						{{ .Content }}
+						{{- $context := . -}}
+						{{- if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
+						<div id="terms" class="flex flex-row flex-wrap items-center">
+							{{- range $key := (slice "continents" "countries" "regions" "cities" "tags") -}}
+							{{- range $context.GetTerms $key }}
+							<span><a class="button primary tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></span>
+							{{- end -}}
+							{{- end }}
+						</div>
+						{{- end }}
+						{{/* Prefer static grid if data exists */}}
+						{{ $slug := .File.BaseFileName }}
+						{{ if eq $slug "index" }}
+							{{ $slug = (path.Base (trim (replaceRE "^content/gallery/" "" .File.Dir) "/")) }}
 						{{ end }}
-					</div>
+						{{ with (index site.Data.flickr.photosets $slug) }}
+							{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photoset" . "Slug" $slug) }}
+						{{ end }}
+						<a href=".." class="button" id="galleryBackBtnBtm">back to gallery</a>
+					</section>
+			</div>
 
-                    {{- partial "footer/index" . -}}
-                    {{- partial "copyright" . -}}
-            </div>
-            {{- partial "scripts/index" . -}}
+			{{- partial "footer/index" . -}}
+			{{- partial "copyright" . -}}
+		</div>
+	{{ end }}
+	{{- partial "scripts/index" . -}}
 	</body>
 </html>
