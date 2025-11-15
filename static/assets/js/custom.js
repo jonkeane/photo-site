@@ -115,6 +115,151 @@
 			}
 		});
 
+		// Photo drawer scroll detection
+		if ($('.photo-drawer').length > 0) {
+			var scrollThreshold = 5; // Small threshold to avoid flickering at top
+			var wheelTimeout;
+			var isWheeling = false;
+			
+			// Handle wheel events for immediate responsiveness
+			$window.on('wheel', function(e) {
+				var deltaX = e.originalEvent.deltaX;
+				var deltaY = e.originalEvent.deltaY;
+				
+				// Only trigger drawer if vertical scroll is dominant
+				if (Math.abs(deltaY) > Math.abs(deltaX)) {
+					isWheeling = true;
+					
+					// Clear any existing timeout
+					clearTimeout(wheelTimeout);
+					
+					if (deltaY > 0) {
+						// Scrolling down - open drawer
+						$('body').addClass('scrolled');
+					} else if (deltaY < 0) {
+						// Scrolling up - check if we should close
+						var scrollPos = $window.scrollTop();
+						if (scrollPos <= scrollThreshold) {
+							$('body').removeClass('scrolled');
+						}
+					}
+					
+					// Re-enable scroll event handling after wheeling stops
+					wheelTimeout = setTimeout(function() {
+						isWheeling = false;
+					}, 150);
+				}
+			});
+			
+			// Handle close button
+			$('.photo-drawer .close').on('click', function(e) {
+				e.preventDefault();
+				$('body').removeClass('scrolled');
+				// Scroll back to top
+				$('html, body').animate({ scrollTop: 0 }, 300);
+			});
+		}
+
+		// Horizontal scroll/swipe navigation for photo galleries
+		if ($('#photo-single').length > 0) {
+			var horizontalScrollAccumulator = 0;
+			var scrollThreshold = 50; // Amount of horizontal scroll needed to trigger navigation
+			var scrollTimeout;
+			var navigationEnabled = false; // Disabled on page load
+			var loadCooldownPeriod = 600; // Milliseconds after page load before navigation is enabled
+			
+			// Enable navigation after a cooldown period on page load
+			setTimeout(function() {
+				navigationEnabled = true;
+			}, loadCooldownPeriod);
+			
+			// Handle horizontal wheel events (trackpad horizontal scrolling)
+			$('#photo-single').on('wheel', function(e) {
+				// Don't process if navigation is not enabled yet (page just loaded)
+				if (!navigationEnabled) {
+					return;
+				}
+				
+				var deltaX = e.originalEvent.deltaX;
+				var deltaY = e.originalEvent.deltaY;
+				
+				// Only process if horizontal scroll is dominant
+				if (Math.abs(deltaX) > Math.abs(deltaY)) {
+					e.preventDefault(); // Prevent default horizontal scroll
+					
+					horizontalScrollAccumulator += deltaX;
+					
+					// Clear the timeout to reset accumulator
+					clearTimeout(scrollTimeout);
+					scrollTimeout = setTimeout(function() {
+						horizontalScrollAccumulator = 0;
+					}, 300);
+					
+					// Navigate when threshold is reached
+					if (Math.abs(horizontalScrollAccumulator) >= scrollThreshold) {
+						if (horizontalScrollAccumulator < 0) {
+							// Scroll left - go to previous
+							var prevLink = $('a.previous[rel="prev"]');
+							if (prevLink.length > 0) {
+								window.location.href = prevLink.attr('href');
+							}
+						} else {
+							// Scroll right - go to next
+							var nextLink = $('a.next[rel="next"]');
+							if (nextLink.length > 0) {
+								window.location.href = nextLink.attr('href');
+							}
+						}
+						horizontalScrollAccumulator = 0;
+					}
+				}
+			});
+			
+			// Touch swipe support for mobile
+			var touchStartX = 0;
+			var touchEndX = 0;
+			var touchStartY = 0;
+			var touchEndY = 0;
+			var minSwipeDistance = 50;
+			
+			var photoSingle = document.getElementById('photo-single');
+			
+			photoSingle.addEventListener('touchstart', function(e) {
+				touchStartX = e.changedTouches[0].screenX;
+				touchStartY = e.changedTouches[0].screenY;
+			}, false);
+			
+			photoSingle.addEventListener('touchend', function(e) {
+				touchEndX = e.changedTouches[0].screenX;
+				touchEndY = e.changedTouches[0].screenY;
+				handleSwipe();
+			}, false);
+			
+			function handleSwipe() {
+				var swipeDistanceX = touchEndX - touchStartX;
+				var swipeDistanceY = touchEndY - touchStartY;
+				
+				// Only register as horizontal swipe if horizontal movement is greater than vertical
+				if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY)) {
+					if (Math.abs(swipeDistanceX) > minSwipeDistance) {
+						if (swipeDistanceX > 0) {
+							// Swipe right - go to previous
+							var prevLink = $('a.previous[rel="prev"]');
+							if (prevLink.length > 0) {
+								window.location.href = prevLink.attr('href');
+							}
+						} else {
+							// Swipe left - go to next
+							var nextLink = $('a.next[rel="next"]');
+							if (nextLink.length > 0) {
+								window.location.href = nextLink.attr('href');
+							}
+						}
+					}
+				}
+			}
+		}
+
 		// Various changes that must run after the document is ready
 		$(document).ready(function() {
 			// show one post to start

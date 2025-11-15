@@ -16,16 +16,19 @@
     {{ if $photo.description._content }}
     <figcaption>{{ $photo.description._content | safeHTML }}</figcaption>
     {{ end }}
-    {{ if $photo.tags }}
-    <div id="terms" class="flex flex-row flex-wrap items-center">
-      {{ range $tag := $photo.tags }}
-        <span><a class="button primary tag" href="/tags/{{ $tag | urlize }}">{{ $tag }}</a></span>
-      {{ end }}
-    </div>
-    {{ end }}
   </figure>
   {{ partial "photo/exif" (dict "Photo" $photo) }}
-  <!-- <header class="major">
-    <h1>{{ or .Title $photo.title }}</h1>
-  </header> -->
+  <div class="photo-drawer">
+    <a href="#" class="close"></a>
+    {{ if $photo.tags }}
+      <div id="terms" class="flex flex-row flex-wrap items-center">
+        {{ range $tag := $photo.tags }}
+          <span><a class="button primary tag" href="/tags/{{ $tag | urlize }}">{{ $tag }}</a></span>
+        {{ end }}
+      </div>
+    {{ end }}
+    <header class="major">
+      <h1>{{ or .Title $photo.title }}</h1>
+    </header>
+  </div>
 </section>
