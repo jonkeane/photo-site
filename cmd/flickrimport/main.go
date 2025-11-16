@@ -214,6 +214,7 @@ func main() {
 				photo.Tags = oldTags[photo.ID]
 				continue
 			}
+			fmt.Fprintf(os.Stderr, "Fetching EXIF and tags for photo %s\n", photo.ID)
 			// Fetch EXIF
 			exifRaw, err := fetchPhotoExif(ctx, client, cfg.APIKey, photo.ID)
 			if err != nil {
