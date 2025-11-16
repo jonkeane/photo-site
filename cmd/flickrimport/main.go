@@ -82,7 +82,7 @@ type Photo struct {
 	ID          string `json:"id"`
 	Title       string `json:"title"`
 	Description struct {
-		_ string `json:"_content"`
+		Content string `json:"_content"`
 	} `json:"description"`
 	Tags       []string         `json:"tags"`
 	DateUpload string           `json:"dateupload"`
@@ -341,7 +341,7 @@ func fetchPhotosetPage(ctx context.Context, client *http.Client, apiKey, setID s
 	q.Set("page", fmt.Sprintf("%d", page))
 	q.Set("per_page", fmt.Sprintf("%d", perPage))
 	q.Set("extras", strings.Join([]string{
-		"date_upload", "date_taken", "owner_name", "license", "path_alias", "last_update",
+		"description", "date_upload", "date_taken", "owner_name", "license", "path_alias", "last_update",
 		"url_sq", "url_t", "url_s", "url_n", "url_m", "url_z", "url_c", "url_l", "url_h", "url_k", "url_o",
 	}, ","))
 

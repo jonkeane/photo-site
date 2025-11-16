@@ -277,4 +277,92 @@ body.scrolled .photo-drawer {
 	object-fit: contain; /* ensure the whole image is visible when constrained */
 }
 
+/* Photostrip styles */
+.photostrip {
+	position: relative;
+	z-index: 1;
+	flex: 0 0 auto;
+	width: 100%;
+	padding: 0.5rem 0;
+	background-color: rgba(0, 0, 0, 0.03);
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.photostrip-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 0;
+	overflow-x: auto;
+	padding: 0.25rem 0.5rem;
+	scrollbar-width: thin;
+	scroll-behavior: smooth;
+}
+
+.photostrip-prev,
+.photostrip-next {
+	display: flex;
+	gap: 0.25rem;
+	flex: 1 1 0; /* Equal flex-grow, allows centering */
+}
+
+.photostrip-prev {
+	justify-content: flex-end; /* Align previous photos to the right */
+}
+
+.photostrip-next {
+	justify-content: flex-start; /* Align next photos to the left */
+}
+
+.photostrip-current {
+	display: flex;
+	flex: 0 0 auto; /* Don't grow or shrink */
+	margin: 0 0.125rem; /* Small gap on each side */
+}
+
+.photostrip-thumb {
+	flex: 0 0 auto;
+	width: 75px;
+	height: 75px;
+	display: block;
+	border: 2px solid transparent;
+	transition: all 0.2s ease;
+	border-radius: 2px;
+	overflow: hidden;
+	border-bottom: none;
+	
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	
+	&:hover {
+		transform: scale(1.1);
+		border-color: rgba(0, 0, 0, 0.2);
+		z-index: 2;
+	}
+	
+	&.current {
+		transform: scale(1.1);
+	}
+}
+
+/* Responsive adjustments */
+@include breakpoint('<=medium') {
+	.photostrip-thumb {
+		width: 65px;
+		height: 65px;
+	}
+}
+
+/* Responsive adjustments */
+@include breakpoint('<=small') {
+	.photostrip-thumb {
+		width: 55px;
+		height: 55px;
+	}
+}
+
 

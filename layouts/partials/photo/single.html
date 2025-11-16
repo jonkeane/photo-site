@@ -11,14 +11,12 @@
   {{ partial "photo/nav" (dict "Page" . "Photos" $photos "Current" $photo) }}
   {{/* TODO: device-dependent sizing? */}}
   {{ $url := or $photo.url_h $photo.url_k $photo.url_l $photo.url_c $photo.url_z $photo.url_m $photo.url_o $photo.url_sq }}
+  {{ $alt := or $photo.description._content $photo.title (printf "Photo %s" $fid) }}
   <figure>
-    <img src="{{ $url }}" alt="{{ or $photo.title (printf "Photo %s" $fid) }}" loading="eager"/>
-    {{ if $photo.description._content }}
-    <figcaption>{{ $photo.description._content | safeHTML }}</figcaption>
-    {{ end }}
+    <img src="{{ $url }}" alt="{{ $alt }}" loading="eager"/>
   </figure>
   {{ partial "photo/exif" (dict "Photo" $photo) }}
-  <div class="photo-drawer">
+  <div class="photo-drawer" id="details">
     <a href="#" class="close"></a>
     {{ if $photo.tags }}
       <div id="terms" class="flex flex-row flex-wrap items-center">
@@ -30,5 +28,11 @@
     <header class="major">
       <h1>{{ or .Title $photo.title }}</h1>
     </header>
+    {{ if $photo.description._content }}
+    <div class="description">
+      {{ $photo.description._content | safeHTML }}
+    </div>
+    {{ end }}
   </div>
+  {{ partial "photo/photostrip" (dict "Page" . "Photos" $photos "Current" $photo) }}
 </section>

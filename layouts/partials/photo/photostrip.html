@@ -1,0 +1,75 @@
+{{/* Photostrip partial: expects dict with Page, Photos, Current */}}
+{{ $page := .Page }}
+{{ $photos := .Photos }}
+{{ $photos = $photos | collections.Reverse }}
+
+{{ $current := .Current }}
+
+{{/* Determine ordering and current index */}}
+{{ $ids := slice }}
+{{ range $photos }}{{ $ids = $ids | append .id }}{{ end }}
+{{ $idx := -1 }}
+{{ range $i, $id := $ids }}{{ if eq $id $current.id }}{{ $idx = $i }}{{ end }}{{ end }}
+
+{{ if ge $idx 0 }}
+<div class="photostrip">
+  <div class="photostrip-container">
+    {{/* Calculate range: 6 before and 6 after current photo */}}
+    {{ $startIdx := sub $idx 6 }}
+    {{ if lt $startIdx 0 }}{{ $startIdx = 0 }}{{ end }}
+    
+    {{ $endIdx := add $idx 6 }}
+    {{ if gt $endIdx (len $photos) }}{{ $endIdx = len $photos }}{{ end }}
+    
+    {{/* Previous photos section */}}
+    <div class="photostrip-prev">
+      {{ if gt $idx 0 }}
+        {{ range seq $startIdx (sub $idx 1) }}
+          {{ if and (ge . 0) (lt . (len $photos)) }}
+            {{ $photo := index $photos . }}
+            {{ $photoID := $photo.id }}
+            {{ $thumbUrl := or $photo.url_sq $photo.url_t $photo.url_s }}
+            {{ $alt := or $photo.title (printf "Photo %s" $photoID) }}
+            
+            <a href="{{ printf "%s%s/" $page.CurrentSection.Permalink $photoID }}" 
+               class="photostrip-thumb">
+              <img src="{{ $thumbUrl }}" alt="{{ $alt }}" loading="lazy" />
+            </a>
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    </div>
+    
+    {{/* Current photo section */}}
+    <div class="photostrip-current">
+      {{ $photo := index $photos $idx }}
+      {{ $photoID := $photo.id }}
+      {{ $thumbUrl := or $photo.url_sq $photo.url_t $photo.url_s }}
+      {{ $alt := or $photo.title (printf "Photo %s" $photoID) }}
+      
+      <a href="{{ printf "%s%s/" $page.CurrentSection.Permalink $photoID }}" 
+         class="photostrip-thumb current"
+         aria-current="page">
+        <img src="{{ $thumbUrl }}" alt="{{ $alt }}" loading="lazy" />
+      </a>
+    </div>
+    
+    {{/* Next photos section */}}
+    <div class="photostrip-next">
+      {{ range seq (add $idx 1) $endIdx }}
+        {{ if lt . (len $photos) }}
+          {{ $photo := index $photos . }}
+          {{ $photoID := $photo.id }}
+          {{ $thumbUrl := or $photo.url_sq $photo.url_t $photo.url_s }}
+          {{ $alt := or $photo.title (printf "Photo %s" $photoID) }}
+          
+          <a href="{{ printf "%s%s/" $page.CurrentSection.Permalink $photoID }}" 
+             class="photostrip-thumb">
+            <img src="{{ $thumbUrl }}" alt="{{ $alt }}" loading="lazy" />
+          </a>
+        {{ end }}
+      {{ end }}
+    </div>
+  </div>
+</div>
+{{ end }}

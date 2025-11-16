@@ -121,6 +121,19 @@
 			var wheelTimeout;
 			var isWheeling = false;
 			
+			// Check for #details hash on page load or hash change
+			function checkHashForDrawer() {
+				if (window.location.hash === '#details') {
+					$('body').addClass('scrolled');
+				}
+			}
+			
+			// Check on page load
+			checkHashForDrawer();
+			
+			// Check when hash changes
+			$(window).on('hashchange', checkHashForDrawer);
+			
 			// Handle wheel events for immediate responsiveness
 			$window.on('wheel', function(e) {
 				var deltaX = e.originalEvent.deltaX;
@@ -133,18 +146,24 @@
 					// Clear any existing timeout
 					clearTimeout(wheelTimeout);
 					
-					if (deltaY > 0) {
-						// Scrolling down - open drawer
-						$('body').addClass('scrolled');
-					} else if (deltaY < 0) {
-						// Scrolling up - check if we should close
-						var scrollPos = $window.scrollTop();
-						if (scrollPos <= scrollThreshold) {
-							$('body').removeClass('scrolled');
+				if (deltaY > 0) {
+					// Scrolling down - open drawer
+					$('body').addClass('scrolled');
+					// Add hash to URL if not already there
+					if (window.location.hash !== '#details') {
+						history.replaceState(null, '', '#details');
+					}
+				} else if (deltaY < 0) {
+					// Scrolling up - check if we should close
+					var scrollPos = $window.scrollTop();
+					if (scrollPos <= scrollThreshold) {
+						$('body').removeClass('scrolled');
+						// Remove hash from URL
+						if (window.location.hash === '#details') {
+							history.replaceState(null, '', window.location.pathname);
 						}
 					}
-					
-					// Re-enable scroll event handling after wheeling stops
+				}					// Re-enable scroll event handling after wheeling stops
 					wheelTimeout = setTimeout(function() {
 						isWheeling = false;
 					}, 150);
@@ -155,6 +174,10 @@
 			$('.photo-drawer .close').on('click', function(e) {
 				e.preventDefault();
 				$('body').removeClass('scrolled');
+				// Remove hash from URL
+				if (window.location.hash === '#details') {
+					history.replaceState(null, '', window.location.pathname);
+				}
 				// Scroll back to top
 				$('html, body').animate({ scrollTop: 0 }, 300);
 			});
