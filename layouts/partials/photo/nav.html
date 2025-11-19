@@ -1,27 +1,15 @@
-{{- $page := .Page -}}
-{{- $photos := .Photos -}}
-{{- $current := .Current -}}
-{{- /* Determine ordering as given in the JSON (already sorted during stub generation) */ -}}
-{{- $ids := slice -}}
-{{- range $photos }}{{ $ids = $ids | append .id }}{{ end -}}
-{{- $idx := -1 -}}
-{{- range $i, $id := $ids }}{{ if eq $id $current.id }}{{ $idx = $i }}{{ end }}{{ end -}}
-{{- if ge $idx 0 -}}
 <nav class="photo-nav">
   <ul class="pagination">
     <li>
-    {{- if lt $idx (sub (len $ids) 1) }}
-      {{- $prevID := index $ids (add $idx 1) -}}
-      <a href="{{ printf "%s%s/" $page.CurrentSection.Permalink $prevID }}" class="previous" rel="prev">Prev</a>
+    {{- with .NextInSection }}
+      <a href="{{ .RelPermalink }}" class="previous" rel="prev">Previous</a>
     {{- end }}
     </li>
-  <li><a href="{{ $page.CurrentSection.Permalink }}" class="gallery" id="galleryBackBtnBtm">back to {{ $page.CurrentSection.Title }}</a></li>
+  <li><a href="{{ .CurrentSection.Permalink }}" class="gallery" id="galleryBackBtnBtm">back to {{ .CurrentSection.Title }}</a></li>
     <li>
-    {{- if gt $idx 0 }}
-      {{- $nextID := index $ids (sub $idx 1) -}}
-      <a href="{{ printf "%s%s/" $page.CurrentSection.Permalink $nextID }}" class="next" rel="next">Next</a>
+    {{- with .PrevInSection }}
+      <a href="{{ .RelPermalink }}" class="next" rel="next">Next</a>
     {{- end }}
     </li>
   </ul>
 </nav>
-{{- end -}}

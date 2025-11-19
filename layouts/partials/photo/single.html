@@ -1,38 +1,33 @@
-{{- /* TODO: this could probably use .Params directly rather than going through site.Data.flickr.photosets */ -}}
+{{- /* All photo data is available directly in .Params from _content.gotmpl */ -}}
 {{- $fid := .Params.flickr_id | string -}}
-{{- $album := .Params.flickr_album -}}
-{{- $slug := .Params.gallery_slug -}}
-{{- $ps := index site.Data.flickr.photosets $slug -}}
-{{- $photos := $ps.photoset.photo -}}
-{{- $filtered := where $photos "id" $fid -}}
-{{- $photo := index $filtered 0 -}}
+{{- $alt := or .Params.description._content .Params.title (printf "Photo %s" $fid) -}}
 <section class="page" id="photo-single">
-  {{ partial "photo/nav" (dict "Page" . "Photos" $photos "Current" $photo) }}
-  {{- /* TODO: device-dependent sizing? */ -}}
-  {{- $url := or $photo.url_h $photo.url_k $photo.url_l $photo.url_c $photo.url_z $photo.url_m $photo.url_o $photo.url_sq -}}
-  {{- $alt := or $photo.description._content $photo.title (printf "Photo %s" $fid) }}
+  {{ partial "photo/nav" . }}
+  {{- /* 5k, 4k, 3k aren't being fetched right now, but could be */ -}}
+  {{- $url := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c .Params.url_z -}}
+  {{- $alt := or .Params.description._content .Params.title (printf "Photo %s" $fid) }}
   <figure>
     <img src="{{ $url }}" alt="{{ $alt }}" loading="eager"/>
   </figure>
-  {{ partial "photo/exif" (dict "Photo" $photo) }}
+  {{ partial "photo/exif" (dict "Photo" .Params) }}
   <div class="photo-drawer" id="details">
     <a href="#" class="close"></a>
-    {{- if $photo.tags }}
+    {{- if .Params.tags }}
       <div id="terms" class="flex flex-row flex-wrap items-center">
-        {{ range $tag := $photo.tags }}
+        {{ range $tag := .Params.tags }}
           <span><a class="button primary tag" href="/tags/{{ $tag | urlize }}">{{ $tag }}</a></span>
         {{ end }}
       </div>
     {{- end }}
     <header class="major">
-      <h1>{{ or .Title $photo.title }}</h1>
+      <h1>{{ or .Title .Params.title }}</h1>
     </header>
-    {{- if $photo.description._content }}
+    {{- if .Params.description._content }}
     <div class="description">
-      {{ $photo.description._content | safeHTML }}
+      {{ .Params.description._content | safeHTML }}
     </div>
     {{- end }}
   </div>
-  {{ partial "photo/photostrip" (dict "Page" . "Photos" $photos "Current" $photo) }}
-  {{ partial "photo/prefetch" (dict "Page" . "Photos" $photos "Current" $photo) }}
+  {{ partial "photo/photostrip" . }}
+  {{ partial "photo/prefetch" . }}
 </section>

@@ -1,13 +1,6 @@
-{{- $page := .Page -}}
-{{- $photos := .Photos -}}
-{{- $photos = $photos | collections.Reverse -}}
-
-{{- $current := .Current -}}
-
-{{- $ids := slice -}}
-{{- range $photos }}{{ $ids = $ids | append .id }}{{ end -}}
-{{- $idx := -1 -}}
-{{- range $i, $id := $ids }}{{ if eq $id $current.id }}{{ $idx = $i }}{{ end }}{{ end -}}
+{{- $ctx := partial "photo/page-context" . -}}
+{{- $pages := $ctx.pages -}}
+{{- $idx := $ctx.index -}}
 
 {{- if ge $idx 0 -}}
 <div class="photostrip">
@@ -16,16 +9,15 @@
     {{- if lt $startIdx 0 }}{{ $startIdx = 0 }}{{ end -}}
     
     {{- $endIdx := add $idx 6 -}}
-    {{- if gt $endIdx (len $photos) }}{{ $endIdx = len $photos }}{{ end }}
+    {{- if gt $endIdx (len $pages) }}{{ $endIdx = len $pages }}{{ end }}
     <div class="photostrip-prev">
       {{- if gt $idx 0 -}}
         {{- range seq $startIdx (sub $idx 1) -}}
-          {{- if and (ge . 0) (lt . (len $photos)) -}}
-            {{- $photo := index $photos . -}}
-            {{- $photoID := $photo.id -}}
-            {{- $thumbUrl := or $photo.url_sq $photo.url_t $photo.url_s -}}
-            {{- $alt := or $photo.title (printf "Photo %s" $photoID) }}
-            <a href="{{ printf "%s%s/" $page.CurrentSection.Permalink $photoID }}" class="photostrip-thumb">
+          {{- if and (ge . 0) (lt . (len $pages)) -}}
+            {{- $p := index $pages . -}}
+            {{- $thumbUrl := or $p.Params.url_sq $p.Params.url_t $p.Params.url_s -}}
+            {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.flickr_id) }}
+            <a href="{{ $p.RelPermalink }}" class="photostrip-thumb">
               <img src="{{ $thumbUrl }}" alt="{{ $alt }}" loading="lazy" />
             </a>
           {{- end -}}
@@ -33,22 +25,20 @@
       {{- end -}}
     </div>
     <div class="photostrip-current">
-      {{- $photo := index $photos $idx -}}
-      {{- $photoID := $photo.id -}}
-      {{- $thumbUrl := or $photo.url_sq $photo.url_t $photo.url_s -}}
-      {{- $alt := or $photo.title (printf "Photo %s" $photoID) }}
-      <a href="{{ printf "%s%s/" $page.CurrentSection.Permalink $photoID }}" class="photostrip-thumb current" aria-current="page">
+      {{- $p := index $pages $idx -}}
+      {{- $thumbUrl := or $p.Params.url_sq $p.Params.url_t $p.Params.url_s -}}
+      {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.flickr_id) }}
+      <a href="{{ $p.RelPermalink }}" class="photostrip-thumb current" aria-current="page">
         <img src="{{ $thumbUrl }}" alt="{{ $alt }}" loading="lazy" />
       </a>
     </div>
     <div class="photostrip-next">
       {{- range seq (add $idx 1) $endIdx -}}
-        {{- if lt . (len $photos) -}}
-          {{- $photo := index $photos . -}}
-          {{- $photoID := $photo.id -}}
-          {{- $thumbUrl := or $photo.url_sq $photo.url_t $photo.url_s -}}
-          {{- $alt := or $photo.title (printf "Photo %s" $photoID) }}
-          <a href="{{ printf "%s%s/" $page.CurrentSection.Permalink $photoID }}" class="photostrip-thumb">
+        {{- if lt . (len $pages) -}}
+          {{- $p := index $pages . -}}
+          {{- $thumbUrl := or $p.Params.url_sq $p.Params.url_t $p.Params.url_s -}}
+          {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.flickr_id) }}
+          <a href="{{ $p.RelPermalink }}" class="photostrip-thumb">
             <img src="{{ $thumbUrl }}" alt="{{ $alt }}" loading="lazy" />
           </a>
         {{- end -}}
