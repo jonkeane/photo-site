@@ -17,10 +17,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ssh-key: ${{ secrets.SUBMODULE_DEPLOY_KEY }}
-          submodules: recursive
           fetch-depth: 0
       
+      - uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.SUBMODULE_DEPLOY_KEY }}
+          repository: jonkeane/photo-site-assets
+
       - name: Setup Go
         uses: actions/setup-go@v5
       
