@@ -14,14 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Setup SSH for private submodules
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SUBMODULE_DEPLOY_KEY }}
-      
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          ssh-key: ${{ secrets.SUBMODULE_DEPLOY_KEY }}
           submodules: recursive
           fetch-depth: 0
       
