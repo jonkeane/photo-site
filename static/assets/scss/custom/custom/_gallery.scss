@@ -56,7 +56,7 @@
     justify-content: center;
     margin: 16px 0;
 	// Prevent last row from stretching: add invisible flex items to fill remaining space
-		&::after {
+		&:after {
 			content: "";
 			flex: 1 1 auto;
 			height: 0;
@@ -72,8 +72,7 @@
 	align-items: stretch;
 	display: block;
 	position: relative;
-	// transition: transform 0.2s, box-shadow 0.2s;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
 	aspect-ratio: unset;
 	flex: 1 1 auto;
 }
@@ -114,8 +113,36 @@
   width: 100%; /* Ensures the container takes full width */
 }
 
-.photo-nav .gallery {
+.photo-nav .backToGallery {
 	padding: 0 1.75rem;
+}
+
+/* Responsive navigation text */
+/* On small screens, hide full text and show abbreviated versions */
+@include breakpoint('<=small') {
+	.photo-nav .previous {
+		font-size: 0;
+		&:before {
+			font-size: 1rem;
+			font-weight: bold;
+			margin-right: 0;
+		}
+	}
+	.photo-nav .backToGallery {
+		font-size: 0;
+		&:after {
+			font-size: 0.8rem;
+			content: 'back';
+		}
+	}
+	.photo-nav .next {
+		font-size: 0;
+		&:before {
+			font-size: 1rem;
+			font-weight: bold;
+			margin-left: 0;
+		}
+	}
 }
 
 
@@ -123,48 +150,44 @@
 // Single photo page
 .exposure-meta ul,
 .camera-meta ul {
-	display: flex; /* Makes the ul a flex container */
-	justify-content: space-between; /* Distributes space between items, pushing them to the ends and center */
-	align-items: center; /* Vertically centers items if the container has a defined height */
-	list-style: none; /* Removes default list bullets */
-	padding: 0; /* Removes default padding */
-	margin: 0; /* Removes default margin */
-	// width: 50%; /* Ensures the container takes full width */
+	display: flex; 
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	list-style: none;
+	padding: 0;
+	margin: 0;
 }
 
-/* Layout for photo metadata: exposure (left) and camera (right) on a single line */
+.camera-meta li {
+	white-space: nowrap;
+}
+
 #photo-single {
-	/* Fill the viewport height and use a column flex layout so image stacks above metadata.
-	   Structure inside is expected to be: image block (or container), .meta-row (exposure/camera), and nav/footer.
-	   All flexible white space should be at the bottom. */
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
 	padding-top: 0.25rem;
 	padding-bottom: 0.25rem;
-	height: 100vh; /* full viewport */
+	height: 100vh;
 	min-height: 100vh;
-	overflow: hidden; /* Prevent scrolling of the section itself */
+	overflow: hidden;
 	position: relative;
 
-	/* Ensure direct children layout: everything sized to content */
 	> figure {
-		/* This block should wrap the image element(s). Don't grow, only shrink if needed */
 		flex: 0 1 auto;
 		display: flex;
-		align-items: center; /* center image vertically if smaller */
-		justify-content: center; /* center horizontally */
+		align-items: center;
+		justify-content: center;
 		width: 100%;
-		overflow: hidden; /* prevent image overflow */
+		overflow: hidden;
 	}
 
-	/* Keep metadata sized to content, and push flexible space below it */
 	> .meta-row {
 		flex: 0 0 auto;
-		/* Add auto margin at bottom to push all flexible space below the EXIF data */
 		margin-bottom: auto;
 	}
-	/* Nav at top should be sized to content */
+
 	> .photo-nav,
 	> footer,
 	> .nav {
@@ -172,7 +195,6 @@
 	}
 }
 
-/* Fixed content (nav, image, EXIF) - everything above the drawer */
 #photo-single > .photo-nav,
 #photo-single > figure,
 #photo-single > .meta-row {
@@ -180,7 +202,46 @@
 	z-index: 1;
 }
 
-/* Photo drawer styles - slides up over the image */
+#photo-single > .meta-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	gap: 0.5rem;
+}
+
+#photo-single .exposure-meta,
+#photo-single .camera-meta {
+	display: flex;
+	align-items: center;
+}
+
+#photo-single .exposure-meta ul,
+#photo-single .camera-meta ul {
+	display: flex;
+	gap: 0.75rem; 
+	margin: 0;
+}
+
+@include breakpoint('<=medium') {
+	#photo-single .meta-row {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.25rem;
+		width: 100%;
+	}
+	#photo-single .exposure-meta, #photo-single .camera-meta {
+		width: 100%;
+	}
+	#photo-single .exposure-meta ul,
+	#photo-single .camera-meta ul {
+		justify-content: space-between;
+		gap: 0.25rem;
+		width: 100%;
+
+	}
+}
+
 .photo-drawer {
 	position: fixed;
 	bottom: 0;
@@ -192,78 +253,50 @@
 	transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 	padding: 2rem;
 	box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-	z-index: 10;
+	z-index: 100;
 	max-height: 60vh;
-	overflow-y: auto;
 
-	/* Close button */
-	/* copied out of the theme because the theme itself targets only in the navpanel, not generally */
-	.close {
-			@include icon;
-			@include vendor('transition', 'color #{_duration(transition)} ease-in-out');
-			-webkit-tap-highlight-color: rgba(0,0,0,0);
-			border: 0;
-			color: _palette(fg-light);
-			cursor: pointer;
-			display: block;
-			height: 3.25rem;
-			line-height: 3.25rem;
-			padding-right: 1.25rem;
-			position: absolute;
-			right: 0;
-			text-align: right;
-			top: 0;
-			width: 7rem;
+	/* Drawer handle - always visible at top, positioned on the left */
+	.open, .close {
+		@include icon;
+		@include vendor('transition', 'color #{_duration(transition)} ease-in-out');
+		position: absolute;
+		padding: 0 1rem 2px 0.75rem;
+		top: -2rem;
+		left: 1rem;
+		background-color: rgba(255, 255, 255, 0.98);
+		// transition: background-color 0.2s ease;
+		-moz-border-radius-topleft: 30px;
+    	-moz-border-radius-topright: 0;
+    	border-radius: 1rem 1rem 0 0;
+		border-bottom: none;
+		// text-decoration: none;
+		text-transform: uppercase;
+		font-family: _font(family-heading);
+		font-size: 0.8rem;
+		font-weight: _font(weight-heading);
+		box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+		clip-path: inset(-20px -20px 0px -20px);
+	}
 
-			&:before {
-				content: '\f00d';
-				font-size: 1.25rem;
-			}
-
-			&:hover {
-				color: _palette(fg-bold);
-			}
+	.open {
+		&:before {
+			content: '\f106';
+			margin-right: (0.75em / 0.8);
 		}
+	}
+
+	.close {
+		&:before {
+			content: '\f107';
+			margin-right: (0.75em / 0.8);
+		}
+	}
 }
 
 /* Show drawer on scroll */
 body.scrolled .photo-drawer {
 	transform: translateY(0);
-}
-
-#photo-single > .meta-row {
-	display: flex;
-	align-items: center;
-	justify-content: space-between; /* exposure group left, camera group right */
-	width: 100%;
-	gap: 0.5rem;
-}
-
-/* ensure the two meta blocks themselves group their list items tightly */
-#photo-single .exposure-meta,
-#photo-single .camera-meta {
-	display: flex;
-	align-items: center;
-}
-
-#photo-single .exposure-meta ul,
-#photo-single .camera-meta ul {
-	display: flex;
-	gap: 0.75rem; /* keep items close together */
-	margin: 0;
-}
-
-/* Responsive: on small screens stack the meta blocks under the image */
-@include breakpoint('<=small') {
-	#photo-single > .meta-row {
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 0.25rem;
-	}
-	#photo-single .exposure-meta ul,
-	#photo-single .camera-meta ul {
-		gap: 0.25rem;
-	}
 }
 
 #photo-single > * > img,

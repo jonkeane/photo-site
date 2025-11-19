@@ -121,11 +121,19 @@
 			var wheelTimeout;
 			var isWheeling = false;
 			
-			// Check for #details hash on page load or hash change
-			function checkHashForDrawer() {
+			// Function to update drawer toggle button state
+			function updateDrawerToggle() {
 				if (window.location.hash === '#details') {
 					$('body').addClass('scrolled');
+					$('.drawer-toggle.open').removeClass('open').addClass('close').attr('href', '#');
+				} else {
+					$('body').removeClass('scrolled');
+					$('.drawer-toggle.close').removeClass('close').addClass('open').attr('href', '#details');
 				}
+			}
+
+			function checkHashForDrawer() {
+				updateDrawerToggle();
 			}
 			
 			// Check on page load
@@ -149,6 +157,7 @@
 				if (deltaY > 0) {
 					// Scrolling down - open drawer
 					$('body').addClass('scrolled');
+					$('.drawer-toggle.open').removeClass('open').addClass('close').attr('href', '#');
 					// Add hash to URL if not already there
 					if (window.location.hash !== '#details') {
 						history.replaceState(null, '', '#details');
@@ -158,6 +167,7 @@
 					var scrollPos = $window.scrollTop();
 					if (scrollPos <= scrollThreshold) {
 						$('body').removeClass('scrolled');
+						$('.drawer-toggle.close').removeClass('close').addClass('open').attr('href', '#details');
 						// Remove hash from URL
 						if (window.location.hash === '#details') {
 							history.replaceState(null, '', window.location.pathname);
@@ -170,16 +180,25 @@
 				}
 			});
 			
-			// Handle close button
-			$('.photo-drawer .close').on('click', function(e) {
+			// Handle drawer toggle button clicks
+			$('.photo-drawer').on('click', '.drawer-toggle', function(e) {
 				e.preventDefault();
-				$('body').removeClass('scrolled');
-				// Remove hash from URL
-				if (window.location.hash === '#details') {
+				
+				if ($(this).hasClass('open')) {
+					// Opening the drawer
+					$('body').addClass('scrolled');
+					$(this).removeClass('open').addClass('close').attr('href', '#');
+					// Add hash to URL
+					history.replaceState(null, '', '#details');
+				} else if ($(this).hasClass('close')) {
+					// Closing the drawer
+					$('body').removeClass('scrolled');
+					$(this).removeClass('close').addClass('open').attr('href', '#details');
+					// Remove hash from URL
 					history.replaceState(null, '', window.location.pathname);
+					// Scroll back to top
+					$('html, body').animate({ scrollTop: 0 }, 300);
 				}
-				// Scroll back to top
-				$('html, body').animate({ scrollTop: 0 }, 300);
 			});
 		}
 
