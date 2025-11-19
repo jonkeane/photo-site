@@ -1,38 +1,38 @@
-{{/* TODO: this could probably use .Params directly rather than going through site.Data.flickr.photosets */}}
-{{ $fid := .Params.flickr_id | string }}
-{{ $album := .Params.flickr_album }}
-{{ $slug := .Params.gallery_slug }}
-{{ $ps := index site.Data.flickr.photosets $slug }}
-{{/* Find photo object by ID */}}
-{{ $photos := $ps.photoset.photo }}
-{{ $filtered := where $photos "id" $fid }}
-{{ $photo := index $filtered 0 }}
+{{- /* TODO: this could probably use .Params directly rather than going through site.Data.flickr.photosets */ -}}
+{{- $fid := .Params.flickr_id | string -}}
+{{- $album := .Params.flickr_album -}}
+{{- $slug := .Params.gallery_slug -}}
+{{- $ps := index site.Data.flickr.photosets $slug -}}
+{{- $photos := $ps.photoset.photo -}}
+{{- $filtered := where $photos "id" $fid -}}
+{{- $photo := index $filtered 0 -}}
 <section class="page" id="photo-single">
   {{ partial "photo/nav" (dict "Page" . "Photos" $photos "Current" $photo) }}
-  {{/* TODO: device-dependent sizing? */}}
-  {{ $url := or $photo.url_h $photo.url_k $photo.url_l $photo.url_c $photo.url_z $photo.url_m $photo.url_o $photo.url_sq }}
-  {{ $alt := or $photo.description._content $photo.title (printf "Photo %s" $fid) }}
+  {{- /* TODO: device-dependent sizing? */ -}}
+  {{- $url := or $photo.url_h $photo.url_k $photo.url_l $photo.url_c $photo.url_z $photo.url_m $photo.url_o $photo.url_sq -}}
+  {{- $alt := or $photo.description._content $photo.title (printf "Photo %s" $fid) }}
   <figure>
     <img src="{{ $url }}" alt="{{ $alt }}" loading="eager"/>
   </figure>
   {{ partial "photo/exif" (dict "Photo" $photo) }}
   <div class="photo-drawer" id="details">
     <a href="#" class="close"></a>
-    {{ if $photo.tags }}
+    {{- if $photo.tags }}
       <div id="terms" class="flex flex-row flex-wrap items-center">
         {{ range $tag := $photo.tags }}
           <span><a class="button primary tag" href="/tags/{{ $tag | urlize }}">{{ $tag }}</a></span>
         {{ end }}
       </div>
-    {{ end }}
+    {{- end }}
     <header class="major">
       <h1>{{ or .Title $photo.title }}</h1>
     </header>
-    {{ if $photo.description._content }}
+    {{- if $photo.description._content }}
     <div class="description">
       {{ $photo.description._content | safeHTML }}
     </div>
-    {{ end }}
+    {{- end }}
   </div>
   {{ partial "photo/photostrip" (dict "Page" . "Photos" $photos "Current" $photo) }}
+  {{ partial "photo/prefetch" (dict "Page" . "Photos" $photos "Current" $photo) }}
 </section>

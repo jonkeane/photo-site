@@ -2,7 +2,6 @@
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
 	{{ if .Params.flickr_id }}
 		<div id="main">
-		{{/* Individual image page */}}
 		{{ partial "photo/single" . }}
 		</div>
 	{{ else }}

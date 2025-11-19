@@ -288,4 +288,39 @@
 			// show one post to start
 			showOneFeaturedPost();
 		});
+
+		// Prefetch images using Fetch API
+		// necesary because Safari doesn't support <link rel="prefetch">
+		(function() {
+			// Check if fetch is supported
+			if (!window.fetch) return;
+
+			// Use requestIdleCallback if available, otherwise setTimeout
+			var scheduleWork = window.requestIdleCallback || function(cb) {
+				setTimeout(cb, 200);
+			};
+
+			scheduleWork(function() {
+				var prefetchData = document.getElementById('prefetch-data');
+				if (!prefetchData) return;
+
+				// Find all link tags inside the prefetch-data div
+				var prefetchLinks = prefetchData.querySelectorAll('link');
+				if (prefetchLinks.length === 0) return;
+
+				prefetchLinks.forEach(function(link) {
+					var url = link.getAttribute('href');
+					if (!url) return;
+
+					fetch(url, {
+						method: 'GET',
+						cache: 'force-cache',
+						priority: 'low',
+
+					}).catch(function() {
+						// Silently ignore prefetch errors
+					});
+				});
+			});
+		})();
 })(jQuery);

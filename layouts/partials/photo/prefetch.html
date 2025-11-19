@@ -1,0 +1,38 @@
+{{- $page := .Page -}}
+{{- $photos := .Photos -}}
+{{- $current := .Current -}}
+
+{{- $ids := slice -}}
+{{- range $photos }}{{ $ids = $ids | append .id }}{{ end -}}
+{{- $idx := -1 -}}
+{{- range $i, $id := $ids }}{{ if eq $id $current.id }}{{ $idx = $i }}{{ end }}{{ end -}}
+
+{{- if ge $idx 0 -}}
+<div id="prefetch-data" style="display: none;">
+  {{- $urlsToPrefetch := slice -}}  
+  
+  {{- if gt $idx 0 -}}
+    {{- $nextID := index $ids (sub $idx 1) -}}
+    {{- $nextFiltered := where $photos "id" $nextID -}}
+    {{- if $nextFiltered -}}
+      {{- $nextPhoto := index $nextFiltered 0 -}}
+      {{- $nextUrl := or $nextPhoto.url_h $nextPhoto.url_k $nextPhoto.url_l $nextPhoto.url_c $nextPhoto.url_z $nextPhoto.url_m $nextPhoto.url_o -}}
+      {{- if $nextUrl }}
+        <link href="{{ $nextUrl }}" as="image" />
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if lt $idx (sub (len $ids) 1) -}}
+    {{- $prevID := index $ids (add $idx 1) -}}
+    {{- $prevFiltered := where $photos "id" $prevID -}}
+    {{- if $prevFiltered -}}
+      {{- $prevPhoto := index $prevFiltered 0 -}}
+      {{- $prevUrl := or $prevPhoto.url_h $prevPhoto.url_k $prevPhoto.url_l $prevPhoto.url_c $prevPhoto.url_z $prevPhoto.url_m $prevPhoto.url_o -}}
+      {{- if $prevUrl }}
+        <link href="{{ $prevUrl }}" as="image" />
+      {{- end -}}
+    {{- end -}}
+  {{- end }}
+  </div>
+{{- end -}}
