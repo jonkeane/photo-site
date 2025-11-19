@@ -1,0 +1,102 @@
+name: Build and Deploy to Netlify
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      
+      - name: Setup Go
+        uses: actions/setup-go@v5
+      
+      - name: Cache Flickr data
+        uses: actions/cache@v4
+        with:
+          path: data/flickr
+          key: flickr-data-${{ github.sha }}
+          restore-keys: |
+            flickr-data-
+      
+      - name: Build flickrimport binary
+        run: go build ./cmd/flickrimport
+      
+      - name: Run flickrimport
+        run: ./flickrimport
+        env:
+          FLICKR_API_KEY: ${{ secrets.FLICKR_API_KEY }}
+      
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.152.2'
+          extended: true
+      
+      - name: Build Hugo site
+        run: hugo --minify
+      
+      - name: Deploy to Netlify (Production)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        with:
+          args: deploy --prod --dir=public
+      
+      - name: Deploy to Netlify (Preview)
+        if: github.event_name == 'pull_request'
+        id: netlify-preview
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        with:
+          args: deploy --dir=public --json
+      
+      - name: Comment PR with preview URL
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          NETLIFY_OUTPUT: ${{ steps.netlify-preview.outputs.NETLIFY_OUTPUT }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = process.env.NETLIFY_OUTPUT;
+            let deployUrl = '';
+            
+            try {
+              const data = JSON.parse(output);
+              deployUrl = data.deploy_url || '';
+            } catch (e) {
+              console.log('Error parsing Netlify output:', e);
+              deployUrl = 'Unable to parse deploy URL';
+            }
+            
+            const comment = `## 🚀 Preview Deployment
+            
+            ✅ Preview deployed successfully!
+            
+            **Preview URL:** ${deployUrl}
+            
+            Built with commit: ${context.sha.substring(0, 7)}`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
