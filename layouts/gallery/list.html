@@ -38,7 +38,7 @@
 						{{ end }}
 						{{ $ps := index site.Data.flickr.photosets $slug }}
 						{{ if $ps }}
-					    	{{ $pages := .Pages }}
+					    	{{ $pages := .Pages.ByDate }}
 							{{- $pagedImages := .Paginate $pages 25 -}}
 							{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photosubset" $pagedImages.Pages "Slug" $slug) }}
 					</section>

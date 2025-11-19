@@ -106,15 +106,16 @@ type Photo struct {
 }
 
 type PhotoExifFields struct {
-	Model       string `json:"model,omitempty"`
-	Lens        string `json:"lens,omitempty"`
-	Flash       string `json:"flash,omitempty"`
-	FocalLength string `json:"focallength,omitempty"`
-	FStop       string `json:"fstop,omitempty"`
-	Exposure    string `json:"exposure,omitempty"`
-	ISO         string `json:"iso,omitempty"`
-	Time        string `json:"time,omitempty"`
-	Location    string `json:"location,omitempty"`
+	Model             string `json:"model,omitempty"`
+	Lens              string `json:"lens,omitempty"`
+	Flash             string `json:"flash,omitempty"`
+	FocalLength       string `json:"focallength,omitempty"`
+	FStop             string `json:"fstop,omitempty"`
+	Exposure          string `json:"exposure,omitempty"`
+	ISO               string `json:"iso,omitempty"`
+	Time              string `json:"time,omitempty"`
+	Location          string `json:"location,omitempty"`
+	PreservedFileName string `json:"preservedfilename,omitempty"`
 }
 
 type PhotoExifResp struct {
@@ -503,6 +504,8 @@ func extractExifFields(raw json.RawMessage) *PhotoExifFields {
 			fields.Time = cleaned_val
 		case "LOLcation":
 			fields.Location = cleaned_val
+		case "PreservedFileName":
+			fields.PreservedFileName = cleaned_val
 		}
 	}
 	return fields

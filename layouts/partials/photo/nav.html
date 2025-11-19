@@ -1,13 +1,13 @@
 <nav class="photo-nav">
   <ul class="pagination">
     <li>
-    {{- with .NextInSection }}
+    {{- with .PrevInSection }}
       <a href="{{ .RelPermalink }}" class="previous" rel="prev">Previous</a>
     {{- end }}
     </li>
   <li><a href="{{ .CurrentSection.Permalink }}" class="backToGallery">back to {{ .CurrentSection.Title }}</a></li>
     <li>
-    {{- with .PrevInSection }}
+    {{- with .NextInSection }}
       <a href="{{ .RelPermalink }}" class="next" rel="next">Next</a>
     {{- end }}
     </li>

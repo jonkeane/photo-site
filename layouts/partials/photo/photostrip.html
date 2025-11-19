@@ -10,9 +10,27 @@
     
     {{- $endIdx := add $idx 6 -}}
     {{- if gt $endIdx (len $pages) }}{{ $endIdx = len $pages }}{{ end }}
+    <div class="photostrip-next">
+      {{- range seq $endIdx (add $idx 1) -}}
+        {{- if lt . (len $pages) -}}
+          {{- $p := index $pages . -}}
+          {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.flickr_id) }}
+          <a href="{{ $p.RelPermalink }}" class="photostrip-thumb">
+            <img src="{{ $p.Params.url_s }}" srcset="{{ $p.Params.url_s }} 1x, {{ $p.Params.url_m }} 2x" alt="{{ $alt }}" loading="lazy" />
+          </a>
+        {{- end -}}
+      {{- end }}
+    </div>
+    <div class="photostrip-current">
+      {{- $p := index $pages $idx -}}
+      {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.flickr_id) }}
+      <a href="{{ $p.RelPermalink }}" class="photostrip-thumb current" aria-current="page">
+        <img src="{{ $p.Params.url_s }}" srcset="{{ $p.Params.url_s }} 1x, {{ $p.Params.url_m }} 2x" alt="{{ $alt }}" loading="lazy" />
+      </a>
+    </div>
     <div class="photostrip-prev">
       {{- if gt $idx 0 -}}
-        {{- range seq $startIdx (sub $idx 1) -}}
+        {{- range seq (sub $idx 1) $startIdx -}}
           {{- if and (ge . 0) (lt . (len $pages)) -}}
             {{- $p := index $pages . -}}
             {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.flickr_id) }}
@@ -22,24 +40,6 @@
           {{- end -}}
         {{- end -}}
       {{- end -}}
-    </div>
-    <div class="photostrip-current">
-      {{- $p := index $pages $idx -}}
-      {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.flickr_id) }}
-      <a href="{{ $p.RelPermalink }}" class="photostrip-thumb current" aria-current="page">
-        <img src="{{ $p.Params.url_s }}" srcset="{{ $p.Params.url_s }} 1x, {{ $p.Params.url_m }} 2x" alt="{{ $alt }}" loading="lazy" />
-      </a>
-    </div>
-    <div class="photostrip-next">
-      {{- range seq (add $idx 1) $endIdx -}}
-        {{- if lt . (len $pages) -}}
-          {{- $p := index $pages . -}}
-          {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.flickr_id) }}
-          <a href="{{ $p.RelPermalink }}" class="photostrip-thumb">
-            <img src="{{ $p.Params.url_s }}" srcset="{{ $p.Params.url_s }} 1x, {{ $p.Params.url_m }} 2x" alt="{{ $alt }}" loading="lazy" />
-          </a>
-        {{- end -}}
-      {{- end }}
     </div>
   </div>
 </div>

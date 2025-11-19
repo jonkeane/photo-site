@@ -12,50 +12,56 @@ photoset JSON files in site.Data.flickr.photosets.
       {{ warnf "gallery adapter: photoset %q missing photo array" $slug }}
     {{ else }}
       {{ $setID := $ps.photoset.id }}
-      {{ range $p := $ps.photoset.photo }}
+      {{ $sortedPhotos := sort $ps.photoset.photo "datetaken" }}
+      {{ range $p := $sortedPhotos }}
         {{ $fid := string $p.id }}
-  {{ $tags := $p.tags }}
-  {{ if not (in $tags "nogallery") }}
-          {{ $content := dict "mediaType" "text/markdown" "value" "" }}
-          {{ $dates := dict }}
-          {{ with $p.datetaken }}{{ $dates = dict "date" (time.AsTime .) }}{{ end }}
-          {{ $params := dict
-              "flickr_id" $fid
-              "flickr_album" $setID
-              "gallery_slug" $slug
-              "tags" $tags
-              "datetaken" $p.datetaken
-              "dateupload" $p.dateupload
-              "description" $p.description
-              "exif" $p.exif
-              "last_update" $p.last_update
-              "license" $p.license
-              "ownername" $p.ownername
-              "pathalias" $p.pathalias
-              "title" $p.title
-              "url_c" $p.url_c
-              "url_h" $p.url_h
-              "url_k" $p.url_k
-              "url_l" $p.url_l
-              "url_m" $p.url_m
-              "url_n" $p.url_n
-              "url_o" $p.url_o
-              "url_s" $p.url_s
-              "url_sq" $p.url_sq
-              "url_t" $p.url_t
-              "url_z" $p.url_z
-            }}
-          {{ $page := dict
-              "content" $content
-              "dates" $dates
-              "kind" "page"
-              "path" (printf "%s/%s" $slug $fid)
-              "title" ($p.title | default (printf "Photo %s" $fid))
-              "type" "gallery"
-              "layout" "single"
-              "params" $params
-            }}
-          {{ $.AddPage $page }}
+          {{ $tags := $p.tags }}
+          {{ if not (in $tags "nogallery") }}
+            {{ $content := dict "mediaType" "text/markdown" "value" "" }}
+            {{ $dates := dict }}
+            {{ with $p.datetaken }}{{ $dates = dict "date" (time.AsTime .) }}{{ end }}
+            {{ $photoTitle := $p.title | default "untitled" }}
+            {{ $lowerTitle := lower $photoTitle }}
+            {{ if or (strings.HasSuffix $lowerTitle ".jpg") (strings.HasSuffix $lowerTitle ".jpeg") (strings.HasSuffix $lowerTitle ".png") (strings.HasSuffix $lowerTitle ".tiff") (strings.HasSuffix $lowerTitle ".tif") (strings.HasSuffix $lowerTitle ".gif") (strings.HasSuffix $lowerTitle ".bmp") (strings.HasSuffix $lowerTitle ".webp") (strings.HasSuffix $lowerTitle ".heif") (strings.HasSuffix $lowerTitle ".heic") }}
+              {{ $photoTitle = "untitled" }}
+            {{ end }}
+            {{ $params := dict
+                "flickr_id" $fid
+                "flickr_album" $setID
+                "gallery_slug" $slug
+                "tags" $tags
+                "datetaken" $p.datetaken
+                "dateupload" $p.dateupload
+                "description" $p.description
+                "exif" $p.exif
+                "last_update" $p.last_update
+                "license" $p.license
+                "ownername" $p.ownername
+                "pathalias" $p.pathalias
+                "title" $p.title
+                "url_c" $p.url_c
+                "url_h" $p.url_h
+                "url_k" $p.url_k
+                "url_l" $p.url_l
+                "url_m" $p.url_m
+                "url_n" $p.url_n
+                "url_o" $p.url_o
+                "url_s" $p.url_s
+                "url_sq" $p.url_sq
+                "url_t" $p.url_t
+                "url_z" $p.url_z
+              }}
+            {{ $page := dict
+                "content" $content
+                "dates" $dates
+                "kind" "page"
+                "path" (printf "%s/%s" $slug $fid)
+                "title" $photoTitle
+                "type" "gallery"
+                "layout" "single"
+                "params" $params
+              }}
+            {{ $.AddPage $page }}
         {{ end }}
       {{ end }}
     {{ end }}
