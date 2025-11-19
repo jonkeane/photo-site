@@ -24,10 +24,10 @@ jobs:
             mkdir -p ~/.ssh
             echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
-            ssh-keyscan github.com >> ~/.ssh/known_hosts
 
       - name: Init and update submodules
         run: |
+            ssh -T git@github.com
             git submodule sync
             git submodule update --init --recursive
 
