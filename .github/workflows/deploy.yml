@@ -27,7 +27,6 @@ jobs:
 
       - name: Init and update submodules
         run: |
-            ssh -T git@github.com
             git submodule sync
             git submodule update --init --recursive
 
