@@ -15,10 +15,9 @@
         {{- range seq $startIdx (sub $idx 1) -}}
           {{- if and (ge . 0) (lt . (len $pages)) -}}
             {{- $p := index $pages . -}}
-            {{- $thumbUrl := or $p.Params.url_sq $p.Params.url_t $p.Params.url_s -}}
             {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.flickr_id) }}
             <a href="{{ $p.RelPermalink }}" class="photostrip-thumb">
-              <img src="{{ $thumbUrl }}" alt="{{ $alt }}" loading="lazy" />
+              <img src="{{ $p.Params.url_s }}" srcset="{{ $p.Params.url_s }} 1x, {{ $p.Params.url_m }} 2x" alt="{{ $alt }}" loading="lazy" />
             </a>
           {{- end -}}
         {{- end -}}
@@ -26,20 +25,18 @@
     </div>
     <div class="photostrip-current">
       {{- $p := index $pages $idx -}}
-      {{- $thumbUrl := or $p.Params.url_sq $p.Params.url_t $p.Params.url_s -}}
       {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.flickr_id) }}
       <a href="{{ $p.RelPermalink }}" class="photostrip-thumb current" aria-current="page">
-        <img src="{{ $thumbUrl }}" alt="{{ $alt }}" loading="lazy" />
+        <img src="{{ $p.Params.url_s }}" srcset="{{ $p.Params.url_s }} 1x, {{ $p.Params.url_m }} 2x" alt="{{ $alt }}" loading="lazy" />
       </a>
     </div>
     <div class="photostrip-next">
       {{- range seq (add $idx 1) $endIdx -}}
         {{- if lt . (len $pages) -}}
           {{- $p := index $pages . -}}
-          {{- $thumbUrl := or $p.Params.url_sq $p.Params.url_t $p.Params.url_s -}}
           {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.flickr_id) }}
           <a href="{{ $p.RelPermalink }}" class="photostrip-thumb">
-            <img src="{{ $thumbUrl }}" alt="{{ $alt }}" loading="lazy" />
+            <img src="{{ $p.Params.url_s }}" srcset="{{ $p.Params.url_s }} 1x, {{ $p.Params.url_m }} 2x" alt="{{ $alt }}" loading="lazy" />
           </a>
         {{- end -}}
       {{- end }}

@@ -223,22 +223,35 @@
 	margin: 0;
 }
 
+#iso {
+	font-variant: small-caps;
+}
+
+#fstop {
+	&::first-letter {
+		vertical-align: super;
+		font-size: smaller; /* or adjust as needed */
+	}
+}
+
+#exposure {
+	font-variant-numeric: diagonal-fractions;
+
+	small {
+		font-size: smaller;
+	}
+}
+
 @include breakpoint('<=medium') {
 	#photo-single .meta-row {
 		flex-direction: column;
 		align-items: flex-start;
 		gap: 0.25rem;
-		width: 100%;
-	}
-	#photo-single .exposure-meta, #photo-single .camera-meta {
-		width: 100%;
 	}
 	#photo-single .exposure-meta ul,
 	#photo-single .camera-meta ul {
 		justify-content: space-between;
 		gap: 0.25rem;
-		width: 100%;
-
 	}
 }
 

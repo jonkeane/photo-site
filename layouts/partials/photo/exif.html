@@ -2,9 +2,9 @@
 <div class="meta-row">
   <div class="exposure-meta">
     <ul>
-    {{ if $p.exif.exposure }}<li>{{ $p.exif.exposure }} sec</li>{{ end }}
-    {{ if $p.exif.fstop }}<li>{{ $p.exif.fstop }}</li>{{ end }}
-    {{ if $p.exif.iso }}<li>{{ $p.exif.iso }} iso</li>{{ end }}
+    {{ if $p.exif.exposure }}<li id="exposure">{{ $p.exif.exposure }} <small>sec</small></li>{{ end }}
+    {{ if $p.exif.fstop }}<li id="fstop">{{ $p.exif.fstop }}</li>{{ end }}
+    {{ if $p.exif.iso }}<li id="iso">{{ $p.exif.iso }} iso</li>{{ end }}
     </ul>
   </div>
   <div class="camera-meta">
