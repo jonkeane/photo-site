@@ -15,14 +15,15 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
         with:
           ssh-key: ${{ secrets.SUBMODULE_DEPLOY_KEY }}
           repository: jonkeane/photo-site-assets
+          ref: main
 
       - name: Setup Go
         uses: actions/setup-go@v5
