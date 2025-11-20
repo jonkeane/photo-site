@@ -77,13 +77,12 @@ jobs:
       
       - name: Deploy to Netlify (Preview)
         if: github.event_name == 'pull_request'
-        id: netlify-preview
-        uses: netlify/actions/cli@master
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        with:
-          args: deploy --dir=public --json
+        run: |
+          npm install -g netlify-cli
+          netlify deploy --dir=public --json
       
       - name: Comment PR with preview URL
         if: github.event_name == 'pull_request'
