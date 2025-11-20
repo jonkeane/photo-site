@@ -232,7 +232,7 @@ func main() {
 			} else {
 				photo.Tags = extractTagsFromInfo(infoRaw)
 			}
-			time.Sleep(120 * time.Millisecond) // be polite
+			time.Sleep(240 * time.Millisecond) // be polite
 		}
 
 		// Persist raw JSON for Hugo data consumption
@@ -327,7 +327,7 @@ func fetchPhotosetAll(ctx context.Context, client *http.Client, apiKey, setID st
 			break
 		}
 		page++
-		time.Sleep(120 * time.Millisecond) // be polite
+		time.Sleep(240 * time.Millisecond) // be polite
 	}
 	header.Photoset.Photo = all
 	return &header, nil

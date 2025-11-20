@@ -46,8 +46,16 @@ jobs:
       
       - name: Run flickrimport
         run: ./flickrimport
+        continue-on-error: true
         env:
           FLICKR_API_KEY: ${{ secrets.FLICKR_API_KEY }}
+      
+      - name: Save Flickr data to cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/flickr
+          key: flickr-data-${{ github.sha }}
       
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
