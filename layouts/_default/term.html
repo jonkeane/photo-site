@@ -19,21 +19,8 @@
                         </header>
 
 						{{- if .Pages }}
-						{{- $pagedImages := .Paginate .Pages 25 -}}
-						<div class="photo-grid">
-							{{- range $pagedImages.Pages }}
-								{{- $fid := .Params.flickr_id | string -}}
-								{{- $url := or .Params.url_m .Params.url_s -}}
-								{{- $alt := or .Params.title (printf "Photo %s" $fid) }}
-								<div class="photo-grid-item">
-									<a href="{{ .RelPermalink }}">
-										<figure>
-											<img src="{{ $url }}" alt="{{ $alt }}" loading="lazy"/>
-										</figure>
-									</a>
-								</div>
-							{{- end }}
-						</div>
+						{{- $pagedImages := .Paginate .Pages $postsPageSize -}}
+						{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photosubset" $pagedImages.Pages) }}
 						{{- end }}
 
 					</section>

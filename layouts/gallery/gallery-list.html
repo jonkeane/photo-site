@@ -1,10 +1,10 @@
 {{- partial "htmlhead.html" . -}}
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
 
-		{{- $postsPageSize := .Site.Params.Posts.pagesize | default 6 -}}
+		{{- $postsPageSize := .Site.Params.Galleries.pagesize | default 6 -}}
 
 		{{- .Scratch.Set "postsFeaturedPostEnabled" true -}}
-		{{- if (or (eq .Site.Params.Posts.featuredpost "false") (eq .Site.Params.Posts.featuredpost false)) -}}
+		{{- if (or (eq .Site.Params.Galleries.featuredpost "false") (eq .Site.Params.Galleries.featuredpost false)) -}}
 			{{- .Scratch.Set "postsFeaturedPostEnabled" false -}}
 		{{- end -}}
 		{{- $postsFeaturedPostEnabled := .Scratch.Get "postsFeaturedPostEnabled" -}}

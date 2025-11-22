@@ -11,47 +11,23 @@
 
 				<div id="main">
                     <section class="page">
+						<!-- TODO: This isn't actually displaying correctly. -->
 						<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
 						<header class="major">
                             <h1>{{ .Title }}</h1>
                             <p>{{ .Description }}</p>
                         </header>
 						{{ .Content }}
-						{{- $context := . -}}
-						{{- if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
-						<div id="terms" class="flex flex-row flex-wrap items-center">
-							{{- range $key := (slice "continents" "countries" "regions" "cities" "tags") -}}
-							{{- range $context.GetTerms $key }}
-							<span><a class="button primary tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></span>
-							{{- end -}}
-							{{- end }}
-						</div>
-						{{- end }}
-
-						{{ $slug := "" }}
-						{{ with .File }}
-							{{ $slug = .BaseFileName }}
-							{{ if or (eq $slug "index") (eq $slug "_index") }}
-								{{ $slug = (path.Base (trim (replaceRE "^content/gallery/" "" .Dir) "/")) }}
-							{{ end }}
-						{{ end }}
-						{{ $ps := index site.Data.flickr.photosets $slug }}
-						{{ if $ps }}
-					    	{{ $pages := .Pages.ByDate }}
-							{{- $pagedImages := .Paginate $pages 25 -}}
-							{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photosubset" $pagedImages.Pages "Slug" $slug) }}
+						{{- $pages := .Pages.ByDate -}}
+						{{- $pagedImages := .Paginate $pages $postsPageSize -}}
+						{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photosubset" $pagedImages.Pages) }}
 					</section>
-
-						{{- $paginator := .Paginator -}}
-						{{- $outer := . -}}
-						{{- partial "posts/pagination.html" (dict "paginator" $paginator "outer" $outer) }}
-						{{ end }}
-
-					</div>
-
-                    {{- partial "footer/index" . -}}
-                    {{- partial "copyright" . -}}
-
+					{{- $paginator := .Paginator -}}
+					{{- $outer := . -}}
+					{{- partial "posts/pagination.html" (dict "paginator" $paginator "outer" $outer) }}
+				</div>
+				{{- partial "footer/index" . -}}
+				{{- partial "copyright" . -}}
             </div>
             {{- partial "scripts/index" . -}}
 	</body>
