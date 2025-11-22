@@ -50,6 +50,10 @@ timeout = 600
 
 [params.posts]
   featuredPost = false
+  pageSize = "25"
+
+[params.galleries]
+  featuredPost = false
   pageSize = "10"
 
 # Below parameters can be set to override default post settings
