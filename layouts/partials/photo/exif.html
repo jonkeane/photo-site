@@ -1,17 +1,37 @@
 {{- $p := .Photo -}}
 <div class="meta-row">
+  {{- /* film: make a separate emulsion */ -}}
+  {{- if $p.emulsions }}
   <div class="exposure-meta">
     <ul>
-    {{ if $p.exif.exposure }}<li id="exposure">{{ $p.exif.exposure }} <small>sec</small></li>{{ end }}
-    {{ if $p.exif.fstop }}<li id="fstop">{{ $p.exif.fstop }}</li>{{ end }}
-    {{ if $p.emulsions }}<li>{{ $p.emulsions }}</li>{{ end }}
-    {{ if $p.exif.iso }}<li id="iso">{{ $p.exif.iso }} iso</li>{{ end }}
+      {{ if $p.exif.exposure }}<li id="exposure">{{ $p.exif.exposure }} <small>sec</small></li>{{ end }}
+      {{ if $p.exif.fstop }}<li id="fstop">{{ $p.exif.fstop }}</li>{{ end }}
+    </ul>
+  </div>
+  <div class="emulsion-meta">
+    <ul>
+      {{ if $p.emulsions }}<li>{{ $p.emulsions }}{{ end }} {{ if $p.exif.iso }}{{ $p.exif.iso }}</li>{{ end }}
     </ul>
   </div>
   <div class="camera-meta">
     <ul>
-    {{ if $p.cameras }}<li>{{ $p.cameras }}</li>{{ end }}
-    {{ if $p.lenses }}<li>{{ $p.lenses }}</li>{{ end }}
+      {{ if $p.cameras }}<li>{{ $p.cameras }}</li>{{ end }}
+      {{ if $p.lenses }}<li>{{ $p.lenses }}</li>{{ end }}
     </ul>
   </div>
+  {{- else }}
+        <div class="exposure-meta">
+          <ul>
+            {{ if $p.exif.exposure }}<li id="exposure">{{ $p.exif.exposure }} <small>sec</small></li>{{ end }}
+            {{ if $p.exif.fstop }}<li id="fstop">{{ $p.exif.fstop }}</li>{{ end }}
+        {{ if $p.exif.iso }}<li id="iso">{{ $p.exif.iso }} iso</li>{{ end }}
+        </ul>
+        </div>
+        <div class="camera-meta">
+          <ul>
+            {{ if $p.cameras }}<li>{{ $p.cameras }}</li>{{ end }}
+            {{ if $p.lenses }}<li>{{ $p.lenses }}</li>{{ end }}
+          </ul>
+        </div>
+  {{- end }}
 </div>

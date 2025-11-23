@@ -27,6 +27,10 @@ photoset JSON files in site.Data.flickr.photosets.
             {{ end }}
           {{ end }}
           {{ $lens := $p.exif.lens }}
+          {{ $lens = strings.Replace $lens "back triple camera" "back" }}
+          {{ $lens = strings.Replace $lens "back camera" "back" }}
+          {{ $lens = strings.Replace $lens "back dual wide camera" "back" }}
+          {{ $lens = strings.Replace $lens "front camera" "front" }}
           {{ if not (in $tags "nogallery") }}
             {{ $content := dict "mediaType" "text/markdown" "value" "" }}
             {{ $dates := dict }}

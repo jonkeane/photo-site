@@ -16,15 +16,17 @@
 								<ul class = "terms">
 									{{- range $taxonomy.ByCount -}}
 									<li>
-										<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">{{ .Page.Title | .Page.RenderString }}</a>
-										<span class="button count">{{ .Count }}</span>
+										<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">
+											<span class="tag-text">{{ .Page.Title | .Page.RenderString }}</span>
+											<span class="button count">{{ .Count }}</span>
+										</a>
 									</li>
 									{{- end -}}
 								</ul>
 					{{- end -}}
 				{{- end -}}
 
-				<h1 id="tags">Tags</h1>
+				<h2 id="tags">Tags</h2>
 				{{- $taxonomy := index $.Site.Taxonomies "tags" -}}
 				{{- $currentLetter := "" -}}
 				{{- $etcTags := slice -}}
@@ -36,13 +38,15 @@
 							{{- if ne $currentLetter "" -}}
 								</ul>
 							{{- end -}}
-							<h2 id="tag-{{ $firstLetter }}">{{ $firstLetter }}</h2>
+							<h3 class="tags" id="tag-{{ $firstLetter }}">{{ $firstLetter }}</h3>
 							<ul class = "terms">
 							{{- $currentLetter = $firstLetter -}}
 						{{- end -}}
 						<li>
-							<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">{{ .Page.Title | .Page.RenderString }}</a>
-							<span class="button count">{{ .Count }}</span>
+							<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">
+								<span class="tag-text">{{ .Page.Title | .Page.RenderString }}</span>
+								<span class="button count">{{ .Count }}</span>
+							</a>
 						</li>
 					{{- else -}}
 						{{- $etcTags = $etcTags | append . -}}
@@ -56,8 +60,10 @@
 					<ul class = "terms">
 						{{- range $etcTags -}}
 						<li>
-							<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">{{ .Page.Title | .Page.RenderString }}</a>
-							<span class="button count">{{ .Count }}</span>
+							<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">
+								<span class="tag-text">{{ .Page.Title | .Page.RenderString }}</span>
+								<span class="button count">{{ .Count }}</span>
+							</a>
 						</li>
 						{{- end -}}
 					</ul>
