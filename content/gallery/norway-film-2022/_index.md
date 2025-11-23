@@ -3,7 +3,7 @@ Title: Norway on film 2024
 Description: A trip along Kystriksveien
 slug: NorwayFilm2024
 date: "2024-08-24T00:00:00"
-image: gallery/3943-010.jpg
+image: gallery/000078160001.jpg
 flickr_album: "72177720330520318"
 ---
 
