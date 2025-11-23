@@ -73,7 +73,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         with:
-          args: deploy --prod --dir=public
+          args: deploy --prod --no-build --dir=public
       
       - name: Deploy to Netlify (Preview)
         if: github.event_name == 'pull_request'
