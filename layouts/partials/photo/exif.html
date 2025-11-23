@@ -4,13 +4,14 @@
     <ul>
     {{ if $p.exif.exposure }}<li id="exposure">{{ $p.exif.exposure }} <small>sec</small></li>{{ end }}
     {{ if $p.exif.fstop }}<li id="fstop">{{ $p.exif.fstop }}</li>{{ end }}
+    {{ if $p.emulsions }}<li>{{ $p.emulsions }}</li>{{ end }}
     {{ if $p.exif.iso }}<li id="iso">{{ $p.exif.iso }} iso</li>{{ end }}
     </ul>
   </div>
   <div class="camera-meta">
     <ul>
-    {{ if $p.exif.model }}<li>{{ $p.exif.model }}</li>{{ end }}
-    {{ if $p.exif.lens }}<li>{{ $p.exif.lens }}</li>{{ end }}
+    {{ if $p.cameras }}<li>{{ $p.cameras }}</li>{{ end }}
+    {{ if $p.lenses }}<li>{{ $p.lenses }}</li>{{ end }}
     </ul>
   </div>
 </div>

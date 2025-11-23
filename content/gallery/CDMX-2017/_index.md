@@ -5,9 +5,4 @@ slug: cdmx2016
 date: "2018-01-01T00:00:00"
 flickr_album: "72157705707640241"
 image: gallery/IMG_3277.jpg
-tags: []
-continents: ["Central America"]
-countries: ["Mexico"]
-regions: []
-cities: ["CDMX", "Mexico City"]
 ---

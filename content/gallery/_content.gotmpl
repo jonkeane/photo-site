@@ -16,6 +16,17 @@ photoset JSON files in site.Data.flickr.photosets.
       {{ range $p := $sortedPhotos }}
         {{ $fid := string $p.id }}
           {{ $tags := $p.tags }}
+          {{ $camera := $p.exif.model }}
+          {{ $emulsion := "" }}
+          {{ range site.Params.emulsions }}
+            {{ $emulsionName := . }}
+            {{ if hasPrefix $camera $emulsionName }}
+              {{ $emulsion = $emulsionName }}
+              {{ $camera = strings.TrimPrefix $emulsionName $camera }}
+              {{ $camera = strings.TrimSpace $camera }}
+            {{ end }}
+          {{ end }}
+          {{ $lens := $p.exif.lens }}
           {{ if not (in $tags "nogallery") }}
             {{ $content := dict "mediaType" "text/markdown" "value" "" }}
             {{ $dates := dict }}
@@ -30,6 +41,9 @@ photoset JSON files in site.Data.flickr.photosets.
                 "flickr_album" $setID
                 "gallery_slug" $slug
                 "tags" $tags
+                "cameras" $camera
+                "lenses" $lens
+                "emulsions" $emulsion
                 "datetaken" $p.datetaken
                 "dateupload" $p.dateupload
                 "description" $p.description

@@ -5,11 +5,6 @@ slug: IFyellowstone
 date: "2019-01-01T00:00:00"
 image: gallery/IMG_5255.jpg
 flickr_album: "72157711797709437"
-tags: []
-continents: ["North America"]
-countries: ["United States"]
-regions: ["Idaho", "Yellowstone", "Wyoming"]
-cities: []
 ---
 
 Yellowstone is a national treasure sitting atop a huge (though thankfully dormant) volcano. Located in the northern end of the rockies it has loads of geothermal features, waterfalls, and forested areas. Many are strikingly beautiful even with the large number of visitors from around the world.

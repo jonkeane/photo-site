@@ -5,9 +5,4 @@ slug: SF2020
 date: "2020-01-30T00:00:00"
 image: gallery/_DSC1168.jpg
 flickr_album: "72157715832101743"
-tags: ["Sony A7RIV"]
-continents: ["North America"]
-countries: ["United States"]
-regions: []
-cities: ["San Francisco", "Marin"]
 ---

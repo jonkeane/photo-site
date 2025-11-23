@@ -9,24 +9,62 @@
 
 				<!-- Main -->
 					<div id="main">
-						{{- range $key := (slice "tags" "continents" "countries" "regions" "cities") -}}
-						{{- $taxonomy := index $.Site.Taxonomies $key -}}
-						{{- if ne (len $taxonomy) 0 -}}
-                        <h2 id="{{ $key }}">{{ $key }}</h2>
-							<ul class = "terms">
-								{{- range $taxonomy.ByCount -}}
-								<li>
-									<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">{{ .Page.Title | .Page.RenderString }}</a>
-									<span class="button count">{{ .Count }}</span>
-								</li>
-								{{- end -}}
-							</ul>
-						{{- end -}}
+						{{- range $key := (slice "cameras" "lenses" "emulsions") -}}
+							{{- $taxonomy := index $.Site.Taxonomies $key -}}
+							{{- if ne (len $taxonomy) 0 -}}
+								<h2 id="{{ $key }}">{{ $key }}</h2>
+								<ul class = "terms">
+									{{- range $taxonomy.ByCount -}}
+									<li>
+										<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">{{ .Page.Title | .Page.RenderString }}</a>
+										<span class="button count">{{ .Count }}</span>
+									</li>
+									{{- end -}}
+								</ul>
 					{{- end -}}
-					</div>
+				{{- end -}}
 
-                    {{- partial "footer/index" . -}}
-                    {{- partial "copyright" . -}}
+				<h1 id="tags">Tags</h1>
+				{{- $taxonomy := index $.Site.Taxonomies "tags" -}}
+				{{- $currentLetter := "" -}}
+				{{- $etcTags := slice -}}
+				{{- range $taxonomy.Alphabetical -}}
+					{{- $firstLetter := upper (substr .Page.Title 0 1) -}}
+					{{- $isAlpha := and (ge $firstLetter "A") (le $firstLetter "Z") -}}
+					{{- if $isAlpha -}}
+						{{- if ne $firstLetter $currentLetter -}}
+							{{- if ne $currentLetter "" -}}
+								</ul>
+							{{- end -}}
+							<h2 id="tag-{{ $firstLetter }}">{{ $firstLetter }}</h2>
+							<ul class = "terms">
+							{{- $currentLetter = $firstLetter -}}
+						{{- end -}}
+						<li>
+							<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">{{ .Page.Title | .Page.RenderString }}</a>
+							<span class="button count">{{ .Count }}</span>
+						</li>
+					{{- else -}}
+						{{- $etcTags = $etcTags | append . -}}
+					{{- end -}}
+				{{- end -}}
+				{{- if ne $currentLetter "" -}}
+					</ul>
+				{{- end -}}
+				{{- if gt (len $etcTags) 0 -}}
+					<h2 id="tag-etc">etc</h2>
+					<ul class = "terms">
+						{{- range $etcTags -}}
+						<li>
+							<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">{{ .Page.Title | .Page.RenderString }}</a>
+							<span class="button count">{{ .Count }}</span>
+						</li>
+						{{- end -}}
+					</ul>
+				{{- end -}}
+			</div>                    
+			{{- partial "footer/index" . -}}
+			{{- partial "copyright" . -}}
 
             </div>
             {{- partial "scripts/index" . -}}
