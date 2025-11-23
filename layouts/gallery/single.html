@@ -23,14 +23,14 @@
 				<header class="major">
 					<h1>{{ or .Title .Params.title }}</h1>
 				</header>
+				{{- if .Params.description._content }}
+				<div class="description">
+					{{ .Params.description._content | safeHTML }}
+				</div>
+				{{- end }}
 				{{- if .Params.exif.preservedfilename }}
 					<div class="preserved-filename">
 						<small>{{ .Params.exif.preservedfilename }}</small>
-					</div>
-				{{- end }}
-				{{- if .Params.description._content }}
-					<div class="description">
-						{{ .Params.description._content | safeHTML }}
 					</div>
 				{{- end }}
 			</div>

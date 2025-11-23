@@ -1,5 +1,5 @@
 ---
-Title: "Thailand 2023 on film"
+Title: "Thailand on film 2023"
 Description: "A December trip to Thailand, captured on film"
 slug: "Thailand2023film"
 date: "2023-12-15T18:08:20-05:00"

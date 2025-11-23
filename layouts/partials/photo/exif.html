@@ -10,7 +10,8 @@
   </div>
   <div class="emulsion-meta">
     <ul>
-      {{ if $p.emulsions }}<li>{{ $p.emulsions }}{{ end }} {{ if $p.exif.iso }}{{ $p.exif.iso }}</li>{{ end }}
+      {{ if $p.emulsions }}<li>{{ $p.emulsions }}{{ end }} {{ if and $p.exif.iso (not (hasSuffix $p.emulsions $p.exif.iso))
+        }}{{ $p.exif.iso }}</li>{{ end }}
     </ul>
   </div>
   <div class="camera-meta">

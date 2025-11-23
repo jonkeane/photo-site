@@ -24,6 +24,14 @@ photoset JSON files in site.Data.flickr.photosets.
               {{ $emulsion = $emulsionName }}
               {{ $camera = strings.TrimPrefix $emulsionName $camera }}
               {{ $camera = strings.TrimSpace $camera }}
+              {{ $isoStr := string $p.exif.iso }}
+              {{ if not (in $emulsion $isoStr) }}
+                {{ $emulsion = printf "%s %s" $emulsion $isoStr }}
+              {{ end }}
+              {{ $emulsion = replace $emulsion "Fuji " "Fujifilm "}}
+              {{ if eq $emulsion "Fujifilm Pro H 400" }} {{ $emulsion = "Fujifilm Pro 400H" }} {{ end }}
+              {{ if eq $emulsion "Kodak Ektachrome E 100" }} {{ $emulsion = "Kodak Ektachrome E100" }} {{ end }}
+              {{ if eq $emulsion "Kodak E100" }} {{ $emulsion = "Kodak Ektachrome E100" }} {{ end }}
             {{ end }}
           {{ end }}
           {{ $lens := $p.exif.lens }}

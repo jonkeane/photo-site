@@ -27,11 +27,17 @@ timeout = 600
       'Fujifilm Velvia',
       'Ilford Delta',
       'Kodak E100',
+      'Kodak Ektachrome E100',
       'Kodak Ektachrome E',
+      'Kodak Ektar 100',
       'Kodak Ektar',
       'Kodak Gold',
+      'Kodak Portra 160',
+      'Kodak Portra 400',
       'Kodak Portra',
-      'Kodak T-Max'
+      'Kodak T-Max',
+      'Kentmere PAN 400',
+      'CatLABS X FILM 100'
   ]
 
 

@@ -101,7 +101,7 @@ type Photo struct {
 	URLH       string           `json:"url_h"`
 	URLK       string           `json:"url_k"`
 	URLO       string           `json:"url_o"`
-	LastUpdate string           `json:"last_update"`
+	LastUpdate string           `json:"lastupdate"`
 	Exif       *PhotoExifFields `json:"exif,omitempty"`
 }
 
@@ -180,9 +180,9 @@ func main() {
 			fatal(err)
 		}
 
-		// Detector: check for existing JSON and compare dateupload
+		// Detector: check for existing JSON and compare lastupdate
 		jsonPath := filepath.Join("data", "flickr", "photosets", g.Slug+".json")
-		var oldPhotos map[string]string // photoID -> dateupload
+		var oldPhotos map[string]string // photoID -> lastupdate
 		var oldExif map[string]*PhotoExifFields
 		var oldTags map[string][]string // photoID -> tags
 		oldPhotos = make(map[string]string)
@@ -195,7 +195,7 @@ func main() {
 				var oldData PhotosetsGetPhotosResp
 				if err := json.Unmarshal(b, &oldData); err == nil {
 					for _, p := range oldData.Photoset.Photo {
-						oldPhotos[p.ID] = p.DateUpload
+						oldPhotos[p.ID] = p.LastUpdate
 						if p.Exif != nil {
 							oldExif[p.ID] = p.Exif
 						}
@@ -209,7 +209,7 @@ func main() {
 		for i := range ps.Photoset.Photo {
 			photo := &ps.Photoset.Photo[i]
 			oldDate, exists := oldPhotos[photo.ID]
-			if exists && oldDate == photo.DateUpload && oldExif[photo.ID] != nil {
+			if exists && oldDate == photo.LastUpdate && oldExif[photo.ID] != nil {
 				// No change, reuse old EXIF and tags
 				photo.Exif = oldExif[photo.ID]
 				photo.Tags = oldTags[photo.ID]
