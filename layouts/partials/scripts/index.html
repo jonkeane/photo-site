@@ -9,7 +9,3 @@
 {{- $js := slice $jQuery $scrollex $scrolly $browser $breakpoints $util $main | resources.Concat "assets/js/bundle.js" }}
 <script src='{{ $js.RelPermalink }}'></script>
 <script src='{{ "assets/js/custom.js" | relURL }}'></script>
-
-{{- if .Params.nanog }}
-<script src='{{ "assets/js/nanogallery2/jquery.nanogallery2.min.js" | relURL }}'></script>
-{{- end -}}

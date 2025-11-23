@@ -1,0 +1,6 @@
+.DS_Store
+flickrimport
+*.log
+cache/
+.env
+.envrc

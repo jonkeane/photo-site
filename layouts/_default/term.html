@@ -1,55 +1,34 @@
 {{- partial "htmlhead.html" . -}}
-	<body lang='{{- .Site.Language.Lang | default "en-us" -}}' class="is-preload">
+	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
 
 		{{- $postsPageSize := .Site.Params.Posts.pagesize | default 6 -}}
 
-		{{- .Scratch.Set "postsFeaturedPostEnabled" true -}}
-		{{- if (or (eq .Site.Params.Posts.featuredpost "false") (eq .Site.Params.Posts.featuredpost false)) -}}
-			{{- .Scratch.Set "postsFeaturedPostEnabled" false -}}
-		{{- end -}}
-		{{- $postsFeaturedPostEnabled := .Scratch.Get "postsFeaturedPostEnabled" -}}
-
-		{{- $posts := where .Pages "Params.private" "ne" true  -}}
-
-		{{- $firstPost := first 1 $posts -}}
-
-		{{- if and (eq $postsFeaturedPostEnabled true) (gt (len $posts) 1) -}}
-			{{- .Scratch.Set "postsForPaging" (after 1 $posts) -}}
-		{{- else -}}
-			{{- .Scratch.Set "postsForPaging" $posts -}}
-		{{- end -}}
-		{{- $postsForPaging := .Scratch.Get "postsForPaging" -}}
-
-		{{- $postsPaging := .Paginate $postsForPaging $postsPageSize -}}
-
-		<!-- Wrapper -->
-			<div id="wrapper" data-ps="{{ $postsPageSize }}" data-pfp="{{ $postsFeaturedPostEnabled }}">
+			<div id="wrapper" data-ps="{{ $postsPageSize }}" data-pfp="false">
 			    <div class="bg fixed"></div>
 
     			{{- partial "header" . -}}
 				{{- partial "nav" . -}}
 
-				<!-- Main -->
-					<div id="main">
-						<h1>{{ .Title }}</h1>
-					    {{ .Content }}
+				<div id="main">
+                    <section class="page">
+						<a href="/{{ .Data.Plural }}/" class="button", id="galleryBackBtn">back to {{ .Data.Plural }}</a>
+						<header class="major">
+                            <h1>{{ .Title }}</h1>
+							{{ .Content }}
+							<p class="term-count">{{ len .Pages }} {{ if eq (len .Pages) 1 }}photo{{ else }}photos{{ end }}</p>
+                        </header>
 
-						{{- if and (eq $postsFeaturedPostEnabled true) (eq .Paginator.PageNumber 1) -}}
-						{{- partial "gallerys/featured.html" (dict "firstpost" $firstPost "no_dates" true "siteData" (index .Site.Data .Site.Language.Lang)) -}}
-						{{- end -}}
+						{{- if .Pages }}
+						{{- $pagedImages := .Paginate .Pages $postsPageSize -}}
+						{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photosubset" $pagedImages.Pages) }}
+						{{- end }}
 
-						{{- if (not (and (eq (len $posts) 1) (eq $postsFeaturedPostEnabled true))) -}}
-							{{- partial "gallerys/list.html" (dict "posts" $postsPaging "no_dates" true "siteData" (index .Site.Data .Site.Language.Lang)) -}}
-						{{- end -}}
+					</section>
 
 						{{- $paginator := .Paginator -}}
 						{{- $outer := . -}}
-						{{- partial "posts/pagination.html" (dict "paginator" $paginator "outer" $outer)}}
+						{{- partial "posts/pagination.html" (dict "paginator" $paginator "outer" $outer) }}
 
-						<section id="introBottom" class="post"> <!-- used to be class="post"-->
-
-							<a href="..#{{ .Data.Plural }}" class="button big fullwidth">back to {{ .Data.Plural }}</a>
-						</section>
 					</div>
 
                     {{- partial "footer/index" . -}}

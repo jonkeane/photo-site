@@ -1,0 +1,16 @@
+{{- /* 
+  Returns a dict with the current page index and the section's pages.
+  Usage: {{ $ctx := partial "photo/page-context" . }}
+           {{ $idx := $ctx.index }}
+           {{ $pages := $ctx.pages }}
+  Returns: dict with "index" (integer, -1 if not found) and "pages" (page collection)
+*/ -}}
+{{- $pages := .CurrentSection.Pages -}}
+{{- $currentID := .Params.flickr_id | string -}}
+{{- $idx := -1 -}}
+{{- range $i, $p := $pages }}
+  {{- if eq ($p.Params.flickr_id | string) $currentID }}
+    {{- $idx = $i }}
+  {{- end }}
+{{- end -}}
+{{- return dict "index" $idx "pages" $pages -}}

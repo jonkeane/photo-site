@@ -1,0 +1,11 @@
+{{ $page := .Page }}
+{{ $ps := .Photosubset }}
+<section class="photoset-grid">
+  <div class="grid">
+  {{ range $ps }}
+    <a class="grid-item" href="{{ .RelPermalink }}">
+      <img src="{{ .Params.url_z }}" alt="{{ .Params.title }}" loading="lazy" />
+    </a>
+  {{ end }}
+  </div>
+</section>

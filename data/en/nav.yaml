@@ -1,7 +1,7 @@
 items:
 - title: 'gallery'
   url: '/gallery'
-- title: 'prints'
-  url: '/prints'
+# - title: 'prints'
+#   url: '/prints'
 - title: 'about'
   url: '/about'

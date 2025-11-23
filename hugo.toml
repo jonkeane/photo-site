@@ -15,6 +15,31 @@ timeout = 600
   # favicon = "favicon.ico"
   # set to change date format
   dateFormat = "2006-01-02"
+  emulsions = [
+      'Cat Labs',
+      'Fuji Pro 400H',
+      'Fujifilm Pro 400H',
+      'Fujifilm Pro H',
+      'Fuji Provia',
+      'Fujifilm Provia F',
+      'Fujifilm Provia',
+      'Fuji Velvia',
+      'Fujifilm Velvia',
+      'Ilford Delta',
+      'Kodak E100',
+      'Kodak Ektachrome E100',
+      'Kodak Ektachrome E',
+      'Kodak Ektar 100',
+      'Kodak Ektar',
+      'Kodak Gold',
+      'Kodak Portra 160',
+      'Kodak Portra 400',
+      'Kodak Portra',
+      'Kodak T-Max',
+      'Kentmere PAN 400',
+      'CatLABS X FILM 100'
+  ]
+
 
 [module]
 [[module.mounts]]
@@ -29,17 +54,10 @@ timeout = 600
 
 # If adding any taxonomies here, also need to add to layout/_default/taxonomy.html
 [taxonomies]
-  continent = "continents"
-  country = "countries"
-  region = "regions"
-  city = "cities"
+  camera = "cameras"
+  lens = "lenses"
+  emulsion = "emulsions"
   tag = "tags"
-
-
-[params.nanog]
-  flickr_userid = "65556368@N00"
-  # flickr_userid = "jonkeane"
-  tagBlockList = "nogallery"
 
 [params.slider]
     enable = true
@@ -55,6 +73,10 @@ timeout = 600
   includeFields = "Description"
 
 [params.posts]
+  featuredPost = false
+  pageSize = "25"
+
+[params.galleries]
   featuredPost = false
   pageSize = "10"
 

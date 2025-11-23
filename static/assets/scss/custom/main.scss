@@ -2,6 +2,7 @@
 @import 'libs/functions';
 @import 'libs/breakpoints';
 @import 'libs/vendor';
+@import 'libs/icon';
 
 
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:900");
@@ -98,6 +99,5 @@
 // Photo site specific
 
 @import 'custom/gallery.scss';
-@import 'custom/nanogallery.scss';
 @import 'custom/misc.scss';
 @import 'custom/terms.scss';

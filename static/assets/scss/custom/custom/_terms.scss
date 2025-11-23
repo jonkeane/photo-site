@@ -1,60 +1,88 @@
 /* Terms */
 
-    ul {
-        &.terms {
-            column-count: 3;
-            list-style: none;
-            border-top: none !important;
-            padding-top: 0 !important;
-            column-gap: 0.5rem;
-            flex-wrap: wrap;
+ul {
+    &.terms {
+        column-count: 3;
+        list-style: none;
+        border-top: none !important;
+        padding-top: 0 !important;
+        column-gap: 1.5rem;
+        flex-wrap: wrap;
 
-            @include breakpoint('<=small') {
-                column-count: 2;
-            }
+        @include breakpoint('<=small') {
+            column-count: 2;
+        }
 
-            @include breakpoint('<=xsmall') {
-                column-count: 1;
-            }
+        @include breakpoint('<=xsmall') {
+            column-count: 1;
+        }
 
-            li {
-                padding: 0.5rem 0;
-                // necessary to avoid every other column being slightly off
-                display: inline-block;
-                width: 100%;
-            }
+        li {
+            padding: 0.5rem 0;
+            // necessary to avoid every other column being slightly off
+            display: inline-flex;
+            width: 100%;
+            align-items: center;
+            gap: 0.5rem;
         }
     }
 
     .button {
         &.tag {
-            padding: 0 1rem;
+            padding: 0.75rem 1rem;
+            white-space: normal;
+            text-align: left;
+            flex: 1 1 auto;
+            min-width: 0; 
+            height: unset;
+            line-height: normal;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            &:hover .count {
+                color: _palette(fg-bold) !important;
+                box-shadow: inset 0 0 0 2px _palette(bg-bold) !important;
+            }
         }
 
         &.count {
             position: relative;
-            width: 2rem;
+            min-width: 2rem;
             height: 2rem;
             line-height: 2rem;
             border-radius: 4rem;
-            padding: 0;
+            padding: 0 0.5rem;
             white-space: nowrap;
-            margin-left: 0.5rem;
+            margin-left: auto; 
             pointer-events: none;
+            flex-shrink: 0; 
+            color: _palette(bg) !important;
+            box-shadow: inset 0 0 0 2px _palette(bg) !important;
         }
     }
+}
 
-    // terms on a post
-    #terms {
-        padding: 0 0 1rem 0;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        flex-basis: 150px;
-        flex-shrink: 0;
-        column-gap: 0.5rem;
+.tag-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
 
-        > span {
-           padding: 0.5rem 0;
-        }
+h3.tags {
+    border-top: none !important;
+}
+
+// terms on a post
+#terms {
+    padding: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-basis: 150px;
+    flex-shrink: 0;
+    column-gap: 0.5rem;
+
+    >span {
+        padding: 0.5rem 0;
     }
+}

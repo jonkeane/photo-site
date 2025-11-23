@@ -7,14 +7,14 @@
 			{{- .Scratch.Set "postsFeaturedPostEnabled" false -}}
 		{{- end -}}
 		{{- $postsFeaturedPostEnabled := .Scratch.Get "postsFeaturedPostEnabled" -}}
-		{{- $no_dates := .Params.no_dates -}}
 
 		{{- $posts := where .Pages "Params.private" "ne" true  -}}
 
 
 		<!-- This is not needed at all??? -->
 		{{- if .IsHome }}
-		{{- $posts = where .Site.RegularPages "Type" $postsFoldername -}}
+		{{- $gallerySection := .Site.GetPage $postsFoldername -}}
+		{{- $posts = $gallerySection.Sections -}}
 		{{- $posts = where $posts "Params.private" "ne" true  -}}
 		{{- end }}
 			<div id="wrapper" class="fade-in" data-pfn="{{ $postsFoldername }}"  data-ps="3" data-pfp="1">
@@ -26,7 +26,7 @@
 					<div id="main" class="maingrid">
 						{{ .Content }}
 						<div id="introTop" class="aln-middle"><h3>A random album for today</h3></div>
-						{{- partial "gallerys/frontpage.html" (dict "firstpost" $posts "no_dates" $no_dates "siteData" (index .Site.Data .Site.Language.Lang)) -}}
+						{{- partial "gallerys/frontpage.html" (dict "firstpost" $posts "siteData" (index .Site.Data .Site.Language.Lang)) -}}
 						<section id="introBottom" class="post"> <!-- used to be class="post"-->
 							<a href="/gallery/" class="button big fullwidth">More Albums</a>
 							<a href="/prints/" class="button big fullwidth">Prints available</a>

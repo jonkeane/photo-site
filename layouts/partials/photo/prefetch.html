@@ -1,0 +1,15 @@
+<div id="prefetch-data" style="display: none;">
+  {{- with .NextInSection -}}
+    {{- $nextUrl := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c .Params.url_z -}}
+    {{- if $nextUrl }}
+      <link href="{{ $nextUrl }}" as="image" />
+    {{- end -}}
+  {{- end -}}
+
+  {{- with .PrevInSection -}}
+    {{- $prevUrl := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c .Params.url_z -}}
+    {{- if $prevUrl }}
+      <link href="{{ $prevUrl }}" as="image" />
+    {{- end -}}
+  {{- end }}
+</div>

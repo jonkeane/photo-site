@@ -1,52 +1,43 @@
 {{- partial "htmlhead.html" . -}}
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
-
-			<div id="wrapper">
-			    <div class="bg fixed"></div>
-
-                {{- partial "header" . -}}
-                {{- partial "nav" . }}
-					<div id="main">
-                        <section class="page">
-							<a href=".." class="button", id="galleryBackBtn">back to gallery</a>
-                            <header class="major">
-                                {{- if not ( or ( .Date.IsZero ) ( .Parent.Params.no_dates ) ) -}}
-                                    <span class="date">{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
-                                {{- end -}}
-                                <h1>{{ .Title }}</h1>
-                                <p>{{ .Description }}</p>
-                            </header>
-                            {{ .Content }}
-							{{- $context := . -}}
-							{{- if .Params.showTaxonomies | default (.Site.Params.article.showTaxonomies | default true) }}
-							<div id="terms" class="flex flex-row flex-wrap items-center">
-								{{- range $key := (slice "continents" "countries" "regions" "cities" "tags") -}}
-							    {{- range $context.GetTerms $key }}
-								<span><a class="button primary tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></span>
-							    {{- end -}}
-							    {{- end }}
-							</div>
-							{{- end }}
-						<div id="nanogallery2" flickrAlbum="{{ .Params.flickr_album }}" tagBlockList="{{ .Site.Params.nanog.tagBlockList }}"></div>
-						<a href=".." class="button" id="galleryBackBtnBtm">back to gallery</a>
-						{{- if not (eq .Params.disableComments true) -}}
-                        {{- template "_internal/disqus.html" . -}}
-						{{- end }}
+	<div id="main">
+		{{- $fid := .Params.flickr_id | string -}}
+		<section class="page" id="photo-single">
+			{{ partial "photo/nav" . }}
+			{{- /* 5k, 4k, 3k aren't being fetched right now, but could be */ -}}
+			{{- $url := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c .Params.url_z -}}
+			{{- $alt := or .Params.description._content .Params.title (printf "Photo %s" $fid) }}
+			<figure>
+				<img src="{{ $url }}" alt="{{ $alt }}" loading="eager"/>
+			</figure>
+			{{ partial "photo/exif" (dict "Photo" .Params) }}
+			<div class="photo-drawer" id="details">
+				<a href="#details" class="drawer-toggle open">details</a>
+				{{- if .Params.tags }}
+					<div id="terms" class="flex flex-row flex-wrap items-center">
+						{{ range $tag := .Params.tags }}
+						<span><a class="button primary tag" href="/tags/{{ $tag | urlize }}">{{ $tag }}</a></span>
+						{{ end }}
 					</div>
-
-                    {{- partial "footer/index" . -}}
-                    {{- partial "copyright" . -}}
-            </div>
-            {{- partial "scripts/index" . -}}
-			{{- $js := resources.Get "js/gallery.js" -}}
-			{{- $opts := dict
-			"params" (dict
-				"flickr_userid" .Site.Params.nanog.flickr_userid
-				"flickr_apikey" .Site.Params.nanog.flickr_apikey
-			)
-			-}}
-			{{- $js = $js | js.Build $opts -}}
-			<script src="{{ $js.RelPermalink }}"></script>
-
+				{{- end }}
+				<header class="major">
+					<h1>{{ or .Title .Params.title }}</h1>
+				</header>
+				{{- if .Params.description._content }}
+				<div class="description">
+					{{ .Params.description._content | safeHTML }}
+				</div>
+				{{- end }}
+				{{- if .Params.exif.preservedfilename }}
+					<div class="preserved-filename">
+						<small>{{ .Params.exif.preservedfilename }}</small>
+					</div>
+				{{- end }}
+			</div>
+			{{ partial "photo/photostrip" . }}
+			{{ partial "photo/prefetch" . }}
+		</section>
+	</div>
+	{{- partial "scripts/index" . -}}
 	</body>
 </html>
