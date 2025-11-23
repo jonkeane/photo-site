@@ -65,15 +65,17 @@ jobs:
       
       - name: Build Hugo site
         run: hugo --minify
+
+      - name: Install netlify cli
+        run: npm install -g netlify-cli
       
       - name: Deploy to Netlify (Production)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: netlify/actions/cli@master
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        with:
-          args: deploy --prod --no-build --dir=public
+        run: |
+          netlify deploy --prod --no-build --dir=public
       
       - name: Deploy to Netlify (Preview)
         if: github.event_name == 'pull_request'
@@ -81,7 +83,6 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: |
-          npm install -g netlify-cli
           netlify deploy --alias=PR${{ github.event.pull_request.number }} --no-build --dir=public --json > netlify-output.json
           cat netlify-output.json
       
