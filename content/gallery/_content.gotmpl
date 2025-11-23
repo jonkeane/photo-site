@@ -29,6 +29,7 @@ photoset JSON files in site.Data.flickr.photosets.
                 {{ $emulsion = printf "%s %s" $emulsion $isoStr }}
               {{ end }}
               {{ $emulsion = replace $emulsion "Fuji " "Fujifilm "}}
+              
               {{ if eq $emulsion "Fujifilm Pro H 400" }} {{ $emulsion = "Fujifilm Pro 400H" }} {{ end }}
               {{ if eq $emulsion "Kodak Ektachrome E 100" }} {{ $emulsion = "Kodak Ektachrome E100" }} {{ end }}
               {{ if eq $emulsion "Kodak E100" }} {{ $emulsion = "Kodak Ektachrome E100" }} {{ end }}
@@ -39,6 +40,16 @@ photoset JSON files in site.Data.flickr.photosets.
           {{ $lens = strings.Replace $lens "back camera" "back" }}
           {{ $lens = strings.Replace $lens "back dual wide camera" "back" }}
           {{ $lens = strings.Replace $lens "front camera" "front" }}
+          {{ $lens = strings.Replace $lens "Carl Zeiss" "Zeiss" }}
+
+          {{ if eq $lens "Zeiss Planar 80mm f/2.8 CF" }} {{ $lens = "Zeiss Planar CF 80mm F/2.8" }} {{ end }}
+          {{ if eq $lens "Zeiss Distagon 40mm f/4 CF FLE" }} {{ $lens = "Zeiss Distagon CF FLE 40mm f/4" }} {{ end }}
+          {{ if eq $lens "Zeiss Distagon 60mm f/3.5 CF" }} {{ $lens = "Zeiss Distagon CF 60mm f/3.5" }} {{ end }}
+
+          {{ if eq $lens "28.0-135.0 mm" }} {{ $lens = "EF 28-135mm" }} {{ end }}
+          {{ if eq $lens "10.0-22.0 mm" }} {{ $lens = "EF-S 28-135mm" }} {{ end }}
+          {{ if eq $lens "90.0 mm" }} {{ $lens = "Tamron SP 90mm" }} {{ end }}
+
           {{ if not (in $tags "nogallery") }}
             {{ $content := dict "mediaType" "text/markdown" "value" "" }}
             {{ $dates := dict }}
