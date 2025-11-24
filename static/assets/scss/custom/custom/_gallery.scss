@@ -32,17 +32,32 @@
 }
 
 @include breakpoint('<=medium') {
+
+	#photo-single>*>img,
+	#photo-single figure img {
+		padding-top: 0.5rem;
+	}
+
 	#galleryBackBtn,
 	#galleryBackBtn.alt {
 		display: none;
 	}
 
-	#photo-single>.photo-nav {
-		position: absolute;
-		bottom: 3rem;
-		left: 2rem;
-		right: 2rem;
+	#photo-single {
+		padding-bottom: 6.5rem !important;
+
+		>.photo-nav {
+			position: absolute;
+			bottom: 3rem;
+			left: 2rem;
+			right: 2rem;
+		}
+
+		>.photostrip {
+			display: none
+		}
 	}
+
 }
 
 /* gallery overrides */
