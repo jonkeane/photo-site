@@ -39,7 +39,7 @@
 
 	#photo-single>.photo-nav {
 		position: absolute;
-		bottom: 5rem;
+		bottom: 3rem;
 		left: 2rem;
 		right: 2rem;
 	}
@@ -244,6 +244,7 @@
 #photo-single .emulsion-meta {
 	display: flex;
 	align-items: center;
+	line-height: normal;
 }
 
 #photo-single .exposure-meta {
