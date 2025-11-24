@@ -32,10 +32,16 @@
 }
 
 @include breakpoint('<=medium') {
-
 	#galleryBackBtn,
 	#galleryBackBtn.alt {
 		display: none;
+	}
+
+	#photo-single>.photo-nav {
+		position: absolute;
+		bottom: 3rem;
+		left: 2rem;
+		right: 2rem;
 	}
 }
 
@@ -219,7 +225,6 @@
 	}
 }
 
-#photo-single>.photo-nav,
 #photo-single>figure,
 #photo-single>.meta-row {
 	position: relative;
@@ -273,7 +278,9 @@
 }
 
 #exposure {
-	font-variant-numeric: diagonal-fractions;
+	.fraction {
+		font-variant-numeric: diagonal-fractions;
+	}
 
 	small {
 		font-size: smaller;

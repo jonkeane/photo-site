@@ -31,13 +31,21 @@ timeout = 600
       'Kodak Ektachrome E',
       'Kodak Ektar 100',
       'Kodak Ektar',
+      'Kodak Gold 200',
       'Kodak Gold',
       'Kodak Portra 160',
       'Kodak Portra 400',
+      'Kodak Portra 800',
       'Kodak Portra',
+      'Kodak T-Max 100',
       'Kodak T-Max',
       'Kentmere PAN 400',
-      'CatLABS X FILM 100'
+      'CatLABS X FILM 100',
+      'Fujifilm Fujichrome Velvia 50',
+      'Fujifilm Fujichrome Provia 100F',
+      'Fujifilm Fujicolor Pro 400H',
+      'Kentmere PAN 100',
+      'CatLABS 100'
   ]
 
 

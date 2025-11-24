@@ -4,7 +4,7 @@
   {{- if $p.emulsions }}
   <div class="exposure-meta">
     <ul>
-      {{ if $p.exif.exposure }}<li id="exposure">{{ $p.exif.exposure }} <small>sec</small></li>{{ end }}
+      {{ if $p.exif.exposure }}<li id="exposure">{{ if strings.Contains $p.exif.exposure "/" }}<span class="fraction">{{ $p.exif.exposure }}</span>{{ else }}{{ $p.exif.exposure }}{{ end }} <small>sec</small></li>{{ end }}
       {{ if $p.exif.fstop }}<li id="fstop">{{ $p.exif.fstop }}</li>{{ end }}
     </ul>
   </div>
@@ -23,7 +23,7 @@
   {{- else }}
         <div class="exposure-meta">
           <ul>
-            {{ if $p.exif.exposure }}<li id="exposure">{{ $p.exif.exposure }} <small>sec</small></li>{{ end }}
+            {{ if $p.exif.exposure }}<li id="exposure">{{ if strings.Contains $p.exif.exposure "/" }}<span class="fraction">{{ $p.exif.exposure }}</span>{{ else }}{{ $p.exif.exposure }}{{ end }} <small>sec</small></li>{{ end }}
             {{ if $p.exif.fstop }}<li id="fstop">{{ $p.exif.fstop }}</li>{{ end }}
         {{ if $p.exif.iso }}<li id="iso">{{ $p.exif.iso }} iso</li>{{ end }}
         </ul>
