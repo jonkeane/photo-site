@@ -32,10 +32,66 @@
 }
 
 @include breakpoint('<=medium') {
-
 	#galleryBackBtn,
 	#galleryBackBtn.alt {
 		display: none;
+	}
+
+	#photo-single {
+		>.photo-nav {
+			.backToGallery {
+				font-size: 0;
+
+				&:after {
+					font-size: 0.8rem;
+					content: 'back';
+				}
+			}
+		}
+	}
+}
+
+@include breakpoint('<=small') {
+	#photo-single>*>img,
+	#photo-single figure img {
+		padding-top: 0.5rem;
+	}
+
+	#photo-single {
+		padding-bottom: 6.5rem !important;
+
+		>.photo-nav {
+			position: absolute;
+			bottom: 3rem;
+			left: 2rem;
+			right: 2rem;
+		}
+
+		>.photostrip {
+			display: none
+		}
+	}
+
+
+
+	.photo-nav .previous {
+		font-size: 0;
+
+		&:before {
+			font-size: 1rem;
+			font-weight: bold;
+			margin-right: 0;
+		}
+	}
+
+	.photo-nav .next {
+		font-size: 0;
+
+		&:before {
+			font-size: 1rem;
+			font-weight: bold;
+			margin-left: 0;
+		}
 	}
 }
 
@@ -122,41 +178,6 @@
 	padding: 0 1.75rem;
 }
 
-/* Responsive navigation text */
-/* On small screens, hide full text and show abbreviated versions */
-@include breakpoint('<=small') {
-	.photo-nav .previous {
-		font-size: 0;
-
-		&:before {
-			font-size: 1rem;
-			font-weight: bold;
-			margin-right: 0;
-		}
-	}
-
-	.photo-nav .backToGallery {
-		font-size: 0;
-
-		&:after {
-			font-size: 0.8rem;
-			content: 'back';
-		}
-	}
-
-	.photo-nav .next {
-		font-size: 0;
-
-		&:before {
-			font-size: 1rem;
-			font-weight: bold;
-			margin-left: 0;
-		}
-	}
-}
-
-
-
 // Single photo page
 .exposure-meta ul,
 .camera-meta ul,
@@ -193,8 +214,8 @@
 	gap: 0.5rem;
 	padding-top: 0.25rem;
 	padding-bottom: 0.25rem;
-	height: 100vh;
-	min-height: 100vh;
+	height: 100dvh;
+	min-height: 100dvh;
 	overflow: hidden;
 	position: relative;
 
@@ -219,7 +240,6 @@
 	}
 }
 
-#photo-single>.photo-nav,
 #photo-single>figure,
 #photo-single>.meta-row {
 	position: relative;
@@ -239,6 +259,7 @@
 #photo-single .emulsion-meta {
 	display: flex;
 	align-items: center;
+	line-height: normal;
 }
 
 #photo-single .exposure-meta {
@@ -273,7 +294,9 @@
 }
 
 #exposure {
-	font-variant-numeric: diagonal-fractions;
+	.fraction {
+		font-variant-numeric: diagonal-fractions;
+	}
 
 	small {
 		font-size: smaller;
