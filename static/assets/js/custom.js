@@ -222,7 +222,7 @@
 		var navigationEnabled = false; // Disabled on page load
 		var loadCooldownPeriod = 600; // Milliseconds after page load before navigation is enabled
 
-	// Enable navigation after a cooldown period on page load
+		// Enable navigation after a cooldown period on page load
 		setTimeout(function () {
 			navigationEnabled = true;
 		}, loadCooldownPeriod);
@@ -354,4 +354,12 @@
 			});
 		});
 	})();
+
+	$('.grid').infiniteScroll({
+		// options
+		path: '.next',
+		append: '.grid-item',
+		history: false,
+		hideNav: '.pagination',
+	});
 })(jQuery);
