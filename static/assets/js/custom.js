@@ -218,13 +218,15 @@
 		var drawerTouchEndY = 0;
 		var drawerMinSwipeDistance = 50;
 
-		var photoDrawer = document.querySelector('.photo-drawer');
-
-		photoDrawer.addEventListener('touchstart', function (e) {
+		var main = document.querySelector('#main');
+		main.addEventListener('touchmove', function (event) {
+			event.stopPropagation();
+		});
+		main.addEventListener('touchstart', function (e) {
 			drawerTouchStartY = e.changedTouches[0].screenY;
 		}, false);
 
-		photoDrawer.addEventListener('touchend', function (e) {
+		main.addEventListener('touchend', function (e) {
 			drawerTouchEndY = e.changedTouches[0].screenY;
 			handleDrawerSwipe();
 		}, false);

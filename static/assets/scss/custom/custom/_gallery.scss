@@ -30,6 +30,10 @@
 	background-color: #ffffff;
 }
 
+body:has(#photo-single) {
+  overflow: hidden;
+}
+
 @include breakpoint('<=medium') {
 	#galleryBackBtn,
 	#galleryBackBtn.alt {
@@ -132,6 +136,14 @@
 
 	.photo-nav li {
 		flex: 0 0 auto;
+	}
+
+	.photo-nav li.prev-item {
+		order: 2;
+	}
+
+	.photo-nav li.next-item {
+		order: 1;
 	}
 
 	.photo-nav li.back-item {
