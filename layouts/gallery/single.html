@@ -36,9 +36,13 @@
 				{{- end }}
 			</div>
 			{{ partial "photo/photostrip" . }}
-			{{ partial "photo/prefetch" . }}
 		</section>
 	</div>
 	{{- partial "scripts/index" . -}}
+	<script>
+			// Initialize photo navigation - injects gallery URLs into history for direct visits
+			// Order: [grandparent gallery index, parent gallery]
+			photoNav.initPhotoPage(['{{ .Parent.Parent.RelPermalink }}', '{{ .Parent.RelPermalink }}']);
+	</script>
 	</body>
 </html>
