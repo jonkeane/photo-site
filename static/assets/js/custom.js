@@ -3,6 +3,10 @@
 var photoNav = {
 	// Key used to track if user navigated from within the site
 	storageKey: 'photoSiteNav',
+	// Key to store the gallery URLs for this session
+	galleryKey: 'photoSiteGallery',
+	// Key to track if we injected history (need popstate handling)
+	injectedKey: 'photoSiteInjected',
 
 	// Mark that we're navigating within the site and go to the URL without adding to history
 	goToPhoto: function (url) {
@@ -24,22 +28,66 @@ var photoNav = {
 		sessionStorage.setItem(this.storageKey, 'true');
 	},
 
-	// Initialize history on first direct visit to a photo page
-	// This injects the gallery URL into history so back button works correctly
-	initPhotoPage: function (galleryUrl) {
+	// Initialize history on a photo page
+	// This ensures gallery URLs are in history so back button works correctly
+	// parentUrls should be ordered from root to immediate parent, e.g., ['/gallery/', '/gallery/iceland-2022/']
+	initPhotoPage: function (parentUrls) {
+	// Only inject if user landed directly on this page (not from within the site)
 		if (!sessionStorage.getItem(this.storageKey)) {
-			// User landed directly on this photo (not from within the site)
-			// Inject the gallery into history so back button goes there
 			var currentUrl = window.location.href;
-			// Replace current entry with gallery URL
-			history.replaceState({ photoNav: 'gallery' }, '', galleryUrl);
-			// Push current photo as new entry
-			history.pushState({ photoNav: 'photo' }, '', currentUrl);
-			// Mark that we've set up navigation
+
+			// Normalize to array
+			if (!Array.isArray(parentUrls)) {
+				parentUrls = [parentUrls];
+			}
+
+			// Convert to full URLs
+			var fullUrls = parentUrls.map(function (url) {
+				return new URL(url, window.location.origin).href;
+			});
+
+			// Store the gallery URLs for later use
+			sessionStorage.setItem(this.galleryKey, JSON.stringify(fullUrls));
+
+			// Replace current entry with the root parent
+			history.replaceState({ photoNav: 'gallery', url: fullUrls[0] }, '', fullUrls[0]);
+
+			// Push each subsequent parent
+			for (var i = 1; i < fullUrls.length; i++) {
+				history.pushState({ photoNav: 'gallery', url: fullUrls[i] }, '', fullUrls[i]);
+			}
+
+			// Push current page as final entry
+			history.pushState({ photoNav: 'photo', url: currentUrl }, '', currentUrl);
+
+			// Mark that we injected history (popstate handler needed)
+			sessionStorage.setItem(this.injectedKey, 'true');
+
+			// Mark that navigation is set up
 			sessionStorage.setItem(this.storageKey, 'true');
 		}
 	}
 };
+
+// Handle browser back/forward navigation - only for injected history entries
+window.addEventListener('popstate', function (event) {
+	// Only handle if we injected history AND hit one of our gallery entries
+	if (sessionStorage.getItem(photoNav.injectedKey) && event.state && event.state.photoNav === 'gallery') {
+		// User pressed back and hit our injected gallery entry - navigate to it
+		var url = event.state.url;
+		if (!url) {
+			// Fallback to stored gallery URLs
+			try {
+				var galleries = JSON.parse(sessionStorage.getItem(photoNav.galleryKey));
+				url = galleries[galleries.length - 1];
+			} catch (e) {
+				// If all else fails, go to /gallery/
+				url = '/gallery/';
+			}
+		}
+		window.location.href = url;
+	}
+});
 
 (function ($) {
 	var $window = $(window),
