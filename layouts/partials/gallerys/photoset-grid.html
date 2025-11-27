@@ -3,7 +3,7 @@
 <section class="photoset-grid">
   <div class="grid">
   {{ range $ps }}
-    <a class="grid-item" href="{{ .RelPermalink }}">
+    <a class="grid-item" href="{{ .RelPermalink }}" onclick="photoNav.markNavigation();">
       <img src="{{ .Params.url_z }}" alt="{{ .Params.title }}" loading="lazy" />
     </a>
   {{ end }}

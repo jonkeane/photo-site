@@ -1,3 +1,30 @@
+// Photo navigation helpers
+// These functions handle navigation between photos while properly managing browser history
+var photoNav = {
+	// Key used to track if user navigated from within the site
+	storageKey: 'photoSiteNav',
+
+	// Mark that we're navigating within the site and go to the URL without adding to history
+	goToPhoto: function (url) {
+		sessionStorage.setItem(this.storageKey, 'true');
+		location.replace(url);
+	},
+
+	// Go back - uses history.back() if user navigated here from site, otherwise goes to gallery URL
+	goBack: function (galleryUrl) {
+		if (sessionStorage.getItem(this.storageKey)) {
+			history.back();
+		} else {
+			location.href = galleryUrl;
+		}
+	},
+
+	// Mark that we're entering a photo from a gallery (for normal link clicks)
+	markNavigation: function () {
+		sessionStorage.setItem(this.storageKey, 'true');
+	}
+};
+
 (function ($) {
 	var $window = $(window),
 		$wrapper = $('#wrapper'),
@@ -115,14 +142,14 @@
 		if (e.keyCode === 37) {
 			var prevLink = $('a.previous[rel="prev"]');
 			if (prevLink.length > 0) {
-				window.location.replace(prevLink.attr('url'));
+				photoNav.goToPhoto(prevLink.attr('url'));
 			}
 		}
 		// Right arrow key (39) - go to next
 		else if (e.keyCode === 39) {
 			var nextLink = $('a.next[rel="next"]');
 			if (nextLink.length > 0) {
-				window.location.replace(nextLink.attr('url'));
+				photoNav.goToPhoto(nextLink.attr('url'));
 			}
 		}
 	});
@@ -212,6 +239,53 @@
 				$('html, body').animate({ scrollTop: 0 }, 300);
 			}
 		});
+
+		// Touch swipe support for opening/closing drawer on mobile
+		var drawerTouchStartY = 0;
+		var drawerTouchEndY = 0;
+		var drawerMinSwipeDistance = 50;
+
+		var main = document.querySelector('#main');
+		main.addEventListener('touchmove', function (event) {
+			event.stopPropagation();
+		});
+		main.addEventListener('touchstart', function (e) {
+			drawerTouchStartY = e.changedTouches[0].screenY;
+		}, false);
+
+		main.addEventListener('touchend', function (e) {
+			drawerTouchEndY = e.changedTouches[0].screenY;
+			handleDrawerSwipe();
+		}, false);
+
+		function handleDrawerSwipe() {
+			var swipeDistanceY = drawerTouchStartY - drawerTouchEndY;
+
+			if (Math.abs(swipeDistanceY) > drawerMinSwipeDistance) {
+				if (swipeDistanceY > 0) {
+					// Swipe up - open drawer
+					$('body').addClass('scrolled');
+					$('.drawer-toggle.open').removeClass('open').addClass('close').attr('href', '#');
+					// Add hash to URL
+					if (window.location.hash !== '#details') {
+						history.replaceState(null, '', '#details');
+					}
+				} else {
+					// Swipe down - close drawer (only if at top)
+					var scrollPos = $window.scrollTop();
+					if (scrollPos <= scrollThreshold) {
+						$('body').removeClass('scrolled');
+						$('.drawer-toggle.close').removeClass('close').addClass('open').attr('href', '#details');
+						// Remove hash from URL
+						if (window.location.hash === '#details') {
+							history.replaceState(null, '', window.location.pathname);
+						}
+						// Scroll back to top
+						$('html, body').animate({ scrollTop: 0 }, 300);
+					}
+				}
+			}
+		}
 	}
 
 	// Horizontal scroll/swipe navigation for photo galleries

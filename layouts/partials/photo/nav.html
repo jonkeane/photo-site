@@ -1,14 +1,15 @@
 <nav class="photo-nav">
   <ul class="pagination">
-    <li>
+    <li class="prev-item">
     {{- with .PrevInSection }}
-      <a onclick="location.replace( '{{ .RelPermalink }}');" url="{{ .RelPermalink }}" class="previous" rel="prev">Previous</a>
+      <a onclick="photoNav.goToPhoto('{{ .RelPermalink }}');" url="{{ .RelPermalink }}" class="previous"
+        rel="prev">Previous</a>
     {{- end }}
     </li>
-  <li><a onclick="history.back()" class="backToGallery">back</a></li>
-    <li>
+  <li class="back-item"><a onclick="photoNav.goBack('{{ .Parent.RelPermalink }}');" class="backToGallery">back</a></li>
+    <li class="next-item">
     {{- with .NextInSection }}
-      <a onclick="location.replace( '{{ .RelPermalink }}');" url="{{ .RelPermalink }}" class="next" rel="next">Next</a>
+      <a onclick="photoNav.goToPhoto('{{ .RelPermalink }}');" url="{{ .RelPermalink }}" class="next" rel="next">Next</a>
     {{- end }}
     </li>
   </ul>

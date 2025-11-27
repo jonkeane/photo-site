@@ -1,5 +1,6 @@
 {{- $p := .Photo -}}
-<div class="meta-row">
+{{- $class := .class | default "" -}}
+<div class="meta-row {{ $class }}">
   {{- /* film: make a separate emulsion */ -}}
   {{- if $p.emulsions }}
   <div class="exposure-meta">
