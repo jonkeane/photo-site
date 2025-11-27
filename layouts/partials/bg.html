@@ -1,5 +1,5 @@
 <!-- reactive, resized and optimized backgrounds -->
-{{- $bgimage := resources.Get "bg/IMG_4941.jpg" -}}
+{{- $bgimage := resources.Get "bg/background.jpg" -}}
 
 <!-- >= 3:4 -->
 {{- $7560x := $bgimage.Resize "7560x" -}} <!-- 3x @ 2560 -->
@@ -22,17 +22,17 @@
 
 {{- $vars := dict
     "overlayGradient" $overlayGradient
-    "Landscape2560Permalink" $2560x.Permalink
-    "Landscape7560Permalink" $7560x.Permalink
-    "Landscape5040Permalink" $5040x.Permalink
-    "Landscape3360Permalink" $3360x.Permalink
-    "Landscape1680Permalink" $1680x.Permalink
-    "Landscape1120Permalink" $1120x.Permalink
-    "Portrait3574Permalink" $x3574.Permalink
-    "Portrait2732Permalink" $x2732.Permalink
-    "Portrait2388Permalink" $x2388.Permalink
-    "Portrait2048Permalink" $x2048.Permalink
-    "Portrait1024Permalink" $x1024.Permalink
+    "Landscape2560Permalink" $2560x.RelPermalink
+    "Landscape7560Permalink" $7560x.RelPermalink
+    "Landscape5040Permalink" $5040x.RelPermalink
+    "Landscape3360Permalink" $3360x.RelPermalink
+    "Landscape1680Permalink" $1680x.RelPermalink
+    "Landscape1120Permalink" $1120x.RelPermalink
+    "Portrait3574Permalink" $x3574.RelPermalink
+    "Portrait2732Permalink" $x2732.RelPermalink
+    "Portrait2388Permalink" $x2388.RelPermalink
+    "Portrait2048Permalink" $x2048.RelPermalink
+    "Portrait1024Permalink" $x1024.RelPermalink
 }}
 
 {{- $options := dict

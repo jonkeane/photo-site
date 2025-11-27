@@ -1,9 +1,8 @@
 ---
 Title: Dominican Republic 2021
 Description: Mostly Santo Domingo
-slug: DominicanRepublic2021
 date: "2021-12-15T00:00:00"
-image: gallery/_DSC3428-HDR.jpg
+image: gallery/dominican-republic-2021.jpg
 flickr_album: "72177720315294472"
 ---
 

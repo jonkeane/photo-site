@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"errors"
@@ -12,10 +13,12 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/cenkalti/backoff/v5"
+	"github.com/dghubble/oauth1"
 )
 
 // Minimal, dependency-light Flickr importer that:
@@ -84,25 +87,26 @@ type Photo struct {
 	Description struct {
 		Content string `json:"_content"`
 	} `json:"description"`
-	Tags       []string         `json:"tags"`
-	DateUpload string           `json:"dateupload"`
-	DateTaken  string           `json:"datetaken"`
-	OwnerName  string           `json:"ownername"`
-	License    string           `json:"license"`
-	PathAlias  string           `json:"pathalias"`
-	URLSq      string           `json:"url_sq"`
-	URLT       string           `json:"url_t"`
-	URLS       string           `json:"url_s"`
-	URLN       string           `json:"url_n"`
-	URLM       string           `json:"url_m"`
-	URLZ       string           `json:"url_z"`
-	URLC       string           `json:"url_c"`
-	URLL       string           `json:"url_l"`
-	URLH       string           `json:"url_h"`
-	URLK       string           `json:"url_k"`
-	URLO       string           `json:"url_o"`
-	LastUpdate string           `json:"lastupdate"`
-	Exif       *PhotoExifFields `json:"exif,omitempty"`
+	Tags           []string         `json:"tags"`
+	DateUpload     string           `json:"dateupload"`
+	DateTaken      string           `json:"datetaken"`
+	OwnerName      string           `json:"ownername"`
+	License        string           `json:"license"`
+	PathAlias      string           `json:"pathalias"`
+	URLSq          string           `json:"url_sq"`
+	URLT           string           `json:"url_t"`
+	URLS           string           `json:"url_s"`
+	URLN           string           `json:"url_n"`
+	URLM           string           `json:"url_m"`
+	URLZ           string           `json:"url_z"`
+	URLC           string           `json:"url_c"`
+	URLL           string           `json:"url_l"`
+	URLH           string           `json:"url_h"`
+	URLK           string           `json:"url_k"`
+	URLO           string           `json:"url_o"`
+	LastUpdate     string           `json:"lastupdate"`
+	OriginalFormat string           `json:"originalformat"`
+	Exif           *PhotoExifFields `json:"exif,omitempty"`
 }
 
 type PhotoExifFields struct {
@@ -124,22 +128,56 @@ type PhotoExifResp struct {
 }
 
 type Config struct {
-	APIKey      string
-	HTTPTimeout time.Duration
-	OnlySet     string
-	ForceSlug   string
-	ForceSetID  string
+	APIKey         string
+	ConsumerKey    string
+	ConsumerSecret string
+	HTTPTimeout    time.Duration
+	OnlySet        string
+	ForceSlug      string
+	ForceSetID     string
+	DownloadAssets bool
+	AssetsSetID    string
+	OAuthTokenFile string
+	InitOAuth      bool
 }
 
 func main() {
 	cfg := loadConfig()
-	if cfg.APIKey == "" {
-		fmt.Fprintln(os.Stderr, "FLICKR_API_KEY not set; pass -apikey or env var")
-		os.Exit(1)
+
+	// OAuth initialization mode
+	if cfg.InitOAuth {
+		if cfg.ConsumerKey == "" || cfg.ConsumerSecret == "" {
+			fmt.Fprintln(os.Stderr, "Consumer key and secret required. Set FLICKR_CONSUMER_KEY and FLICKR_CONSUMER_SECRET env vars or use -consumerKey and -consumerSecret flags")
+			os.Exit(1)
+		}
+		if err := initOAuthFlow(cfg); err != nil {
+			fatal(err)
+		}
+		return
 	}
 
 	ctx := context.Background()
-	client := &http.Client{Timeout: cfg.HTTPTimeout}
+
+	// Create HTTP client (with OAuth if token file exists)
+	client, err := createHTTPClient(cfg)
+	if err != nil {
+		fatal(err)
+	}
+
+	// For non-OAuth operations, fall back to API key
+	if cfg.APIKey == "" && cfg.OAuthTokenFile == "" {
+		fmt.Fprintln(os.Stderr, "FLICKR_API_KEY not set; pass -apikey or env var, or use OAuth with -initOAuth")
+		os.Exit(1)
+	}
+
+	// Download assets mode: fetch specific album and download originals
+	if cfg.DownloadAssets {
+		if err := downloadAssets(ctx, client, cfg); err != nil {
+			fatal(err)
+		}
+		fmt.Println("Assets download complete.")
+		return
+	}
 
 	// Direct mode: fetch a specific set and write to a specific slug.
 	if cfg.ForceSetID != "" {
@@ -247,13 +285,27 @@ func main() {
 func loadConfig() Config {
 	var cfg Config
 	apikey := os.Getenv("FLICKR_API_KEY")
-	flag.StringVar(&apikey, "apikey", apikey, "Flickr API key")
+	consumerKey := os.Getenv("FLICKR_CONSUMER_KEY")
+	consumerSecret := os.Getenv("FLICKR_CONSUMER_SECRET")
+	homeDir, _ := os.UserHomeDir()
+	defaultTokenFile := filepath.Join(homeDir, ".flickr_oauth_token")
+
+	flag.StringVar(&apikey, "apikey", apikey, "Flickr API key (legacy, prefer OAuth)")
+	flag.StringVar(&consumerKey, "consumerKey", consumerKey, "Flickr OAuth consumer key")
+	flag.StringVar(&consumerSecret, "consumerSecret", consumerSecret, "Flickr OAuth consumer secret")
 	flag.DurationVar(&cfg.HTTPTimeout, "timeout", 20*time.Second, "HTTP timeout")
 	flag.StringVar(&cfg.OnlySet, "onlySet", "", "Limit to a single photoset id")
 	flag.StringVar(&cfg.ForceSlug, "slug", "", "Explicit slug for writing data (bypass discovery)")
 	flag.StringVar(&cfg.ForceSetID, "set", "", "Explicit photoset id (bypass discovery)")
+	flag.BoolVar(&cfg.DownloadAssets, "downloadAssets", false, "Download original photos from assets album to assets/ folder")
+	flag.StringVar(&cfg.AssetsSetID, "assetsSetID", "72177720330584233", "Photoset ID for assets download")
+	flag.StringVar(&cfg.OAuthTokenFile, "tokenFile", defaultTokenFile, "Path to OAuth token file")
+	flag.BoolVar(&cfg.InitOAuth, "initOAuth", false, "Initialize OAuth flow to get access token")
 	flag.Parse()
+
 	cfg.APIKey = apikey
+	cfg.ConsumerKey = consumerKey
+	cfg.ConsumerSecret = consumerSecret
 	return cfg
 }
 
@@ -344,7 +396,7 @@ func fetchPhotosetPage(ctx context.Context, client *http.Client, apiKey, setID s
 	q.Set("per_page", fmt.Sprintf("%d", perPage))
 	q.Set("extras", strings.Join([]string{
 		"description", "date_upload", "date_taken", "owner_name", "license", "path_alias", "last_update",
-		"url_sq", "url_t", "url_s", "url_n", "url_m", "url_z", "url_c", "url_l", "url_h", "url_k", "url_o",
+		"url_sq", "url_t", "url_s", "url_n", "url_m", "url_z", "url_c", "url_l", "url_h", "url_k", "url_o", "original_format",
 	}, ","))
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, baseAPI+"?"+q.Encode(), nil)
@@ -519,6 +571,152 @@ func safeTitle(s string) string {
 	return s
 }
 
+// OAuth token storage
+type OAuthToken struct {
+	Token       string `json:"token"`
+	TokenSecret string `json:"token_secret"`
+	UserID      string `json:"user_id"`
+	Username    string `json:"username"`
+}
+
+// initOAuthFlow performs the OAuth 1.0a flow to get an access token
+func initOAuthFlow(cfg Config) error {
+	config := oauth1.Config{
+		ConsumerKey:    cfg.ConsumerKey,
+		ConsumerSecret: cfg.ConsumerSecret,
+		CallbackURL:    "oob", // out-of-band for command-line apps
+		Endpoint: oauth1.Endpoint{
+			RequestTokenURL: "https://www.flickr.com/services/oauth/request_token",
+			AuthorizeURL:    "https://www.flickr.com/services/oauth/authorize",
+			AccessTokenURL:  "https://www.flickr.com/services/oauth/access_token",
+		},
+	}
+
+	// Step 1: Get request token
+	requestToken, requestSecret, err := config.RequestToken()
+	if err != nil {
+		return fmt.Errorf("failed to get request token: %w", err)
+	}
+
+	// Step 2: Get authorization URL
+	authURL, err := config.AuthorizationURL(requestToken)
+	if err != nil {
+		return fmt.Errorf("failed to get authorization URL: %w", err)
+	}
+
+	// Add perms parameter for read access
+	authURLWithPerms := authURL.String() + "&perms=read"
+
+	fmt.Println("\n=== Flickr OAuth Authorization ===")
+	fmt.Println("\n1. Visit this URL in your browser:")
+	fmt.Printf("\n   %s\n\n", authURLWithPerms)
+	fmt.Println("2. Authorize the application")
+	fmt.Println("3. Copy the verification code and paste it here")
+	fmt.Print("\nVerification code: ")
+
+	// Read verifier from user
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	verifier := strings.TrimSpace(scanner.Text())
+	if verifier == "" {
+		return fmt.Errorf("no verification code provided")
+	}
+
+	// Step 3: Exchange for access token
+	accessToken, accessSecret, err := config.AccessToken(requestToken, requestSecret, verifier)
+	if err != nil {
+		return fmt.Errorf("failed to get access token: %w", err)
+	}
+
+	// Get user info
+	token := oauth1.NewToken(accessToken, accessSecret)
+	httpClient := config.Client(context.Background(), token)
+
+	resp, err := httpClient.Get("https://api.flickr.com/services/rest/?method=flickr.test.login&format=json&nojsoncallback=1")
+	if err != nil {
+		return fmt.Errorf("failed to get user info: %w", err)
+	}
+	defer resp.Body.Close()
+
+	var userInfo struct {
+		User struct {
+			ID       string `json:"id"`
+			Username struct {
+				Content string `json:"_content"`
+			} `json:"username"`
+		} `json:"user"`
+		Stat string `json:"stat"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&userInfo); err != nil {
+		return fmt.Errorf("failed to decode user info: %w", err)
+	}
+
+	if userInfo.Stat != "ok" {
+		return fmt.Errorf("failed to verify token")
+	}
+
+	// Save token to file
+	tokenData := OAuthToken{
+		Token:       accessToken,
+		TokenSecret: accessSecret,
+		UserID:      userInfo.User.ID,
+		Username:    userInfo.User.Username.Content,
+	}
+
+	tokenJSON, err := json.MarshalIndent(tokenData, "", "  ")
+	if err != nil {
+		return fmt.Errorf("failed to marshal token: %w", err)
+	}
+
+	if err := os.WriteFile(cfg.OAuthTokenFile, tokenJSON, 0600); err != nil {
+		return fmt.Errorf("failed to write token file: %w", err)
+	}
+
+	fmt.Printf("\n✓ Successfully authenticated as %s (ID: %s)\n", tokenData.Username, tokenData.UserID)
+	fmt.Printf("✓ Token saved to: %s\n\n", cfg.OAuthTokenFile)
+	fmt.Println("You can now use the tool with OAuth authentication.")
+
+	return nil
+}
+
+// createHTTPClient creates an HTTP client with OAuth if token file exists
+func createHTTPClient(cfg Config) (*http.Client, error) {
+	// Check if OAuth token file exists
+	if _, err := os.Stat(cfg.OAuthTokenFile); err == nil {
+		// Load OAuth token
+		tokenData, err := os.ReadFile(cfg.OAuthTokenFile)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read token file: %w", err)
+		}
+
+		var token OAuthToken
+		if err := json.Unmarshal(tokenData, &token); err != nil {
+			return nil, fmt.Errorf("failed to parse token file: %w", err)
+		}
+
+		if cfg.ConsumerKey == "" || cfg.ConsumerSecret == "" {
+			return nil, fmt.Errorf("consumer key and secret required for OAuth. Set FLICKR_CONSUMER_KEY and FLICKR_CONSUMER_SECRET")
+		}
+
+		// Create OAuth client
+		config := oauth1.Config{
+			ConsumerKey:    cfg.ConsumerKey,
+			ConsumerSecret: cfg.ConsumerSecret,
+		}
+
+		oauthToken := oauth1.NewToken(token.Token, token.TokenSecret)
+		httpClient := config.Client(context.Background(), oauthToken)
+		httpClient.Timeout = cfg.HTTPTimeout
+
+		fmt.Printf("Using OAuth authentication as %s\n", token.Username)
+		return httpClient, nil
+	}
+
+	// Fall back to regular HTTP client (for API key usage)
+	return &http.Client{Timeout: cfg.HTTPTimeout}, nil
+}
+
 func fatal(err error) {
 	if err == nil {
 		return
@@ -530,4 +728,135 @@ func fatal(err error) {
 		fmt.Fprintln(os.Stderr, err)
 	}
 	os.Exit(1)
+}
+
+// downloadAssets fetches photos from the assets album and downloads them to assets/ folder
+func downloadAssets(ctx context.Context, client *http.Client, cfg Config) error {
+	fmt.Printf("Fetching assets from photoset %s\n", cfg.AssetsSetID)
+
+	// Fetch all photos in the assets set
+	ps, err := fetchPhotosetAll(ctx, client, cfg.APIKey, cfg.AssetsSetID)
+	if err != nil {
+		return fmt.Errorf("failed to fetch photoset: %w", err)
+	}
+
+	if len(ps.Photoset.Photo) == 0 {
+		return fmt.Errorf("no photos found in photoset")
+	}
+
+	// Create base assets directories
+	bgDir := "assets/bg"
+	galleryDir := "assets/gallery"
+	if err := os.MkdirAll(bgDir, 0o755); err != nil {
+		return fmt.Errorf("failed to create bg directory: %w", err)
+	}
+	if err := os.MkdirAll(galleryDir, 0o755); err != nil {
+		return fmt.Errorf("failed to create gallery directory: %w", err)
+	}
+
+	// Process each photo
+	for i, photo := range ps.Photoset.Photo {
+		fmt.Printf("[%d/%d] Processing photo %s\n", i+1, len(ps.Photoset.Photo), photo.ID)
+
+		// Determine the filename from title and original format
+		filename := ""
+		if photo.Title != "" {
+			filename = photo.Title
+			// Append extension from originalformat field
+			if photo.OriginalFormat != "" {
+				filename = filename + "." + photo.OriginalFormat
+			} else {
+				// Fallback to .jpg if no format specified
+				filename = filename + ".jpg"
+			}
+		} else {
+			// Fallback to photo ID with extension
+			ext := "jpg"
+			if photo.OriginalFormat != "" {
+				ext = photo.OriginalFormat
+			}
+			filename = photo.ID + "." + ext
+			fmt.Fprintf(os.Stderr, "Warning: no title for photo %s, using %s\n", photo.ID, filename)
+		}
+
+		// Determine target directory based on title
+		// If the photo title is "background", put it in bg/, otherwise gallery/
+		targetDir := galleryDir
+		titleLower := strings.ToLower(strings.TrimSpace(photo.Title))
+		if titleLower == "background" {
+			targetDir = bgDir
+		}
+
+		targetPath := filepath.Join(targetDir, filename)
+
+		// Check if file already exists and is up-to-date
+		if fileInfo, err := os.Stat(targetPath); err == nil {
+			// File exists, compare timestamps
+			// Parse Flickr's lastupdate (Unix timestamp as string)
+			if photo.LastUpdate != "" {
+				flickrTimestamp, err := strconv.ParseInt(photo.LastUpdate, 10, 64)
+				if err == nil {
+					flickrModTime := time.Unix(flickrTimestamp, 0)
+					fileModTime := fileInfo.ModTime()
+
+					// If file is newer than or equal to Flickr's lastupdate, skip
+					if !fileModTime.Before(flickrModTime) {
+						fmt.Printf("  Skipping %s (up-to-date)\n", filename)
+						continue
+					}
+					fmt.Printf("  Re-downloading %s (Flickr updated: %s, local: %s)\n",
+						filename, flickrModTime.Format(time.RFC3339), fileModTime.Format(time.RFC3339))
+				}
+			} else {
+				// No lastupdate available, skip if file exists
+				fmt.Printf("  Skipping %s (already exists, no timestamp to compare)\n", filename)
+				continue
+			}
+		}
+
+		// Download the original photo
+		if photo.URLO == "" {
+			fmt.Fprintf(os.Stderr, "Warning: no original URL for photo %s\n", photo.ID)
+			continue
+		}
+
+		if err := downloadPhoto(ctx, client, photo.URLO, targetPath); err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to download photo %s: %v\n", photo.ID, err)
+			continue
+		}
+
+		fmt.Printf("  Downloaded %s\n", filename)
+		time.Sleep(240 * time.Millisecond) // be polite
+	}
+
+	return nil
+}
+
+// downloadPhoto downloads a photo from a URL to a local file
+func downloadPhoto(ctx context.Context, client *http.Client, photoURL, destPath string) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, photoURL, nil)
+	if err != nil {
+		return err
+	}
+
+	resp, err := doRequestWithBackoff(client, req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("http %d", resp.StatusCode)
+	}
+
+	// Create the file
+	out, err := os.Create(destPath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	return err
 }

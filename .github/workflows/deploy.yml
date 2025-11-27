@@ -19,16 +19,9 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Setup SSH for submodules
+      - name: Setup flickr auth
         run: |
-            mkdir -p ~/.ssh
-            echo "${{ secrets.SUBMODULE_DEPLOY_KEY }}" > ~/.ssh/id_rsa
-            chmod 600 ~/.ssh/id_rsa
-
-      - name: Init and update submodules
-        run: |
-            git submodule sync
-            git submodule update --init --recursive
+            echo '${{ secrets.FLICKR_OAUTH_TOKEN}}' > ~/.flickr_oauth_token
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -36,7 +29,9 @@ jobs:
       - name: Cache Flickr data
         uses: actions/cache@v4
         with:
-          path: data/flickr
+          path: |
+            data/flickr
+            assets
           key: flickr-data-${{ github.sha }}
           restore-keys: |
             flickr-data-
@@ -45,16 +40,21 @@ jobs:
         run: go build ./cmd/flickrimport
       
       - name: Run flickrimport
-        run: ./flickrimport
+        run: |
+          ./flickrimport -downloadAssets
+          ./flickrimport
         continue-on-error: true
         env:
-          FLICKR_API_KEY: ${{ secrets.FLICKR_API_KEY }}
+          FLICKR_CONSUMER_KEY: ${{ secrets.FLICKR_CONSUMER_KEY }}
+          FLICKR_CONSUMER_SECRET: ${{ secrets.FLICKR_CONSUMER_SECRET }}
       
       - name: Save Flickr data to cache
         if: always()
         uses: actions/cache/save@v4
         with:
-          path: data/flickr
+          path: |
+            data/flickr
+            assets
           key: flickr-data-${{ github.sha }}
       
       - name: Setup Hugo

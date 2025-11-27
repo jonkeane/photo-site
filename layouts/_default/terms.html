@@ -11,10 +11,11 @@
 					<div id="main">
 						{{- range $key := (slice "cameras" "lenses" "emulsions") -}}
 							{{- $taxonomy := index $.Site.Taxonomies $key -}}
-							{{- if ne (len $taxonomy) 0 -}}
+							{{- $filteredTaxonomy := partial "filter-private-taxonomy.html" $taxonomy -}}
+							{{- if ne (len $filteredTaxonomy) 0 -}}
 								<h2 id="{{ $key }}">{{ $key }}</h2>
 								<ul class = "terms">
-									{{- range $taxonomy.ByCount -}}
+									{{- range sort $filteredTaxonomy "Count" "desc" -}}
 									<li>
 										<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">
 											<span class="tag-text">{{ .Page.Title | .Page.RenderString }}</span>
@@ -28,9 +29,11 @@
 
 				<h2 id="tags">Tags</h2>
 				{{- $taxonomy := index $.Site.Taxonomies "tags" -}}
+				{{- $filteredTaxonomy := partial "filter-private-taxonomy.html" $taxonomy -}}
+				{{- $sortedTags := sort $filteredTaxonomy "Page.Title" -}}
 				{{- $currentLetter := "" -}}
 				{{- $etcTags := slice -}}
-				{{- range $taxonomy.Alphabetical -}}
+				{{- range $sortedTags -}}
 					{{- $firstLetter := upper (substr .Page.Title 0 1) -}}
 					{{- $isAlpha := and (ge $firstLetter "A") (le $firstLetter "Z") -}}
 					{{- if $isAlpha -}}
@@ -55,10 +58,10 @@
 				{{- if ne $currentLetter "" -}}
 					</ul>
 				{{- end -}}
-				{{- if gt (len $etcTags) 0 -}}
-					<h2 id="tag-etc">etc</h2>
-					<ul class = "terms">
-						{{- range $etcTags -}}
+			{{- if gt (len $etcTags) 0 -}}
+				<h2 id="tag-etc">etc</h2>
+				<ul class = "terms">
+					{{- range sort $etcTags "Page.Title" -}}
 						<li>
 							<a class="button primary tag" href="{{ (path.Join .Page.RelPermalink) | relLangURL }}">
 								<span class="tag-text">{{ .Page.Title | .Page.RenderString }}</span>

@@ -1,9 +1,8 @@
 ---
 Title: Iceland on film 2022
 Description: Iceland on film in 2022
-slug: IcelandFilm2022
 date: "2022-08-15T00:00:00"
-image: gallery/3943-010.jpg
+image: gallery/iceland-film-2022.jpg
 flickr_album: "72177720302347089"
 ---
 

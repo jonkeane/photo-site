@@ -1,9 +1,8 @@
 ---
 Title: "Thailand on film 2023"
 Description: "A December trip to Thailand, captured on film"
-slug: "Thailand2023film"
 date: "2023-12-15T18:08:20-05:00"
-image: "gallery/000057160002.jpg"
+image: gallery/thailand-film-2023.jpg
 flickr_album: "72177720316238640"
 ---
 

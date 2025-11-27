@@ -10,4 +10,7 @@ resources/
 # Local Netlify folder
 .netlify
 netlify_dev.sh
+
 data/flickr/*
+assets/*
+flickrimport

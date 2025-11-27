@@ -32,6 +32,5 @@ hugo serve
 To fetch photoset metadata, you need a Flickr API key:
 1. Get key at https://www.flickr.com/services/apps/create/
 2. Export as environment variable: `export FLICKR_API_KEY=your-key-here`
-3. Run importer: `./bin/flickrimport` (or `go run ./cmd/flickrimport`)
-
-For Netlify deployments, add `FLICKR_API_KEY` in site settings → Environment variables.
+3. Run importer: `flickrimport` (or `go run ./cmd/flickrimport`)
+4. For private photos, you'll need to setup OAuth `export FLICKR_CONSUMER_KEY=your-key-here`, `export FLICKR_CONSUMER_SECRET=your-secret-here` and then `flickrimport -initOAuth`

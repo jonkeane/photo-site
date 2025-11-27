@@ -1,9 +1,8 @@
 ---
 Title: Vienna 2023
 Description: a few shots from a brief stop in Vienna
-slug: Vienna2023
 date: "2023-03-16T00:00:00"
-image: gallery/_DSC8331-HDR.jpg
+image: gallery/vienna-2023.jpg
 flickr_album: "72177720312790472"
 ---
 

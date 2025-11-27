@@ -1,0 +1,21 @@
+{{- /* Filter out taxonomy terms that only contain photos from private galleries */ -}}
+{{- $filteredTerms := slice -}}
+{{- range $key, $value := . -}}
+	{{- /* Check if this term has any non-private photos */ -}}
+	{{- $hasPublicPhotos := false -}}
+	{{- $publicCount := 0 -}}
+	{{- range $value.Pages -}}
+		{{- $gallerySlug := .Params.gallery_slug -}}
+		{{- $galleryPath := printf "/gallery/%s" $gallerySlug -}}
+		{{- $galleryPage := site.GetPage $galleryPath -}}
+		{{- if or (not $galleryPage) (not $galleryPage.Params.private) -}}
+			{{- $hasPublicPhotos = true -}}
+			{{- $publicCount = add $publicCount 1 -}}
+		{{- end -}}
+	{{- end -}}
+	{{- /* Only include the term if it has at least one public photo */ -}}
+	{{- if $hasPublicPhotos -}}
+		{{- $filteredTerms = $filteredTerms | append (dict "Page" $value.Page "Count" $publicCount "Term" $key) -}}
+	{{- end -}}
+{{- end -}}
+{{- return $filteredTerms -}}

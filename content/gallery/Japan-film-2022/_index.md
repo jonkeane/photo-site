@@ -1,9 +1,8 @@
 ---
 Title: Japan on film 2022
 Description: Some shots on film from a December trip to Japan
-slug: JapanFilm2022
 date: "2022-12-15T00:00:00"
-image: gallery/000001130012.jpg
+image: gallery/japan-film-2022.jpg
 flickr_album: "72177720315315409"
 ---
 
