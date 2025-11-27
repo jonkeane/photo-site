@@ -1,0 +1,11 @@
+{{- /* Filter out photos from private galleries */ -}}
+{{- $filteredPages := slice -}}
+{{- range .Pages -}}
+	{{- $gallerySlug := .Params.gallery_slug -}}
+	{{- $galleryPath := printf "/gallery/%s" $gallerySlug -}}
+	{{- $galleryPage := $.Site.GetPage $galleryPath -}}
+	{{- if or (not $galleryPage) (not $galleryPage.Params.private) -}}
+		{{- $filteredPages = $filteredPages | append . -}}
+	{{- end -}}
+{{- end -}}
+{{- return $filteredPages -}}

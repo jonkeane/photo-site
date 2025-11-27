@@ -2,6 +2,7 @@
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
 
 		{{- $postsPageSize := .Site.Params.Posts.pagesize | default 6 -}}
+		{{- $filteredPages := partial "filter-private-photos.html" . -}}
 
 			<div id="wrapper" data-ps="{{ $postsPageSize }}" data-pfp="false">
 			    <div class="bg fixed"></div>
@@ -12,14 +13,16 @@
 				<div id="main">
                     <section class="page">
 						<a href="/{{ .Data.Plural }}/" class="button", id="galleryBackBtn">back to {{ .Data.Plural }}</a>
+						{{- /* Calculate filtered page count */ -}}
+						{{- $filteredCount := len $filteredPages -}}
 						<header class="major">
                             <h1>{{ .Title }}</h1>
 							{{ .Content }}
-							<p class="term-count">{{ len .Pages }} {{ if eq (len .Pages) 1 }}photo{{ else }}photos{{ end }}</p>
+							<p class="term-count">{{ $filteredCount }} {{ if eq $filteredCount 1 }}photo{{ else }}photos{{ end }}</p>
                         </header>
 
-						{{- if .Pages }}
-						{{- $pagedImages := .Paginate .Pages $postsPageSize -}}
+					{{- if .Pages }}
+					{{- $pagedImages := .Paginate $filteredPages $postsPageSize -}}
 						{{ partial "gallerys/photoset-grid.html" (dict "Page" $ "Photosubset" $pagedImages.Pages) }}
 						{{- end }}
 
