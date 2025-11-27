@@ -115,14 +115,14 @@
 		if (e.keyCode === 37) {
 			var prevLink = $('a.previous[rel="prev"]');
 			if (prevLink.length > 0) {
-				window.location.href = prevLink.attr('href');
+				window.location.replace(prevLink.attr('url'));
 			}
 		}
 		// Right arrow key (39) - go to next
 		else if (e.keyCode === 39) {
 			var nextLink = $('a.next[rel="next"]');
 			if (nextLink.length > 0) {
-				window.location.href = nextLink.attr('href');
+				window.location.replace(nextLink.attr('url'));
 			}
 		}
 	});
@@ -255,13 +255,13 @@
 						// Scroll left - go to previous
 						var prevLink = $('a.previous[rel="prev"]');
 						if (prevLink.length > 0) {
-							window.location.href = prevLink.attr('href');
+							window.location.replace(prevLink.attr('url'));
 						}
 					} else {
 						// Scroll right - go to next
 						var nextLink = $('a.next[rel="next"]');
 						if (nextLink.length > 0) {
-							window.location.href = nextLink.attr('href');
+							window.location.replace(nextLink.attr('url'));
 						}
 					}
 					horizontalScrollAccumulator = 0;
@@ -300,13 +300,13 @@
 						// Swipe right - go to previous
 						var prevLink = $('a.previous[rel="prev"]');
 						if (prevLink.length > 0) {
-							window.location.href = prevLink.attr('href');
+							window.location.replace(prevLink.attr('url'));
 						}
 					} else {
 						// Swipe left - go to next
 						var nextLink = $('a.next[rel="next"]');
 						if (nextLink.length > 0) {
-							window.location.href = nextLink.attr('href');
+							window.location.replace(nextLink.attr('url'));
 						}
 					}
 				}
@@ -340,7 +340,7 @@
 			if (prefetchLinks.length === 0) return;
 
 			prefetchLinks.forEach(function (link) {
-				var url = link.getAttribute('href');
+				var url = link.getAttribute('url');
 				if (!url) return;
 
 				fetch(url, {

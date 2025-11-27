@@ -2,13 +2,13 @@
   <ul class="pagination">
     <li>
     {{- with .PrevInSection }}
-      <a href="{{ .RelPermalink }}" class="previous" rel="prev">Previous</a>
+      <a onclick="location.replace( '{{ .RelPermalink }}');" url="{{ .RelPermalink }}" class="previous" rel="prev">Previous</a>
     {{- end }}
     </li>
   <li><a onclick="history.back()" class="backToGallery">back</a></li>
     <li>
     {{- with .NextInSection }}
-      <a href="{{ .RelPermalink }}" class="next" rel="next">Next</a>
+      <a onclick="location.replace( '{{ .RelPermalink }}');" url="{{ .RelPermalink }}" class="next" rel="next">Next</a>
     {{- end }}
     </li>
   </ul>
