@@ -1,4 +1,1 @@
 
-[submodule "assets"]
-	path = assets
-	url = git@github.com:jonkeane/photo-site-assets.git
