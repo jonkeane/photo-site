@@ -1,8 +1,7 @@
-/* floating gallery back button */
+
 #galleryBackBtn {
 	position: fixed;
 	display: none;
-	/* padding: 0rem 4rem; */
 	width: 60%;
 	margin: 0 auto;
 	width: calc(100% - 12rem);
@@ -59,6 +58,7 @@
 
 	#photo-single {
 		padding-bottom: 6.5rem !important;
+		justify-content: center;
 
 		>.photo-nav {
 			position: absolute;
@@ -71,8 +71,6 @@
 			display: none
 		}
 	}
-
-
 
 	.photo-nav .previous {
 		font-size: 0;
@@ -95,7 +93,82 @@
 	}
 }
 
-/* gallery overrides */
+/* Mobile portrait: ensure vertical centering of photo content */
+@media screen and (max-width: 736px) and (orientation: portrait) {
+	#photo-single {
+		justify-content: center;
+	}
+}
+
+/* Mobile landscape: hide photostrip to maximize photo space */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+	#photo-single > .photostrip {
+		display: none;
+	}
+
+	#photo-single > .meta-row.exif-inline {
+		display: none;
+	}
+
+	.photo-drawer .meta-row.exif-drawer {
+		display: flex;
+		margin-bottom: 1rem;
+	}
+
+	#photo-single > .photo-nav {
+		position: absolute;
+		top: 0.5rem;
+		left: auto;
+		right: 0.5rem;
+		bottom: auto;
+		width: auto;
+	}
+
+	.photo-nav ul {
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.25rem;
+	}
+
+	.photo-nav li {
+		flex: 0 0 auto;
+	}
+
+	.photo-nav li.back-item {
+		position: fixed;
+		bottom: 0.5rem;
+	}
+
+	.photo-nav .previous {
+		font-size: 0;
+
+		&:before {
+			font-size: 1rem;
+			font-weight: bold;
+			margin-right: 0;
+		}
+	}
+
+	.photo-nav .next {
+		font-size: 0;
+
+		&:before {
+			font-size: 1rem;
+			font-weight: bold;
+			margin-left: 0;
+		}
+	}
+
+	.photo-nav .backToGallery {
+		padding: 0 1rem !important;
+		font-size: 0.8rem;
+	}
+}
+
+.photo-drawer .meta-row.exif-drawer {
+	display: none;
+}
+
 .photoset-grid {
 	flex-wrap: wrap;
 	font-size: 0;
@@ -126,17 +199,16 @@
 }
 
 .photoset-grid .grid-item {
-	overflow: hidden; // allow image scale crop
+	overflow: hidden; 
 }
 
 .photoset-grid .grid-item img {
-	// add smooth transform alongside opacity change
 	transition: transform 0.3s ease, opacity 0.2s ease;
 }
 
 .photoset-grid .grid-item:hover img {
 	opacity: 0.92;
-	transform: scale(1.05); // subtle zoom to match other gallery thumbs
+	transform: scale(1.05); 
 }
 
 .photoset-grid a {
@@ -154,23 +226,19 @@
 
 .photo-nav li {
 	flex: 1 1 0;
-	/* Each li takes equal space */
 	display: flex;
 	padding-left: 0;
 
 	&:first-child {
 		justify-content: flex-start;
-		/* Previous on the left */
 	}
 
 	&:nth-child(2) {
 		justify-content: center;
-		/* Back to gallery in the center */
 	}
 
 	&:last-child {
 		justify-content: flex-end;
-		/* Next on the right */
 	}
 }
 
@@ -237,6 +305,7 @@
 	>footer,
 	>.nav {
 		flex: 0 0 auto;
+		z-index: 10;
 	}
 }
 

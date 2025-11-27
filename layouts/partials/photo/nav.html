@@ -5,7 +5,7 @@
       <a onclick="location.replace( '{{ .RelPermalink }}');" url="{{ .RelPermalink }}" class="previous" rel="prev">Previous</a>
     {{- end }}
     </li>
-  <li><a onclick="history.back()" class="backToGallery">back</a></li>
+  <li class="back-item"><a onclick="history.back()" class="backToGallery">back</a></li>
     <li>
     {{- with .NextInSection }}
       <a onclick="location.replace( '{{ .RelPermalink }}');" url="{{ .RelPermalink }}" class="next" rel="next">Next</a>

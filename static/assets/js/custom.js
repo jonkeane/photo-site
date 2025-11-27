@@ -212,6 +212,51 @@
 				$('html, body').animate({ scrollTop: 0 }, 300);
 			}
 		});
+
+		// Touch swipe support for opening/closing drawer on mobile
+		var drawerTouchStartY = 0;
+		var drawerTouchEndY = 0;
+		var drawerMinSwipeDistance = 50;
+
+		var photoDrawer = document.querySelector('.photo-drawer');
+
+		photoDrawer.addEventListener('touchstart', function (e) {
+			drawerTouchStartY = e.changedTouches[0].screenY;
+		}, false);
+
+		photoDrawer.addEventListener('touchend', function (e) {
+			drawerTouchEndY = e.changedTouches[0].screenY;
+			handleDrawerSwipe();
+		}, false);
+
+		function handleDrawerSwipe() {
+			var swipeDistanceY = drawerTouchStartY - drawerTouchEndY;
+
+			if (Math.abs(swipeDistanceY) > drawerMinSwipeDistance) {
+				if (swipeDistanceY > 0) {
+					// Swipe up - open drawer
+					$('body').addClass('scrolled');
+					$('.drawer-toggle.open').removeClass('open').addClass('close').attr('href', '#');
+					// Add hash to URL
+					if (window.location.hash !== '#details') {
+						history.replaceState(null, '', '#details');
+					}
+				} else {
+					// Swipe down - close drawer (only if at top)
+					var scrollPos = $window.scrollTop();
+					if (scrollPos <= scrollThreshold) {
+						$('body').removeClass('scrolled');
+						$('.drawer-toggle.close').removeClass('close').addClass('open').attr('href', '#details');
+						// Remove hash from URL
+						if (window.location.hash === '#details') {
+							history.replaceState(null, '', window.location.pathname);
+						}
+						// Scroll back to top
+						$('html, body').animate({ scrollTop: 0 }, 300);
+					}
+				}
+			}
+		}
 	}
 
 	// Horizontal scroll/swipe navigation for photo galleries
