@@ -22,6 +22,22 @@ var photoNav = {
 	// Mark that we're entering a photo from a gallery (for normal link clicks)
 	markNavigation: function () {
 		sessionStorage.setItem(this.storageKey, 'true');
+	},
+
+	// Initialize history on first direct visit to a photo page
+	// This injects the gallery URL into history so back button works correctly
+	initPhotoPage: function (galleryUrl) {
+		if (!sessionStorage.getItem(this.storageKey)) {
+			// User landed directly on this photo (not from within the site)
+			// Inject the gallery into history so back button goes there
+			var currentUrl = window.location.href;
+			// Replace current entry with gallery URL
+			history.replaceState({ photoNav: 'gallery' }, '', galleryUrl);
+			// Push current photo as new entry
+			history.pushState({ photoNav: 'photo' }, '', currentUrl);
+			// Mark that we've set up navigation
+			sessionStorage.setItem(this.storageKey, 'true');
+		}
 	}
 };
 

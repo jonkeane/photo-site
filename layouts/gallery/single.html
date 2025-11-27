@@ -39,5 +39,9 @@
 		</section>
 	</div>
 	{{- partial "scripts/index" . -}}
+	<script>
+		// Initialize photo navigation - injects gallery URL into history for direct visits
+		photoNav.initPhotoPage('{{ .Parent.RelPermalink }}');
+	</script>
 	</body>
 </html>
