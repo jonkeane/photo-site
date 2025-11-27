@@ -362,4 +362,12 @@
 		history: false,
 		hideNav: '.pagination',
 	});
+
+	$('.posts').infiniteScroll({
+		// options
+		path: '.next',
+		append: 'article',
+		history: false,
+		hideNav: '.pagination',
+	});
 })(jQuery);
