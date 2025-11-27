@@ -1,9 +1,8 @@
 ---
 Title: Buenos Aires and Montevideo 2019
 Description: Fall in Buenos Aires and Montevideo
-slug: BsAs-MVD-2019
 date: "2019-03-27T00:00:00"
-image: gallery/IMG_5125.jpg
+image: gallery/bsas-mvd-2019.jpg
 flickr_album: "72157712267610948"
 ---
 

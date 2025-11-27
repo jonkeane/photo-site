@@ -1,7 +1,6 @@
 ---
 title: Gallery
 description: 
-slug: gallery
 layout: gallery-list
 ---
 

@@ -1,9 +1,8 @@
 ---
 Title: "Seattle, Victoria, New York, Barcelona 2022"
 Description: "A few trips on film"
-slug: "VictoriaBarcelona2022"
 date: "2022-07-01T00:00:00-05:00"
-image: "gallery/000459670007.jpg"
+image: gallery/victoria-barcelona-2022.jpg
 flickr_album: "72177720300297911"
 ---
 

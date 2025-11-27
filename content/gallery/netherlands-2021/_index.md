@@ -1,9 +1,8 @@
 ---
 Title: Netherlands 2021
 Description: a week in the Netherlands
-slug: Netherlands2021
 date: "2021-08-13T00:00:00"
-image: gallery/_DSC2353.jpg
+image: gallery/netherlands-2021.jpg
 flickr_album: "72177720313747212"
 ---
 

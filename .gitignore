@@ -11,3 +11,4 @@ resources/
 .netlify
 netlify_dev.sh
 data/flickr/*
+flickrimport

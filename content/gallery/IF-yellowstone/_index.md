@@ -1,9 +1,8 @@
 ---
 Title: Idaho Falls and Yellowstone
 Description: Scenes from the intermountain west
-slug: IFyellowstone
 date: "2019-01-01T00:00:00"
-image: gallery/IMG_5255.jpg
+image: gallery/if-yellowstone.jpg
 flickr_album: "72157711797709437"
 ---
 

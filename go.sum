@@ -4,3 +4,5 @@ github.com/curtiscde/hugo-theme-massively v6.7.0+incompatible h1:frygJNP8dBwIsjZ
 github.com/curtiscde/hugo-theme-massively v6.7.0+incompatible/go.mod h1:DOftslpILieqXeMMJv0kPliwlTGVJwBZJ6JUIYU92wo=
 github.com/curtiscde/hugo-theme-massively v6.7.1-0.20250307083046-ef8edc4d9a3c+incompatible h1:vrDmj/CB2uqxKbIyDkmOiuSRSWRIdZtOBzZoKWM2Tlw=
 github.com/curtiscde/hugo-theme-massively v6.7.1-0.20250307083046-ef8edc4d9a3c+incompatible/go.mod h1:DOftslpILieqXeMMJv0kPliwlTGVJwBZJ6JUIYU92wo=
+github.com/dghubble/oauth1 v0.7.3 h1:EkEM/zMDMp3zOsX2DC/ZQ2vnEX3ELK0/l9kb+vs4ptE=
+github.com/dghubble/oauth1 v0.7.3/go.mod h1:oxTe+az9NSMIucDPDCCtzJGsPhciJV33xocHfcR2sVY=

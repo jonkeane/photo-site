@@ -1,9 +1,8 @@
 ---
 Title: Iceland on film 2025
 Description: Iceland on film in 2025
-slug: IcelandFilm2025
 date: "2025-07-02T00:00:00"
-image: gallery/000073880002.jpg
+image: gallery/iceland-film-2025.jpg
 flickr_album: "72177720330527378"
 ---
 
