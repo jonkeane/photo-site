@@ -21,7 +21,7 @@ jobs:
       
       - name: Setup flickr auth
         run: |
-            echo "${{ secrets.FLICKR_OAUTH_TOKEN}}" > ~/.flickr_oauth_token
+            echo '${{ secrets.FLICKR_OAUTH_TOKEN}}' > ~/.flickr_oauth_token
 
       - name: Setup Go
         uses: actions/setup-go@v5
