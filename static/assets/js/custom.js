@@ -414,7 +414,7 @@ var photoNav = {
 			if (prefetchLinks.length === 0) return;
 
 			prefetchLinks.forEach(function (link) {
-				var url = link.getAttribute('url');
+				var url = link.getAttribute('href');
 				if (!url) return;
 
 				fetch(url, {

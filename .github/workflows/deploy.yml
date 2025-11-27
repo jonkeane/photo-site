@@ -7,7 +7,15 @@ on:
   pull_request:
     branches:
       - main
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight UTC
   workflow_dispatch:
+    inputs:
+      clear_cache:
+        description: 'Clear Flickr data cache before building'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build-and-deploy:
@@ -27,6 +35,7 @@ jobs:
         uses: actions/setup-go@v5
       
       - name: Cache Flickr data
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.clear_cache) }}
         uses: actions/cache@v4
         with:
           path: |
