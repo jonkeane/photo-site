@@ -11,7 +11,7 @@
 
 				<div id="main">
 					<section class="page">
-						<a onclick="history.back()" class="button", id="galleryBackBtn">back to gallery</a>
+						<a onclick="photoNav.goBack('{{ .Parent.RelPermalink }}')" class="button" id="galleryBackBtn">back to gallery</a>
 						<header class="major">
                             <h1>{{ .Title }}</h1>
                             <p>{{ .Description }}</p>

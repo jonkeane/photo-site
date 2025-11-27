@@ -1,3 +1,30 @@
+// Photo navigation helpers
+// These functions handle navigation between photos while properly managing browser history
+var photoNav = {
+	// Key used to track if user navigated from within the site
+	storageKey: 'photoSiteNav',
+
+	// Mark that we're navigating within the site and go to the URL without adding to history
+	goToPhoto: function (url) {
+		sessionStorage.setItem(this.storageKey, 'true');
+		location.replace(url);
+	},
+
+	// Go back - uses history.back() if user navigated here from site, otherwise goes to gallery URL
+	goBack: function (galleryUrl) {
+		if (sessionStorage.getItem(this.storageKey)) {
+			history.back();
+		} else {
+			location.href = galleryUrl;
+		}
+	},
+
+	// Mark that we're entering a photo from a gallery (for normal link clicks)
+	markNavigation: function () {
+		sessionStorage.setItem(this.storageKey, 'true');
+	}
+};
+
 (function ($) {
 	var $window = $(window),
 		$wrapper = $('#wrapper'),
@@ -115,14 +142,14 @@
 		if (e.keyCode === 37) {
 			var prevLink = $('a.previous[rel="prev"]');
 			if (prevLink.length > 0) {
-				window.location.replace(prevLink.attr('url'));
+				photoNav.goToPhoto(prevLink.attr('url'));
 			}
 		}
 		// Right arrow key (39) - go to next
 		else if (e.keyCode === 39) {
 			var nextLink = $('a.next[rel="next"]');
 			if (nextLink.length > 0) {
-				window.location.replace(nextLink.attr('url'));
+				photoNav.goToPhoto(nextLink.attr('url'));
 			}
 		}
 	});
