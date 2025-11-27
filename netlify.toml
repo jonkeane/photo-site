@@ -7,6 +7,19 @@ HUGO_VERSION = "0.147.9"
 [dev]
 framework = "hugo"
 
+# Cache static assets aggressively (1 year)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache gallery pages - allows CDN edge caching + browser caching with revalidation
+[[headers]]
+  for = "/gallery/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+    Netlify-CDN-Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
 # Not ready for this yet, but this mostly works — still some scripts inline (need to hash)
 # [[headers]]
 #   for = "/*"
