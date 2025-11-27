@@ -406,11 +406,8 @@ var photoNav = {
 		};
 
 		scheduleWork(function () {
-			var prefetchData = document.getElementById('prefetch-data');
-			if (!prefetchData) return;
-
-			// Find all link tags inside the prefetch-data div
-			var prefetchLinks = prefetchData.querySelectorAll('link');
+			// Find all prefetch link tags in the head
+			var prefetchLinks = document.querySelectorAll('link[rel="prefetch"]');
 			if (prefetchLinks.length === 0) return;
 
 			prefetchLinks.forEach(function (link) {
