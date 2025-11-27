@@ -1,15 +1,20 @@
+{{- /* Prefetch next/prev pages and images for instant navigation */ -}}
 <div id="prefetch-data" style="display: none;">
-  {{- with .NextInSection -}}
-    {{- $nextUrl := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c .Params.url_z -}}
-    {{- if $nextUrl }}
-      <link href="{{ $nextUrl }}" as="image" />
+{{- with .NextInSection -}}
+  <link rel="prefetch" href="{{ .RelPermalink }}" />
+  {{- $nextUrl := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c
+  .Params.url_z -}}
+  {{- if $nextUrl }}
+    <link rel="prefetch" href="{{ $nextUrl }}" as="image" />
     {{- end -}}
-  {{- end -}}
+    {{- end -}}
 
-  {{- with .PrevInSection -}}
-    {{- $prevUrl := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c .Params.url_z -}}
-    {{- if $prevUrl }}
-      <link href="{{ $prevUrl }}" as="image" />
+{{- with .PrevInSection -}}
+  <link rel="prefetch" href="{{ .RelPermalink }}" />
+  {{- $prevUrl := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c
+  .Params.url_z -}}
+  {{- if $prevUrl }}
+    <link rel="prefetch" href="{{ $prevUrl }}" as="image" />
     {{- end -}}
-  {{- end }}
+{{- end -}}
 </div>

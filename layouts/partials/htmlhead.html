@@ -9,6 +9,10 @@
 		<title>{{ if eq (.Site.Title) (.Title) }}{{ .Site.Title }}{{ else }}{{ .Title }} &middot; {{ .Site.Title }}{{ end }}</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!-- Preconnect to external origins for faster resource loading -->
+		<link rel="preconnect" href="https://live.staticflickr.com" crossorigin />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<!-- CSS -->
 		{{- if hugo.IsServer -}}
 		{{- $style := resources.Get "scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/css/main.css" "enableSourceMap" true) -}}
