@@ -8,5 +8,4 @@
 
 {{- $js := slice $jQuery $scrollex $scrolly $browser $breakpoints $util $main | resources.Concat "assets/js/bundle.js" }}
 <script src='{{ $js.RelPermalink }}'></script>
-<script src='{{ "assets/js/infinite-scroll.pkgd.min.js" | relURL }}'></script>
 <script src='{{ "assets/js/custom.js" | relURL }}'></script>

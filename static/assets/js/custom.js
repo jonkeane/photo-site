@@ -489,20 +489,4 @@ window.addEventListener('popstate', function (event) {
 			});
 		});
 	})();
-
-	$('.grid').infiniteScroll({
-		// options
-		path: '.next',
-		append: '.grid-item',
-		history: false,
-		hideNav: '.pagination',
-	});
-
-	$('.posts').infiniteScroll({
-		// options
-		path: '.next',
-		append: 'article',
-		history: false,
-		hideNav: '.pagination',
-	});
 })(jQuery);
