@@ -7,6 +7,37 @@
 {{- $main := resources.Get "js/main.js" -}}
 
 {{- $js := slice $jQuery $scrollex $scrolly $browser $breakpoints $util $main | resources.Concat "assets/js/bundle.js" }}
+<!-- Load Sentry SDK and Tracing Bundle first -->
+<script src="https://browser.sentry-cdn.com/10.30.0/bundle.tracing.min.js"
+    integrity="sha384-d0iIc64+pOh0BG9eeYTdMN2tZWRa9H5XabmlwCFr3/3Q3bJLHCL796G5wWIcC5YR"
+    crossorigin="anonymous"></script>
+
+<!-- Initialize Sentry Tracing -->
+<script>
+    Sentry.init({
+        dsn: "https://c1e2e76e9cbeea844e4e57d45c958c39@o4510529776189440.ingest.us.sentry.io/4510529780842496",
+        integrations: [Sentry.browserTracingIntegration()],
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for testing
+        // In production, consider lowering this to 0.1-0.2 to reduce volume
+        tracesSampleRate: 1.0,
+        // Control which URLs should have distributed tracing enabled
+        // Includes localhost for development and production domains
+        tracePropagationTargets: ["localhost:1313", "localhost", /^https:\/\/[^/]+\.jonkeane\.com/],
+        // Setting this option to true will send default PII data to Sentry
+        sendDefaultPii: false,
+    });
+
+    // Capture resource loading errors (images, CSS, JavaScript)
+    // Uses capture phase (true) since resource errors don't bubble
+    document.body.addEventListener("error", (event) => {
+        if (!event.target) return;
+
+        if (event.target.tagName === 'IMG') {
+            Sentry.captureMessage(`Failed to load image: ${event.target.src}`, 'warning');
+        }
+    }, true);
+</script>
+
 <script src='{{ $js.RelPermalink }}'></script>
 <script src='{{ "assets/js/infinite-scroll.pkgd.min.js" | relURL }}'></script>
 <script src='{{ "assets/js/custom.js" | relURL }}'></script>
