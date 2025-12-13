@@ -8,7 +8,7 @@
 			{{- $url := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c .Params.url_z -}}
 			{{- $alt := or .Params.description._content .Params.title (printf "Photo %s" $fid) }}
 			<figure>
-				<img src="{{ $url }}" alt="{{ $alt }}" loading="eager"/>
+				<img src="{{ $url }}" alt="{{ $alt }}" loading="eager" />
 			</figure>
 			{{ partial "photo/exif" (dict "Photo" .Params "class" "exif-inline") }}
 			<div class="photo-drawer" id="details">
