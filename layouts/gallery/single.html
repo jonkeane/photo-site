@@ -6,9 +6,10 @@
 			{{ partial "photo/nav" . }}
 			{{- /* 5k, 4k, 3k aren't being fetched right now, but could be */ -}}
 			{{- $url := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c .Params.url_z -}}
+			{{- $url := replaceRE "_k" "_h" $url -}}
 			{{- $alt := or .Params.description._content .Params.title (printf "Photo %s" $fid) }}
 			<figure>
-				<img src="{{ $url }}" alt="{{ $alt }}" loading="eager" />
+				<img src="{{ $url }}" alt="{{ $alt }}" loading="eager" crossorigin="anonymous" />
 			</figure>
 			{{ partial "photo/exif" (dict "Photo" .Params "class" "exif-inline") }}
 			<div class="photo-drawer" id="details">
