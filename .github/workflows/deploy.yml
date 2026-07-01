@@ -11,6 +11,15 @@ on:
     - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight UTC
   workflow_dispatch:
     inputs:
+      deploy_target:
+        description: 'Deploy target'
+        required: true
+        default: 'none'
+        type: choice
+        options:
+          - 'none'
+          - 'preview'
+          - 'production'
       clear_cache:
         description: 'Clear Flickr data cache before building'
         required: false
@@ -85,7 +94,7 @@ jobs:
         run: npm install -g netlify-cli
       
       - name: Deploy to Netlify (Production)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.deploy_target == 'production') }}
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
@@ -93,12 +102,13 @@ jobs:
           netlify deploy --prod --no-build --dir=public
       
       - name: Deploy to Netlify (Preview)
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.deploy_target == 'preview') }}
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_DEPLOY_ALIAS: ${{ github.event_name == 'pull_request' && format('PR{0}', github.event.pull_request.number) || format('manual-{0}', github.run_number) }}
         run: |
-          netlify deploy --alias=PR${{ github.event.pull_request.number }} --no-build --dir=public --json > netlify-output.json
+          netlify deploy --alias="$NETLIFY_DEPLOY_ALIAS" --no-build --dir=public --json > netlify-output.json
           cat netlify-output.json
       
       - name: Comment PR with preview URL
