@@ -490,7 +490,14 @@ window.addEventListener('popstate', function (event) {
 		});
 	})();
 
-	$('.grid').infiniteScroll({
+	// InfiniteScroll requires a next link during initialization. Single-page
+	// listings still render the pagination container, but without that link.
+	function initInfiniteScroll(selector, options) {
+		if ($('.pagination a.next[href]').length === 0) return;
+		$(selector).infiniteScroll(options);
+	}
+
+	initInfiniteScroll('.grid', {
 		// options
 		path: '.next',
 		append: '.grid-item',
@@ -498,7 +505,7 @@ window.addEventListener('popstate', function (event) {
 		hideNav: '.pagination',
 	});
 
-	$('.posts').infiniteScroll({
+	initInfiniteScroll('.posts', {
 		// options
 		path: '.next',
 		append: 'article',
