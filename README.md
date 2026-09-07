@@ -34,3 +34,6 @@ To fetch photoset metadata, you need a Flickr API key:
 2. Export as environment variable: `export FLICKR_API_KEY=your-key-here`
 3. Run importer: `flickrimport` (or `go run ./cmd/flickrimport`)
 4. For private photos, you'll need to setup OAuth `export FLICKR_CONSUMER_KEY=your-key-here`, `export FLICKR_CONSUMER_SECRET=your-secret-here` and then `flickrimport -initOAuth`
+ 
+Run `go test ./...` to check dimension round-tripping and gallery rendering
+fixtures (the rendering checks require `hugo` on your PATH).

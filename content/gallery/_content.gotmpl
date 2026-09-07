@@ -94,6 +94,15 @@ photoset JSON files in site.Data.flickr.photosets.
                 "url_t" $p.url_t
                 "url_z" $p.url_z
               }}
+            {{/* Keep each rendition's dimensions alongside its URL. Old caches may omit them. */}}
+            {{ range $size := slice "sq" "t" "s" "n" "m" "z" "c" "l" "h" "k" "o" }}
+              {{ range $axis := slice "width" "height" }}
+                {{ $key := printf "%s_%s" $axis $size }}
+                {{ with index $p $key }}
+                  {{ $params = merge $params (dict $key .) }}
+                {{ end }}
+              {{ end }}
+            {{ end }}
             {{ $page := dict
                 "content" $content
                 "dates" $dates

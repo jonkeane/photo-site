@@ -94,16 +94,38 @@ type Photo struct {
 	License        string           `json:"license"`
 	PathAlias      string           `json:"pathalias"`
 	URLSq          string           `json:"url_sq"`
+	WidthSq        json.Number      `json:"width_sq,omitempty"`
+	HeightSq       json.Number      `json:"height_sq,omitempty"`
 	URLT           string           `json:"url_t"`
+	WidthT         json.Number      `json:"width_t,omitempty"`
+	HeightT        json.Number      `json:"height_t,omitempty"`
 	URLS           string           `json:"url_s"`
+	WidthS         json.Number      `json:"width_s,omitempty"`
+	HeightS        json.Number      `json:"height_s,omitempty"`
 	URLN           string           `json:"url_n"`
+	WidthN         json.Number      `json:"width_n,omitempty"`
+	HeightN        json.Number      `json:"height_n,omitempty"`
 	URLM           string           `json:"url_m"`
+	WidthM         json.Number      `json:"width_m,omitempty"`
+	HeightM        json.Number      `json:"height_m,omitempty"`
 	URLZ           string           `json:"url_z"`
+	WidthZ         json.Number      `json:"width_z,omitempty"`
+	HeightZ        json.Number      `json:"height_z,omitempty"`
 	URLC           string           `json:"url_c"`
+	WidthC         json.Number      `json:"width_c,omitempty"`
+	HeightC        json.Number      `json:"height_c,omitempty"`
 	URLL           string           `json:"url_l"`
+	WidthL         json.Number      `json:"width_l,omitempty"`
+	HeightL        json.Number      `json:"height_l,omitempty"`
 	URLH           string           `json:"url_h"`
+	WidthH         json.Number      `json:"width_h,omitempty"`
+	HeightH        json.Number      `json:"height_h,omitempty"`
 	URLK           string           `json:"url_k"`
+	WidthK         json.Number      `json:"width_k,omitempty"`
+	HeightK        json.Number      `json:"height_k,omitempty"`
 	URLO           string           `json:"url_o"`
+	WidthO         json.Number      `json:"width_o,omitempty"`
+	HeightO        json.Number      `json:"height_o,omitempty"`
 	LastUpdate     string           `json:"lastupdate"`
 	OriginalFormat string           `json:"originalformat"`
 	Exif           *PhotoExifFields `json:"exif,omitempty"`
