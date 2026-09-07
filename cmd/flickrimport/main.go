@@ -843,7 +843,7 @@ func downloadAssets(ctx context.Context, client *http.Client, cfg Config) error 
 		}
 
 		if err := downloadPhoto(ctx, client, photo.URLO, targetPath); err != nil {
-			fmt.Fprintf(os.Stderr, "Warning: failed to download photo %s: %v\n", photo.ID, err)
+			fmt.Fprintf(os.Stderr, "Warning: failed to download photo %s: %v\n  Original URL: %s\n", photo.ID, err, photo.URLO)
 			continue
 		}
 
@@ -860,6 +860,8 @@ func downloadPhoto(ctx context.Context, client *http.Client, photoURL, destPath 
 	if err != nil {
 		return err
 	}
+	// Flickr originals can return 502 for Go's default User-Agent on cache misses.
+	req.Header.Set("User-Agent", "photo-site/1.0")
 
 	resp, err := doRequestWithBackoff(client, req)
 	if err != nil {
