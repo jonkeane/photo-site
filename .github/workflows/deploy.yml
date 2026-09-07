@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight UTC
+    - cron: '0 0 * * 0,3' # Run weekly on Sunday and Wednesday at midnight UTC
   workflow_dispatch:
     inputs:
       deploy_target:
