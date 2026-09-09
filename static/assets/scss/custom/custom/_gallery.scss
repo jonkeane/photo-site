@@ -181,50 +181,52 @@ body:has(#photo-single) {
 	display: none;
 }
 
-.photoset-grid {
-	flex-wrap: wrap;
-	font-size: 0;
-	gap: 5px;
-}
-
 .photoset-grid .grid {
+	// Older metadata uses an uncropped grid until the next Flickr import.
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-	gap: 2px;
-	justify-content: center;
+	grid-template-columns: repeat(auto-fit, minmax(#{'min(100%, 320px)'}, 1fr));
+	align-items: start;
+	gap: 10px;
 	margin: 16px 0;
 }
 
 .photoset-grid .grid-item {
 	display: block;
-	position: relative;
+	overflow: hidden;
+	border-bottom: none;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
-	aspect-ratio: 1 / 1;
-	width: 100%;
-	height: 100%;
 }
 
 .photoset-grid .grid-item img {
+	display: block;
 	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
-
-.photoset-grid .grid-item {
-	overflow: hidden; 
-}
-
-.photoset-grid .grid-item img {
-	transition: transform 0.3s ease, opacity 0.2s ease;
+	height: auto;
+	transition: opacity 0.2s ease;
 }
 
 .photoset-grid .grid-item:hover img {
 	opacity: 0.92;
-	transform: scale(1.05); 
 }
 
-.photoset-grid a {
-	border-bottom: none;
+// Infinite scroll can append older metadata to a dimensioned first page.
+// Keep that mixed collection uncropped without any JavaScript layout work.
+.photoset-grid .grid.has-dimensions:not(:has(> .missing-dimensions)) {
+	--row-height: clamp(180px, 18vw, 280px);
+	display: flex;
+	flex-wrap: wrap;
+
+	> .grid-item {
+		// Scale growth above 1 so a portrait alone fills a non-final row too.
+		flex: calc(var(--photo-ratio) * 100) 1 calc(var(--photo-ratio) * var(--row-height));
+		min-width: 0;
+		max-width: 100%;
+	}
+
+	// Absorb unused space so a short final row does not stretch its photos.
+	&::after {
+		content: '';
+		flex: 1000000 1 var(--row-height);
+	}
 }
 
 .photo-nav ul {
@@ -325,6 +327,53 @@ body:has(#photo-single) {
 #photo-single>.meta-row {
 	position: relative;
 	z-index: 1;
+}
+
+// Overlay the slider on the original image so the existing photo layout and
+// no-JavaScript fallback keep their intrinsic sizing.
+#photo-single .photo-swiper {
+	position: absolute;
+	inset: 0;
+	visibility: hidden;
+
+	&.swiper-initialized {
+		visibility: visible;
+		// Swiper owns pinch and pan inside the photo, including vertical panning.
+		touch-action: none;
+	}
+
+	.swiper-zoom-container img {
+		padding: 0;
+	}
+}
+
+#photo-single figure:has(.swiper-initialized) > .photo-original {
+	visibility: hidden;
+}
+
+// Keep the same Swiper and its gestures, giving it the entire viewport.
+html.photo-only {
+	#photo-single {
+		position: fixed;
+		inset: 0;
+		z-index: 10000;
+		width: 100%;
+		max-width: none;
+		padding: 0 !important;
+		gap: 0;
+		background: #000;
+
+		> :not(figure) {
+			display: none;
+		}
+
+		> figure {
+			flex: 1 1 auto;
+			height: 100%;
+			min-height: 0;
+			margin: 0;
+		}
+	}
 }
 
 #photo-single>.meta-row {

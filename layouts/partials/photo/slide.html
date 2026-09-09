@@ -1,0 +1,8 @@
+{{- $page := .page -}}
+{{- $url := or $page.Params.url_5k $page.Params.url_4k $page.Params.url_3k $page.Params.url_k $page.Params.url_h $page.Params.url_b $page.Params.url_c $page.Params.url_z -}}
+{{- $alt := or $page.Params.description._content $page.Params.title (printf "Photo %s" (string $page.Params.flickr_id)) -}}
+<div class="swiper-slide" data-photo-url="{{ $page.RelPermalink }}"{{ if .current }} data-current="true"{{ else }} aria-hidden="true"{{ end }}>
+  <div class="swiper-zoom-container">
+    <img src="{{ $url }}" alt="{{ $alt }}" loading="{{ if .current }}eager{{ else }}lazy{{ end }}" decoding="async" crossorigin="anonymous" />
+  </div>
+</div>

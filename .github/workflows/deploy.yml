@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight UTC
+    - cron: '0 0 * * 0,3' # Run weekly on Sunday and Wednesday at midnight UTC
   workflow_dispatch:
     inputs:
       deploy_target:
@@ -43,14 +43,14 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
       
-      - name: Cache Flickr data
+      - name: Restore Flickr data cache
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.clear_cache) }}
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: |
             data/flickr
             assets
-          key: flickr-data-${{ github.sha }}
+          key: flickr-data-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             flickr-data-
       
@@ -58,6 +58,7 @@ jobs:
         run: go build ./cmd/flickrimport
       
       - name: Run flickrimport
+        id: flickrimport
         run: |
           ./flickrimport -downloadAssets
           ./flickrimport
@@ -66,14 +67,14 @@ jobs:
           FLICKR_CONSUMER_KEY: ${{ secrets.FLICKR_CONSUMER_KEY }}
           FLICKR_CONSUMER_SECRET: ${{ secrets.FLICKR_CONSUMER_SECRET }}
       
-      # - name: Save Flickr data to cache
-      #   if: always()
-      #   uses: actions/cache/save@v4
-      #   with:
-      #     path: |
-      #       data/flickr
-      #       assets
-      #     key: flickr-data-${{ github.sha }}-${{ github.run_id }}
+      - name: Save Flickr data to cache
+        if: ${{ steps.flickrimport.outcome == 'success' }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/flickr
+            assets
+          key: flickr-data-${{ github.run_id }}-${{ github.run_attempt }}
       
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
