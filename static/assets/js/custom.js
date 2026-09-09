@@ -251,37 +251,37 @@ window.addEventListener('popstate', function (event) {
 		showOneFeaturedPost();
 	});
 
-	// Prefetch images using Fetch API
-	// necesary because Safari doesn't support <link rel="prefetch">
-	(function () {
-		// Check if fetch is supported
-		if (!window.fetch) return;
+	// // Prefetch images using Fetch API
+	// // necesary because Safari doesn't support <link rel="prefetch">
+	// (function () {
+	// 	// Check if fetch is supported
+	// 	if (!window.fetch) return;
 
-		// Use requestIdleCallback if available, otherwise setTimeout
-		var scheduleWork = window.requestIdleCallback || function (cb) {
-			setTimeout(cb, 200);
-		};
+	// 	// Use requestIdleCallback if available, otherwise setTimeout
+	// 	var scheduleWork = window.requestIdleCallback || function (cb) {
+	// 		setTimeout(cb, 200);
+	// 	};
 
-		scheduleWork(function () {
-			// Find all prefetch link tags in the head
-			var prefetchLinks = document.querySelectorAll('link[rel="prefetch"]');
-			if (prefetchLinks.length === 0) return;
+	// 	scheduleWork(function () {
+	// 		// Find all prefetch link tags in the head
+	// 		var prefetchLinks = document.querySelectorAll('link[rel="prefetch"]');
+	// 		if (prefetchLinks.length === 0) return;
 
-			prefetchLinks.forEach(function (link) {
-				var url = link.getAttribute('href');
-				if (!url) return;
+	// 		prefetchLinks.forEach(function (link) {
+	// 			var url = link.getAttribute('href');
+	// 			if (!url) return;
 
-				fetch(url, {
-					method: 'GET',
-					cache: 'force-cache',
-					priority: 'low',
+	// 			fetch(url, {
+	// 				method: 'GET',
+	// 				cache: 'force-cache',
+	// 				priority: 'low',
 
-				}).catch(function () {
-					// Silently ignore prefetch errors
-				});
-			});
-		});
-	})();
+	// 			}).catch(function () {
+	// 				// Silently ignore prefetch errors
+	// 			});
+	// 		});
+	// 	});
+	// })();
 
 	// InfiniteScroll requires a next link during initialization. Single-page
 	// listings still render the pagination container, but without that link.
