@@ -27,6 +27,16 @@ Alternatively, hugo directly:
 hugo serve
 ```
 
+Install JavaScript dependencies with `npm ci` before building. Photo pages use
+Swiper's Zoom module inside the existing image area. Each page includes its
+previous/current/next images; completing a swipe loads the adjacent photo's page.
+Pinch zoom and panning stay within the image, and details open with the button.
+
+When changing the viewer, check on a touch device: swipe once in each direction,
+pan a zoomed image against both edges, lift one finger during a pinch, pinch back
+to fit and keep dragging, then start a fresh swipe. Also check the first/last
+photo, browser back/forward, and portrait/landscape orientation.
+
 ## Flickr API Integration
 
 To fetch photoset metadata, you need a Flickr API key:

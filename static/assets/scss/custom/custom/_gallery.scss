@@ -329,6 +329,28 @@ body:has(#photo-single) {
 	z-index: 1;
 }
 
+// Overlay the slider on the original image so the existing photo layout and
+// no-JavaScript fallback keep their intrinsic sizing.
+#photo-single .photo-swiper {
+	position: absolute;
+	inset: 0;
+	visibility: hidden;
+
+	&.swiper-initialized {
+		visibility: visible;
+		// Swiper owns pinch and pan inside the photo, including vertical panning.
+		touch-action: none;
+	}
+
+	.swiper-zoom-container img {
+		padding: 0;
+	}
+}
+
+#photo-single figure:has(.swiper-initialized) > .photo-original {
+	visibility: hidden;
+}
+
 #photo-single>.meta-row {
 	display: flex;
 	align-items: center;

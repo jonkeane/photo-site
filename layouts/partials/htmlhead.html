@@ -26,6 +26,10 @@
 		{{- end -}}
 		{{- $noscript := resources.Get "scss/noscript.scss" | resources.ExecuteAsTemplate "noscript.scss" . | toCSS (dict "targetPath" "assets/css/noscript.css" "enableSourceMap" false) -}}
 		<noscript><link rel="stylesheet" href='{{ $noscript.RelPermalink }}' /></noscript>
+		{{- if .Params.flickr_id -}}
+		{{- $swiperCSS := slice (resources.Get "node_modules/swiper/swiper.css") (resources.Get "node_modules/swiper/modules/zoom.css") | resources.Concat "assets/css/photo-swiper.css" | minify | fingerprint -}}
+		<link rel="stylesheet" href="{{ $swiperCSS.RelPermalink }}">
+		{{- end -}}
 		{{- partial "customhead" . -}}
 		{{- partial "photo/prefetch" . -}}
 	</head>
