@@ -1,5 +1,6 @@
 {{- partial "htmlhead.html" . -}}
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
+	<script>document.documentElement.classList.toggle('photo-only', location.hash === '#photo-only');</script>
 	<div id="main">
 		{{- $fid := .Params.flickr_id | string -}}
 		<section class="page" id="photo-single">
@@ -11,7 +12,7 @@
 			<figure>
 				{{- /* Keep the ordinary image for sizing and as the no-JS fallback. */ -}}
 				<img class="photo-original" src="{{ $url }}" alt="{{ $alt }}" loading="eager" crossorigin="anonymous" />
-				<div class="swiper photo-swiper" aria-label="Photo viewer">
+				<div class="swiper photo-swiper" tabindex="0" role="region" aria-label="Photo viewer">
 					<div class="swiper-wrapper">
 						{{ with .PrevInSection }}{{ partial "photo/slide" (dict "page" . "current" false) }}{{ end }}
 						{{ partial "photo/slide" (dict "page" . "current" true) }}

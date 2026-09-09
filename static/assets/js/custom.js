@@ -14,6 +14,12 @@ var photoNav = {
 		if (this.navigating) return;
 		this.navigating = true;
 		sessionStorage.setItem(this.storageKey, 'true');
+		// Carry the image-only view through photo navigation, including arrow keys.
+		if (window.location.hash === '#photo-only') {
+			var destination = new URL(url, window.location.href);
+			destination.hash = 'photo-only';
+			url = destination.href;
+		}
 		location.replace(url);
 	},
 

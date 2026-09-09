@@ -31,6 +31,10 @@ Install JavaScript dependencies with `npm ci` before building. Photo pages use
 Swiper's Zoom module inside the existing image area. Each page includes its
 previous/current/next images; completing a swipe loads the adjacent photo's page.
 Pinch zoom and panning stay within the image, and details open with the button.
+Double-tap the photo (or focus the viewer and press Enter) to fit the whole image
+to the viewport on a black background with the page controls hidden. Swiping or
+using the arrow keys keeps this view on adjacent photos. Double-tap again or press
+Escape to restore the controls. Pinch zoom remains available in either view.
 
 When changing the viewer, check on a touch device: swipe once in each direction,
 pan a zoomed image against both edges, lift one finger during a pinch, pinch back

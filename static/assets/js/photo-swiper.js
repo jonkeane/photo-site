@@ -22,8 +22,48 @@ if (viewer) {
 		speed: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200,
 		preventInteractionOnTransition: true,
 		edgeSwipeDetection: true,
-		zoom: { maxRatio: 5 },
+		zoom: { maxRatio: 5, toggle: false },
 	});
+
+	function updatePhotoOnly() {
+		const enabled = window.location.hash === '#photo-only';
+		document.documentElement.classList.toggle('photo-only', enabled);
+		viewer.setAttribute('aria-label', enabled
+			? 'Photo viewer. Double tap or press Escape to restore controls.'
+			: 'Photo viewer. Double tap or press Enter for image-only view.');
+		if (swiper.initialized) {
+			swiper.zoom.out();
+			swiper.update();
+			updateNavigation();
+		}
+	}
+
+	function setPhotoOnly(enabled) {
+		if (destination || swiper.animating) return;
+		const url = new URL(window.location.href);
+		url.hash = enabled ? 'photo-only' : '';
+		history.replaceState(history.state, '', url);
+		// replaceState does not fire hashchange; also refresh the details drawer.
+		window.dispatchEvent(new Event('hashchange'));
+		viewer.focus({ preventScroll: true });
+	}
+
+	swiper.on('doubleTap', () => {
+		setPhotoOnly(window.location.hash !== '#photo-only');
+	});
+	viewer.addEventListener('keydown', event => {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			setPhotoOnly(window.location.hash !== '#photo-only');
+		}
+	});
+	document.addEventListener('keydown', event => {
+		if (event.key === 'Escape' && window.location.hash === '#photo-only') {
+			setPhotoOnly(false);
+		}
+	});
+	window.addEventListener('hashchange', updatePhotoOnly);
+	window.addEventListener('pageshow', updatePhotoOnly);
 
 	function navigationAllowed() {
 		return !gestureBlocked && zoomScale <= 1 &&
@@ -108,6 +148,7 @@ if (viewer) {
 		resetSlide();
 	});
 
+	updatePhotoOnly();
 	swiper.init();
 	updateNavigation();
 }
