@@ -1,10 +1,32 @@
-{{ $page := .Page }}
-{{ $ps := .Photosubset }}
+{{- $items := slice -}}
+{{- $hasDimensions := true -}}
+{{- range .Photosubset -}}
+  {{- $page := . -}}
+  {{- $thumbnail := "" -}}
+  {{- $width := 0 -}}
+  {{- $height := 0 -}}
+  {{- /* Select the URL and dimensions from the same non-square rendition. */ -}}
+  {{- range slice "z" "c" "m" "l" "h" "k" "o" "n" "s" "t" -}}
+    {{- if not $thumbnail -}}
+      {{- $thumbnail = index $page.Params (printf "url_%s" .) | default "" -}}
+      {{- $width = int (index $page.Params (printf "width_%s" .) | default 0) -}}
+      {{- $height = int (index $page.Params (printf "height_%s" .) | default 0) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $missingDimensions := or (le $width 0) (le $height 0) -}}
+  {{- if $missingDimensions -}}
+    {{- $hasDimensions = false -}}
+    {{- /* Provisional attributes only; CSS leaves the image's height automatic. */ -}}
+    {{- $width = 4 -}}
+    {{- $height = 3 -}}
+  {{- end -}}
+  {{- $items = $items | append (dict "page" $page "src" $thumbnail "width" $width "height" $height "missingDimensions" $missingDimensions) -}}
+{{- end -}}
 <section class="photoset-grid">
-  <div class="grid">
-  {{ range $ps }}
-    <a class="grid-item" href="{{ .RelPermalink }}" onclick="photoNav.markNavigation();">
-      <img src="{{ .Params.url_z }}" alt="{{ .Params.title }}" loading="lazy" crossorigin="anonymous" />
+  <div class="grid{{ if $hasDimensions }} has-dimensions{{ end }}">
+  {{ range $items }}
+    <a class="grid-item{{ if .missingDimensions }} missing-dimensions{{ end }}" href="{{ .page.RelPermalink }}" onclick="photoNav.markNavigation();" style="--photo-ratio: {{ div (float .width) .height }}">
+      <img src="{{ .src }}" width="{{ .width }}" height="{{ .height }}" alt="{{ .page.Params.title }}" loading="lazy" decoding="async" crossorigin="anonymous" />
     </a>
   {{ end }}
   </div>

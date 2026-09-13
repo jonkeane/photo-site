@@ -13,5 +13,5 @@ netlify_dev.sh
 
 data/flickr/*
 assets/*
-flickrimport
+/flickrimport
 node_modules/

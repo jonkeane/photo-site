@@ -27,6 +27,20 @@ Alternatively, hugo directly:
 hugo serve
 ```
 
+Install JavaScript dependencies with `npm ci` before building. Photo pages use
+Swiper's Zoom module inside the existing image area. Each page includes its
+previous/current/next images; completing a swipe loads the adjacent photo's page.
+Pinch zoom and panning stay within the image, and details open with the button.
+Double-tap the photo (or focus the viewer and press Enter) to fit the whole image
+to the viewport on a black background with the page controls hidden. Swiping or
+using the arrow keys keeps this view on adjacent photos. Double-tap again or press
+Escape to restore the controls. Pinch zoom remains available in either view.
+
+When changing the viewer, check on a touch device: swipe once in each direction,
+pan a zoomed image against both edges, lift one finger during a pinch, pinch back
+to fit and keep dragging, then start a fresh swipe. Also check the first/last
+photo, browser back/forward, and portrait/landscape orientation.
+
 ## Flickr API Integration
 
 To fetch photoset metadata, you need a Flickr API key:
@@ -34,3 +48,6 @@ To fetch photoset metadata, you need a Flickr API key:
 2. Export as environment variable: `export FLICKR_API_KEY=your-key-here`
 3. Run importer: `flickrimport` (or `go run ./cmd/flickrimport`)
 4. For private photos, you'll need to setup OAuth `export FLICKR_CONSUMER_KEY=your-key-here`, `export FLICKR_CONSUMER_SECRET=your-secret-here` and then `flickrimport -initOAuth`
+ 
+Run `go test ./...` to check dimension round-tripping and gallery rendering
+fixtures (the rendering checks require `hugo` on your PATH).

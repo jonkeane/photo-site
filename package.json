@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@sentry/browser": "^10.30.0"
+    "@sentry/browser": "^10.30.0",
+    "swiper": "14.2.0"
   }
 }

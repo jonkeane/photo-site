@@ -1,5 +1,6 @@
 {{- partial "htmlhead.html" . -}}
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
+	<script>document.documentElement.classList.toggle('photo-only', location.hash === '#photo-only');</script>
 	<div id="main">
 		{{- $fid := .Params.flickr_id | string -}}
 		<section class="page" id="photo-single">
@@ -9,11 +10,19 @@
 			.Params.url_z -}}
 			{{- $alt := or .Params.description._content .Params.title (printf "Photo %s" $fid) }}
 			<figure>
-				<img src="{{ $url }}" alt="{{ $alt }}" loading="eager" crossorigin="anonymous" />
+				{{- /* Keep the ordinary image for sizing and as the no-JS fallback. */ -}}
+				<img class="photo-original" src="{{ $url }}" alt="{{ $alt }}" loading="eager" crossorigin="anonymous" />
+				<div class="swiper photo-swiper" tabindex="0" role="region" aria-label="Photo viewer">
+					<div class="swiper-wrapper">
+						{{ with .PrevInSection }}{{ partial "photo/slide" (dict "page" . "current" false) }}{{ end }}
+						{{ partial "photo/slide" (dict "page" . "current" true) }}
+						{{ with .NextInSection }}{{ partial "photo/slide" (dict "page" . "current" false) }}{{ end }}
+					</div>
+				</div>
 			</figure>
 			{{ partial "photo/exif" (dict "Photo" .Params "class" "exif-inline") }}
 			<div class="photo-drawer" id="details">
-				<a href="#details" class="drawer-toggle open">details</a>
+				<a href="#details" class="drawer-toggle open" aria-expanded="false">details</a>
 				{{ partial "photo/exif" (dict "Photo" .Params "class" "exif-drawer") }}
 				{{- if .Params.tags }}
 					<div id="terms" class="flex flex-row flex-wrap items-center">

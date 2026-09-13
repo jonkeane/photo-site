@@ -16,3 +16,7 @@
 <script src='{{ $js.RelPermalink }}'></script>
 <script src='{{ "assets/js/infinite-scroll.pkgd.min.js" | relURL }}'></script>
 <script src='{{ "assets/js/custom.js" | relURL }}'></script>
+{{- if .Params.flickr_id -}}
+{{- $swiper := resources.Get "js/photo-swiper.js" | js.Build (dict "target" "es2017" "minify" true) | fingerprint -}}
+<script src="{{ $swiper.RelPermalink }}" defer></script>
+{{- end -}}
