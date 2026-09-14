@@ -35,6 +35,8 @@ jobs:
         uses: actions/setup-go@v5
 
       - name: Run R2 importer
+        env:
+          R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
         run: go run github.com/jonkeane/publish-to-r2/uploader/cmd/r2import@latest
       
       - name: Setup Hugo
