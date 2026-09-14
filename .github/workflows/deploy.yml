@@ -7,11 +7,6 @@ on:
   pull_request:
     branches:
       - main
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - closed
   schedule:
     - cron: '0 0 * * 0,3' # Run weekly on Sunday and Wednesday at midnight UTC
   workflow_dispatch:
@@ -38,10 +33,7 @@ permissions:
 
 jobs:
   build-and-deploy:
-    if: ${{ github.event_name != 'pull_request' || github.event.action != 'closed' }}
     runs-on: ubuntu-latest
-    outputs:
-      preview_origin: ${{ steps.netlify_preview.outputs.preview_origin }}
     
     steps:
       - name: Checkout repository
@@ -129,14 +121,7 @@ jobs:
           printf '%s\n' "$netlify_output"
 
           deploy_url="$(jq -er '.deploy_url' <<< "$netlify_output")"
-          preview_origin="$(
-            node -e \
-              'process.stdout.write(new URL(process.argv[1]).origin)' \
-              "$deploy_url"
-          )"
-
           echo "deploy_url=$deploy_url" >> "$GITHUB_OUTPUT"
-          echo "preview_origin=$preview_origin" >> "$GITHUB_OUTPUT"
       
       - name: Comment PR with preview URL
         if: github.event_name == 'pull_request'
@@ -162,117 +147,3 @@ jobs:
               repo: context.repo.repo,
               body: comment
             });
-
-  sync-preview-cors:
-    needs: build-and-deploy
-    if: >-
-      ${{
-        always() &&
-        (
-          (github.event_name == 'pull_request' && github.event.action == 'closed') ||
-          (
-            needs.build-and-deploy.result == 'success' &&
-            (
-              github.event_name == 'pull_request' ||
-              (github.event_name == 'workflow_dispatch' && inputs.deploy_target == 'preview')
-            )
-          )
-        )
-      }}
-    runs-on: ubuntu-latest
-    concurrency:
-      group: r2-preview-cors
-      cancel-in-progress: false
-
-    steps:
-      - name: Add or remove preview origin in R2 CORS
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
-          PREVIEW_ORIGIN: ${{ needs.build-and-deploy.outputs.preview_origin }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          CORS_ACTION: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && 'remove' || 'add' }}
-        run: |
-          api_url="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/r2/buckets/${R2_BUCKET_NAME}/cors"
-
-          curl --fail-with-body --silent --show-error \
-            --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
-            "$api_url" > cors-response.json
-
-          if [ "$CORS_ACTION" = "add" ]; then
-            test -n "$PREVIEW_ORIGIN"
-
-            jq -e --arg origin "$PREVIEW_ORIGIN" '
-              if .success != true
-              then error((.errors // []) | tostring)
-              else .result
-              end
-              | (.rules // []) as $rules
-              | {
-                  rules: (
-                    if any($rules[]; .id == "netlify-previews")
-                    then
-                      $rules | map(
-                        if .id == "netlify-previews"
-                        then .allowed.origins = ((.allowed.origins + [$origin]) | unique)
-                        else .
-                        end
-                      )
-                    else
-                      $rules + [{
-                        id: "netlify-previews",
-                        allowed: {
-                          origins: [$origin],
-                          methods: ["GET", "HEAD"]
-                        }
-                      }]
-                    end
-                  )
-                }
-            ' cors-response.json > cors-update.json
-          else
-            test -n "$PR_NUMBER"
-
-            jq -e --arg pr_number "$PR_NUMBER" '
-              if .success != true
-              then error((.errors // []) | tostring)
-              else .result
-              end
-              | {
-                  rules: (
-                    (.rules // [])
-                    | map(
-                        if .id == "netlify-previews"
-                        then .allowed.origins |= map(
-                          select(
-                            (ascii_downcase | startswith("https://pr" + $pr_number + "--"))
-                            | not
-                          )
-                        )
-                        else .
-                        end
-                      )
-                    | map(
-                        select(
-                          .id != "netlify-previews" or
-                          (.allowed.origins | length) > 0
-                        )
-                      )
-                  )
-                }
-            ' cors-response.json > cors-update.json
-          fi
-
-          curl --fail-with-body --silent --show-error \
-            --request PUT \
-            --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
-            --header "Content-Type: application/json" \
-            --data-binary @cors-update.json \
-            "$api_url" |
-            jq -e '
-              if .success == true
-              then .
-              else error((.errors // []) | tostring)
-              end
-            '
