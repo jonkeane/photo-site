@@ -20,6 +20,15 @@ on:
           - 'none'
           - 'preview'
           - 'production'
+      refresh_background_image:
+        description: 'On main only, clear the cached background image and download it again'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  actions: write
 
 jobs:
   build-and-deploy:
@@ -38,6 +47,37 @@ jobs:
         env:
           R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
         run: go run github.com/jonkeane/publish-to-r2/uploader/cmd/r2import@latest
+
+      - name: Clear background image cache (main only)
+        if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.refresh_background_image }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.deleteActionsCacheByKey({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              key: 'assets',
+            });
+
+      - name: Restore background image cache
+        id: assets-cache
+        uses: actions/cache@v4
+        with:
+          path: assets
+          key: assets
+
+      - name: Fetch background image
+        if: steps.assets-cache.outputs.cache-hit != 'true'
+        env:
+          BACKGROUND_IMAGE_URL: https://jonkeane.link/background/background.jpg
+        run: |
+          mkdir -p assets/bg
+          curl --fail --show-error --location \
+            --retry 5 --retry-connrefused \
+            --connect-timeout 20 --max-time 120 \
+            --output assets/bg/background.jpg \
+            "$BACKGROUND_IMAGE_URL"
+          test -s assets/bg/background.jpg
       
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
