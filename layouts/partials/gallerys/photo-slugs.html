@@ -1,0 +1,47 @@
+{{- /* Allocate R2 slugs per gallery, independently of manifest/date ordering. */ -}}
+{{- $bases := dict -}}
+{{- $counts := dict -}}
+{{- $reserved := dict "index" true "page" true -}}
+{{- $slugs := dict -}}
+{{- range .photos -}}
+  {{- if and (ne .id $.cover.id) (not (in .tags "nogallery")) -}}
+    {{- $id := string .id -}}
+    {{- $title := strings.TrimSpace (.title | default "") -}}
+    {{- $filename := strings.TrimSpace (.exif.preservedfilename | default "") -}}
+    {{- $isFilename := or (and $filename (eq $title $filename)) (gt (len (findRE `(?i)\.(jpe?g|png|tiff?|gif|bmp|webp|hei[fc]|cr[23w]|nef|nrw|arw|srf|sr2|dng|raf|orf|rw2|pef|raw)$` $title)) 0) -}}
+    {{- if or (not $title) (eq (lower $title) "untitled") $isFilename -}}
+      {{- $filename = $filename | default $title -}}
+      {{- $title = strings.TrimSuffix (path.Ext $filename) (path.Base $filename) -}}
+    {{- end -}}
+    {{- /* A slug is one path segment, even when a title contains slashes. */ -}}
+    {{- $base := anchorize (replaceRE `[/\\]+` "-" $title) -}}
+    {{- if or (not $base) (eq $base "untitled") (eq $base ".") (eq $base "..") -}}
+      {{- $base = lower $id -}}
+    {{- end -}}
+    {{- $bases = merge $bases (dict $id $base) -}}
+    {{- $counts = merge $counts (dict $base (add (index $counts $base | default 0) 1)) -}}
+    {{- /* Protect natural slugs before allocating duplicate suffixes. */ -}}
+    {{- $reserved = merge $reserved (dict $base true) -}}
+  {{- end -}}
+{{- end -}}
+{{- range $id, $base := $bases -}}
+  {{- $slug := $base -}}
+  {{- if or (gt (index $counts $base) 1) (in (slice "index" "page") $base) -}}
+    {{- $suffix := lower (replace $id "-" "") -}}
+    {{- $slug = "" -}}
+    {{- range seq (math.Min 8 (len $suffix) | int) (len $suffix) -}}
+      {{- $candidate := printf "%s-%s" $base (substr $suffix 0 .) -}}
+      {{- if and (not $slug) (not (index $reserved $candidate)) -}}{{- $slug = $candidate -}}{{- end -}}
+    {{- end -}}
+    {{- /* Handle natural titles matching even the full UUID suffix. */ -}}
+    {{- if not $slug -}}
+      {{- range seq 1 (add (len $reserved) 1) -}}
+        {{- $candidate := printf "%s-%s-%d" $base $suffix . -}}
+        {{- if and (not $slug) (not (index $reserved $candidate)) -}}{{- $slug = $candidate -}}{{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $slugs = merge $slugs (dict $id $slug) -}}
+  {{- $reserved = merge $reserved (dict $slug true) -}}
+{{- end -}}
+{{- return $slugs -}}

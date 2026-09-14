@@ -1,6 +1,10 @@
 
 
-{{- with $.Params.image -}}
+{{- $cover := partial "gallerys/cover" . -}}
+{{- with $cover -}}
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="{{ $cover.source | absURL }}"/>
+{{- else with $.Params.image -}}
 <!-- Specifically to grab that (resized) gallery images -->
 <meta name="twitter:card" content="summary_large_image"/>
 {{ $image := resources.Get . }}
@@ -22,7 +26,7 @@
 {{- else -}}
 {{- with $.Site.Params.images -}}
 <meta name="twitter:card" content="summary_large_image"/>
-{{- with $.Params.url_k -}}
+{{- with (or $.Params.social_image $.Params.url_k) -}}
 <meta name="twitter:image" content="{{ . | absURL }}" />
 {{- else -}}
 {{- with $.Site.Params.images }}

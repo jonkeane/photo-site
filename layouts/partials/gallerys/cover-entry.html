@@ -1,0 +1,17 @@
+{{- /* Shared by the adapter and cover rendering, before any photo is hidden. */ -}}
+{{- $cover := dict -}}
+{{- range .photos -}}
+  {{- $marked := false -}}
+  {{- range .tags -}}
+    {{- if eq (lower (strings.TrimSpace .)) "gallery-cover" -}}
+      {{- $marked = true -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if $marked -}}
+    {{- if $cover -}}
+      {{- errorf "Gallery %s has multiple gallery-cover photos (%s and %s); keep the keyword on only one photo and republish" $.slug $cover.id .id -}}
+    {{- end -}}
+    {{- $cover = . -}}
+  {{- end -}}
+{{- end -}}
+{{- return $cover -}}

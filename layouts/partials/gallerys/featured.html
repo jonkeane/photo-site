@@ -5,7 +5,12 @@
     <header class="major">
         <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
     </header>
-    {{- if .Params.image -}}
+    {{- $cover := partial "gallerys/cover" . -}}
+    {{- if $cover -}}
+    <a href="{{ .RelPermalink }}" class="image main">
+        <img src="{{ $cover.source }}" alt="{{ $cover.alt }}" />
+    </a>
+    {{- else if .Params.image -}}
     {{- $image := resources.Get .Params.image -}}
     {{- $x2700x := $image.Resize "2700x" -}}
     {{- $x1800x := $image.Resize "1800x" -}}

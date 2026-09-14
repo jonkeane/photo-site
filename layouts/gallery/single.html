@@ -2,16 +2,23 @@
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
 	<script>document.documentElement.classList.toggle('photo-only', location.hash === '#photo-only');</script>
 	<div id="main">
-		{{- $fid := .Params.flickr_id | string -}}
+		{{- $fid := or .Params.photo_id .Params.flickr_id | string -}}
 		<section class="page" id="photo-single">
 			{{ partial "photo/nav" . }}
-			{{- /* 5k, 4k, 3k aren't being fetched right now, but could be */ -}}
 			{{- $url := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c
 			.Params.url_z -}}
-			{{- $alt := or .Params.description._content .Params.title (printf "Photo %s" $fid) }}
+			{{- $alt := or .Params.alt .Params.description._content .Params.title (printf "Photo %s" $fid) }}
 			<figure>
 				{{- /* Keep the ordinary image for sizing and as the no-JS fallback. */ -}}
+				{{- $hasDimensions := and (eq .Params.storage_provider "r2") .Params.image_width .Params.image_height -}}
+				{{- if $hasDimensions -}}
+				{{- /* Never display above half the real pixel dimensions (at least 2x). */ -}}
+				<img class="photo-original" src="{{ $url }}" alt="{{ $alt }}" width="{{ .Params.image_width }}" height="{{ .Params.image_height }}"
+					style="max-width: min(100%, {{ div (float .Params.image_width) 2 }}px); max-height: min(100%, {{ math.Min 2048 (div (float .Params.image_height) 2) }}px)"
+					loading="eager" crossorigin="anonymous" />
+				{{- else -}}
 				<img class="photo-original" src="{{ $url }}" alt="{{ $alt }}" loading="eager" crossorigin="anonymous" />
+				{{- end }}
 				<div class="swiper photo-swiper" tabindex="0" role="region" aria-label="Photo viewer">
 					<div class="swiper-wrapper">
 						{{ with .PrevInSection }}{{ partial "photo/slide" (dict "page" . "current" false) }}{{ end }}
@@ -36,7 +43,11 @@
 				</header>
 				{{- if .Params.description._content }}
 				<div class="description">
+					{{ if eq .Params.storage_provider "r2" }}
+					<p style="white-space: pre-wrap">{{ .Params.description._content }}</p>
+					{{ else }}
 					{{ .Params.description._content | safeHTML }}
+					{{ end }}
 				</div>
 				{{- end }}
 				{{- if .Params.exif.preservedfilename }}

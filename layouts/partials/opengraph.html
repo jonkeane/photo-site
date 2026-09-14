@@ -3,7 +3,10 @@
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
 <meta property="og:url" content="{{ .Permalink }}" />
 
-{{- with $.Params.image -}}
+{{- $cover := partial "gallerys/cover" . -}}
+{{- with $cover -}}
+<meta property="og:image" content="{{ $cover.source | absURL }}" />
+{{- else with $.Params.image -}}
 <!-- Specifically to grab that (resized) gallery images -->
 {{ $image := resources.Get . }}
 {{ if $image }}
@@ -20,7 +23,7 @@
 {{- with $featured -}}
 <meta property="og:image" content="{{ $featured.Permalink }}"/>
 {{- else -}}
-{{- with $.Params.url_k -}}
+{{- with (or $.Params.social_image $.Params.url_k) -}}
 <meta property="og:image" content="{{ . | absURL }}" />
 {{- else -}}
 {{- with $.Site.Params.images }}<meta property="og:image" content="{{ index . 0 | absURL }}"/>{{ end -}}

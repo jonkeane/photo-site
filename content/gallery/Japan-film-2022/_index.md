@@ -2,8 +2,7 @@
 Title: Japan on film 2022
 Description: Some shots on film from a December trip to Japan
 date: "2022-12-15T00:00:00"
-image: gallery/japan-film-2022.jpg
-flickr_album: "72177720315315409"
+r2_gallery_id: "695229124f3e0b40eca3c58ba57262e8-9744109-9745799"
 ---
 
 In many ways this was another photocentric trip for me. Japan is truly amazing—it's hard to list the ways. But specifically as a photo subject it is so much fun. I brought a bunch of film on this trip and these are some shots from Tōkyō, Kanazawa, Tōjinbō, Kōya-san, and a few other places. The garden in Kanazawa was magical with the snow mixed with some green. Tōjinbō was also especially striking with cliffs and rock formations.

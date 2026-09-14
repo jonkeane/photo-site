@@ -20,11 +20,6 @@ on:
           - 'none'
           - 'preview'
           - 'production'
-      clear_cache:
-        description: 'Clear Flickr data cache before building'
-        required: false
-        default: false
-        type: boolean
 
 jobs:
   build-and-deploy:
@@ -36,45 +31,11 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Setup flickr auth
-        run: |
-            echo '${{ secrets.FLICKR_OAUTH_TOKEN}}' > ~/.flickr_oauth_token
-
       - name: Setup Go
         uses: actions/setup-go@v5
-      
-      - name: Restore Flickr data cache
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.clear_cache) }}
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            data/flickr
-            assets
-          key: flickr-data-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: |
-            flickr-data-
-      
-      - name: Build flickrimport binary
-        run: go build ./cmd/flickrimport
-      
-      - name: Run flickrimport
-        id: flickrimport
-        run: |
-          ./flickrimport -downloadAssets
-          ./flickrimport
-        continue-on-error: true
-        env:
-          FLICKR_CONSUMER_KEY: ${{ secrets.FLICKR_CONSUMER_KEY }}
-          FLICKR_CONSUMER_SECRET: ${{ secrets.FLICKR_CONSUMER_SECRET }}
-      
-      - name: Save Flickr data to cache
-        if: ${{ steps.flickrimport.outcome == 'success' }}
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            data/flickr
-            assets
-          key: flickr-data-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Run R2 importer
+        run: go run github.com/jonkeane/publish-to-r2/uploader/cmd/r2import@latest
       
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3

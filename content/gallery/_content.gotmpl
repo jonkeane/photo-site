@@ -1,23 +1,84 @@
 {{/*
-content adapter: generate one page per Flickr photo from all 
-photoset JSON files in site.Data.flickr.photosets.
+Content adapter: one Hugo page per photo, with the same layouts and taxonomies.
+R2 galleries normalize into the existing photoset shape at build time.
 */}}
 
-{{ $photosets := site.Data.flickr.photosets }}
+{{ $sets := newScratch }}
+{{ $sets.Set "photosets" dict }}
+{{ range $slug, $photoset := site.Data.flickr.photosets }}
+  {{ $sets.SetInMap "photosets" $slug $photoset }}
+{{ end }}
+{{ range $slug, $m := site.Data.r2.galleries }}
+    {{ if ne (int $m.schemaVersion) 1 }}
+      {{ errorf "R2 gallery %s has an unsupported or mismatched manifest; run r2import" $slug }}
+    {{ end }}
+    {{ $photos := slice }}
+    {{ range $p := $m.entries }}
+      {{ $thumbnail := $p.source }}
+      {{ $thumbnailWidth := $p.width }}
+      {{ $thumbnailHeight := $p.height }}
+      {{ $gallery := $p.source }}
+      {{ $galleryWidth := $p.width }}
+      {{ $galleryHeight := $p.height }}
+      {{ with $p.renditions }}
+        {{ $thumbnail = .thumbnail.source }}
+        {{ $thumbnailWidth = .thumbnail.width }}
+        {{ $thumbnailHeight = .thumbnail.height }}
+        {{ $gallery = .gallery.source }}
+        {{ $galleryWidth = .gallery.width }}
+        {{ $galleryHeight = .gallery.height }}
+      {{ end }}
+      {{ $photos = $photos | append (dict
+        "id" $p.id "title" $p.title "description" (dict "_content" ($p.caption | default ""))
+        "tags" ($p.tags | default slice) "datetaken" $p.dateTaken "dateupload" $p.dateUpload
+        "lastupdate" $p.lastUpdate "ownername" $p.ownerName "license" $p.license
+        "exif" ($p.exif | default dict) "copyright" $p.copyright "alt" $p.alt
+        "url_sq" $thumbnail "url_t" $thumbnail "url_s" $thumbnail "url_n" $thumbnail
+        "url_m" $gallery "url_z" $gallery "url_c" $gallery "url_l" $p.source
+        "url_h" $p.source "url_k" $p.source "url_o" $p.source
+        "width_sq" $thumbnailWidth "height_sq" $thumbnailHeight
+        "width_t" $thumbnailWidth "height_t" $thumbnailHeight
+        "width_s" $thumbnailWidth "height_s" $thumbnailHeight
+        "width_n" $thumbnailWidth "height_n" $thumbnailHeight
+        "width_m" $galleryWidth "height_m" $galleryHeight
+        "width_z" $galleryWidth "height_z" $galleryHeight
+        "width_c" $galleryWidth "height_c" $galleryHeight
+        "width_l" $p.width "height_l" $p.height
+        "width_h" $p.width "height_h" $p.height
+        "width_k" $p.width "height_k" $p.height
+        "width_o" $p.width "height_o" $p.height
+        "image_width" $p.width "image_height" $p.height "image_renditions" $p.renditions
+        "social_image" $gallery
+      ) }}
+    {{ end }}
+    {{ $sets.SetInMap "photosets" $slug (dict "provider" "r2" "photoset" (dict "id" $m.galleryId "photo" $photos)) }}
+{{ end }}
+{{ $photosets := $sets.Get "photosets" }}
 {{ if not $photosets }}
   {{ warnf "gallery adapter: no photosets found in site.Data.flickr.photosets" }}
 {{ else }}
   {{ range $slug, $ps := $photosets }}
-    {{ if not ($ps.photoset.photo) }}
+    {{ if and (not ($ps.photoset.photo)) (ne $ps.provider "r2") }}
       {{ warnf "gallery adapter: photoset %q missing photo array" $slug }}
     {{ else }}
       {{ $setID := $ps.photoset.id }}
       {{ $sortedPhotos := sort $ps.photoset.photo "datetaken" }}
+      {{ $cover := partial "gallerys/cover-entry" (dict "photos" $sortedPhotos "slug" $slug) }}
+      {{ $photoSlugs := dict }}
+      {{ if eq $ps.provider "r2" }}
+        {{ $photoSlugs = partial "gallerys/photo-slugs" (dict "photos" $sortedPhotos "cover" $cover) }}
+      {{ end }}
       {{ range $p := $sortedPhotos }}
         {{ $fid := string $p.id }}
           {{ $tags := $p.tags }}
-          {{ $camera := $p.exif.model }}
-          {{ $emulsion := "" }}
+          {{ $make := string ($p.exif.make | default "") }}
+          {{ if eq (lower (strings.TrimSpace $make)) "noritsu koki" }}
+            {{ $make = "" }}
+          {{ end }}
+          {{ $model := string ($p.exif.model | default "") }}
+          {{ $camera := $model }}
+          {{ $emulsion := strings.TrimSpace ($p.exif.emulsion | default "") }}
+          {{ if not $emulsion }}
           {{ range site.Params.emulsions }}
             {{ $emulsionName := . }}
             {{ if hasPrefix $camera $emulsionName }}
@@ -38,7 +99,15 @@ photoset JSON files in site.Data.flickr.photosets.
               {{ if eq $emulsion "Kodak Ektachrome E 100" }} {{ $emulsion = "Kodak Ektachrome E100" }} {{ end }}
               {{ if eq $emulsion "Kodak E100" }} {{ $emulsion = "Kodak Ektachrome E100" }} {{ end }}
               {{ if eq $emulsion "Kodak E100" }} {{ $emulsion = "Kodak Ektachrome E100" }} {{ end }}
-              {{ if eq $emulsion "CatLABS X FILM 100" }} {{ $emulsion = "CatLABS 100" }} {{ end }}
+              {{ if eq $emulsion "CatLABS X FILM 100" }} {{ $emulsion = "CatLABS  X 100" }} {{ end }}
+            {{ end }}
+          {{ end }}
+          {{ end }}
+          {{ if and $make (not $emulsion) (not (in $camera $make)) }}
+            {{ if $camera }}
+              {{ $camera = printf "%s %s" $make $camera }}
+            {{ else }}
+              {{ $camera = $make }}
             {{ end }}
           {{ end }}
           {{ $lens := $p.exif.lens }}
@@ -56,18 +125,36 @@ photoset JSON files in site.Data.flickr.photosets.
           {{ if eq $lens "10.0-22.0 mm" }} {{ $lens = "EF-S 10-22mm" }} {{ end }}
           {{ if eq $lens "90.0 mm" }} {{ $lens = "Tamron SP 90mm" }} {{ end }}
 
-          {{ if not (in $tags "nogallery") }}
+          {{ $exif := $p.exif | default dict }}
+          {{ $fstop := string ($exif.fstop | default "") }}
+          {{ if strings.HasSuffix $fstop ".0" }}
+            {{ $fstop = strings.TrimSuffix ".0" $fstop }}
+          {{ end }}
+          {{ $exposure := string ($exif.exposure | default "") }}
+          {{ if eq $exposure "0.5" }}
+            {{ $exposure = "1/2" }}
+          {{ else if eq $exposure "0.3" }}
+            {{ $exposure = "1/3" }}
+          {{ else if strings.HasSuffix $exposure ".0" }}
+            {{ $exposure = strings.TrimSuffix ".0" $exposure }}
+          {{ end }}
+          {{ if or (ne $fstop ($exif.fstop | default "")) (ne $exposure ($exif.exposure | default "")) }}
+            {{ $exif = merge $exif (dict "fstop" $fstop "exposure" $exposure) }}
+          {{ end }}
+
+          {{ if and (ne $p.id $cover.id) (not (in $tags "nogallery")) }}
             {{ $content := dict "mediaType" "text/markdown" "value" "" }}
             {{ $dates := dict }}
             {{ with $p.datetaken }}{{ $dates = dict "date" (time.AsTime .) }}{{ end }}
             {{ $photoTitle := $p.title | default "untitled" }}
             {{ $lowerTitle := lower $photoTitle }}
-            {{ if or (strings.HasSuffix $lowerTitle ".jpg") (strings.HasSuffix $lowerTitle ".jpeg") (strings.HasSuffix $lowerTitle ".png") (strings.HasSuffix $lowerTitle ".tiff") (strings.HasSuffix $lowerTitle ".tif") (strings.HasSuffix $lowerTitle ".gif") (strings.HasSuffix $lowerTitle ".bmp") (strings.HasSuffix $lowerTitle ".webp") (strings.HasSuffix $lowerTitle ".heif") (strings.HasSuffix $lowerTitle ".heic") }}
+            {{ if or (strings.HasSuffix $lowerTitle ".jpg") (strings.HasSuffix $lowerTitle ".jpeg") (strings.HasSuffix $lowerTitle ".png") (strings.HasSuffix $lowerTitle ".tiff") (strings.HasSuffix $lowerTitle ".tif") (strings.HasSuffix $lowerTitle ".gif") (strings.HasSuffix $lowerTitle ".bmp") (strings.HasSuffix $lowerTitle ".webp") (strings.HasSuffix $lowerTitle ".heif") (strings.HasSuffix $lowerTitle ".heic") (strings.HasSuffix $lowerTitle ".arw") (strings.HasSuffix $lowerTitle ".cr2") (strings.HasSuffix $lowerTitle ".cr3") (strings.HasSuffix $lowerTitle ".dng") (strings.HasSuffix $lowerTitle ".nef") (strings.HasSuffix $lowerTitle ".orf") (strings.HasSuffix $lowerTitle ".raf") (strings.HasSuffix $lowerTitle ".rw2") }}
               {{ $photoTitle = "untitled" }}
             {{ end }}
             {{ $params := dict
-                "flickr_id" $fid
-                "flickr_album" $setID
+                "photo_id" $fid
+                "album_id" $setID
+                "storage_provider" ($ps.provider | default "flickr")
                 "gallery_slug" $slug
                 "tags" $tags
                 "cameras" $camera
@@ -76,12 +163,15 @@ photoset JSON files in site.Data.flickr.photosets.
                 "datetaken" $p.datetaken
                 "dateupload" $p.dateupload
                 "description" $p.description
-                "exif" $p.exif
-                "last_update" $p.last_update
+                "exif" $exif
+                "last_update" $p.lastupdate
                 "license" $p.license
                 "ownername" $p.ownername
-                "pathalias" $p.pathalias
                 "title" $p.title
+                "alt" $p.alt
+                "copyright" $p.copyright
+                "image_width" $p.image_width "image_height" $p.image_height
+                "image_renditions" $p.image_renditions "social_image" $p.social_image
                 "url_c" $p.url_c
                 "url_h" $p.url_h
                 "url_k" $p.url_k
@@ -103,11 +193,15 @@ photoset JSON files in site.Data.flickr.photosets.
                 {{ end }}
               {{ end }}
             {{ end }}
+            {{ if ne $ps.provider "r2" }}
+              {{ $params = merge $params (dict "flickr_id" $fid "flickr_album" $setID) }}
+            {{ end }}
+            {{ $photoSlug := index $photoSlugs $fid | default $fid }}
             {{ $page := dict
                 "content" $content
                 "dates" $dates
                 "kind" "page"
-                "path" (printf "%s/%s" $slug $fid)
+                "path" (printf "%s/%s" $slug $photoSlug)
                 "title" $photoTitle
                 "type" "gallery"
                 "layout" "single"

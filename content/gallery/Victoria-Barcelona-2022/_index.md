@@ -2,8 +2,7 @@
 Title: "Seattle, Victoria, New York, Barcelona 2022"
 Description: "A few trips on film"
 date: "2022-07-01T00:00:00-05:00"
-image: gallery/victoria-barcelona-2022.jpg
-flickr_album: "72177720300297911"
+r2_gallery_id: "695229124f3e0b40eca3c58ba57262e8-9744109-9759044"
 ---
 
 Thematically these are all very different — but they were all trips I was exploring with my still new (to me) Hasselblad 503cw. As I've used it more, developed more rolls, and I'm getting a better success rate on frames. Though it is still a very different experience from digital which I have gotten quite accustomed to.

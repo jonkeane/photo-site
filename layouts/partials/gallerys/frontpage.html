@@ -1,7 +1,14 @@
 {{- $data := .siteData -}}
 {{- range .firstpost }}
 <article class="post featured hidden">
-    {{- if .Params.image -}}
+    {{- $cover := partial "gallerys/cover" . -}}
+    {{- if $cover -}}
+    <a href="{{ .RelPermalink }}" class="image main">
+        <picture>
+            <img data-srcset="{{ $cover.source }}" alt="{{ $cover.alt }}" />
+        </picture>
+    </a>
+    {{- else if .Params.image -}}
     {{- $image := resources.Get .Params.image -}}
     {{- $x2700x := $image.Resize "2700x" -}}
     {{- $x1800x := $image.Resize "1800x" -}}

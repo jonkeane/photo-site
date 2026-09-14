@@ -2,6 +2,5 @@
 Title: Starved Rock 2016
 Description:
 date: "2016-01-01T00:00:00"
-flickr_album: "72157665994701411"
-image: gallery/starvedrock-2016.jpg
+r2_gallery_id: "695229124f3e0b40eca3c58ba57262e8-9744109-9852413"
 ---
