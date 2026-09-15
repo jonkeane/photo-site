@@ -10,7 +10,6 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<!-- Preconnect to external origins for faster resource loading -->
-		<link rel="preconnect" href="https://live.staticflickr.com" crossorigin />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<!-- CSS -->
@@ -26,7 +25,7 @@
 		{{- end -}}
 		{{- $noscript := resources.Get "scss/noscript.scss" | resources.ExecuteAsTemplate "noscript.scss" . | toCSS (dict "targetPath" "assets/css/noscript.css" "enableSourceMap" false) -}}
 		<noscript><link rel="stylesheet" href='{{ $noscript.RelPermalink }}' /></noscript>
-		{{- if .Params.flickr_id -}}
+		{{- if and .IsPage (eq .Type "gallery") -}}
 		{{- $swiperCSS := slice (resources.Get "node_modules/swiper/swiper.css") (resources.Get "node_modules/swiper/modules/zoom.css") | resources.Concat "assets/css/photo-swiper.css" | minify | fingerprint -}}
 		<link rel="stylesheet" href="{{ $swiperCSS.RelPermalink }}">
 		{{- end -}}

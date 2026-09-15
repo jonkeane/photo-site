@@ -1,14 +1,13 @@
 {{/*
-Content adapter: one Hugo page per photo, with the same layouts and taxonomies.
-R2 galleries normalize into the existing photoset shape at build time.
+Content adapter: one Hugo page per R2 gallery entry, with the same layouts and
+taxonomies.
 */}}
 
-{{ $sets := newScratch }}
-{{ $sets.Set "photosets" dict }}
-{{ range $slug, $photoset := site.Data.flickr.photosets }}
-  {{ $sets.SetInMap "photosets" $slug $photoset }}
-{{ end }}
-{{ range $slug, $m := site.Data.r2.galleries }}
+{{ $galleries := site.Data.r2.galleries }}
+{{ if not $galleries }}
+  {{ warnf "gallery adapter: no R2 gallery manifests found in site.Data.r2.galleries" }}
+{{ else }}
+  {{ range $slug, $m := $galleries }}
     {{ if ne (int $m.schemaVersion) 1 }}
       {{ errorf "R2 gallery %s has an unsupported or mismatched manifest; run r2import" $slug }}
     {{ end }}
@@ -33,41 +32,18 @@ R2 galleries normalize into the existing photoset shape at build time.
         "tags" ($p.tags | default slice) "datetaken" $p.dateTaken "dateupload" $p.dateUpload
         "lastupdate" $p.lastUpdate "ownername" $p.ownerName "license" $p.license
         "exif" ($p.exif | default dict) "copyright" $p.copyright "alt" $p.alt
-        "url_sq" $thumbnail "url_t" $thumbnail "url_s" $thumbnail "url_n" $thumbnail
-        "url_m" $gallery "url_z" $gallery "url_c" $gallery "url_l" $p.source
-        "url_h" $p.source "url_k" $p.source "url_o" $p.source
-        "width_sq" $thumbnailWidth "height_sq" $thumbnailHeight
-        "width_t" $thumbnailWidth "height_t" $thumbnailHeight
-        "width_s" $thumbnailWidth "height_s" $thumbnailHeight
-        "width_n" $thumbnailWidth "height_n" $thumbnailHeight
-        "width_m" $galleryWidth "height_m" $galleryHeight
-        "width_z" $galleryWidth "height_z" $galleryHeight
-        "width_c" $galleryWidth "height_c" $galleryHeight
-        "width_l" $p.width "height_l" $p.height
-        "width_h" $p.width "height_h" $p.height
-        "width_k" $p.width "height_k" $p.height
-        "width_o" $p.width "height_o" $p.height
-        "image_width" $p.width "image_height" $p.height "image_renditions" $p.renditions
-        "social_image" $gallery
+        "thumbnail_source" $thumbnail "thumbnail_width" $thumbnailWidth "thumbnail_height" $thumbnailHeight
+        "gallery_source" $gallery "gallery_width" $galleryWidth "gallery_height" $galleryHeight
+        "source" $p.source "width" $p.width "height" $p.height
       ) }}
     {{ end }}
-    {{ $sets.SetInMap "photosets" $slug (dict "provider" "r2" "photoset" (dict "id" $m.galleryId "photo" $photos)) }}
-{{ end }}
-{{ $photosets := $sets.Get "photosets" }}
-{{ if not $photosets }}
-  {{ warnf "gallery adapter: no photosets found in site.Data.flickr.photosets" }}
-{{ else }}
-  {{ range $slug, $ps := $photosets }}
-    {{ if and (not ($ps.photoset.photo)) (ne $ps.provider "r2") }}
-      {{ warnf "gallery adapter: photoset %q missing photo array" $slug }}
+    {{ if not $photos }}
+      {{ warnf "gallery adapter: R2 gallery %q has no entries" $slug }}
     {{ else }}
-      {{ $setID := $ps.photoset.id }}
-      {{ $sortedPhotos := sort $ps.photoset.photo "datetaken" }}
+      {{ $galleryID := $m.galleryId }}
+      {{ $sortedPhotos := sort $photos "datetaken" }}
       {{ $cover := partial "gallerys/cover-entry" (dict "photos" $sortedPhotos "slug" $slug) }}
-      {{ $photoSlugs := dict }}
-      {{ if eq $ps.provider "r2" }}
-        {{ $photoSlugs = partial "gallerys/photo-slugs" (dict "photos" $sortedPhotos "cover" $cover) }}
-      {{ end }}
+      {{ $photoSlugs := partial "gallerys/photo-slugs" (dict "photos" $sortedPhotos "cover" $cover) }}
       {{ range $p := $sortedPhotos }}
         {{ $fid := string $p.id }}
           {{ $tags := $p.tags }}
@@ -153,8 +129,7 @@ R2 galleries normalize into the existing photoset shape at build time.
             {{ end }}
             {{ $params := dict
                 "photo_id" $fid
-                "album_id" $setID
-                "storage_provider" ($ps.provider | default "flickr")
+                "gallery_id" $galleryID
                 "gallery_slug" $slug
                 "tags" $tags
                 "cameras" $camera
@@ -170,32 +145,10 @@ R2 galleries normalize into the existing photoset shape at build time.
                 "title" $p.title
                 "alt" $p.alt
                 "copyright" $p.copyright
-                "image_width" $p.image_width "image_height" $p.image_height
-                "image_renditions" $p.image_renditions "social_image" $p.social_image
-                "url_c" $p.url_c
-                "url_h" $p.url_h
-                "url_k" $p.url_k
-                "url_l" $p.url_l
-                "url_m" $p.url_m
-                "url_n" $p.url_n
-                "url_o" $p.url_o
-                "url_s" $p.url_s
-                "url_sq" $p.url_sq
-                "url_t" $p.url_t
-                "url_z" $p.url_z
+                "image_original" $p.source "image_width" $p.width "image_height" $p.height
+                "image_gallery" $p.gallery_source "gallery_width" $p.gallery_width "gallery_height" $p.gallery_height
+                "image_thumbnail" $p.thumbnail_source "thumbnail_width" $p.thumbnail_width "thumbnail_height" $p.thumbnail_height
               }}
-            {{/* Keep each rendition's dimensions alongside its URL. Old caches may omit them. */}}
-            {{ range $size := slice "sq" "t" "s" "n" "m" "z" "c" "l" "h" "k" "o" }}
-              {{ range $axis := slice "width" "height" }}
-                {{ $key := printf "%s_%s" $axis $size }}
-                {{ with index $p $key }}
-                  {{ $params = merge $params (dict $key .) }}
-                {{ end }}
-              {{ end }}
-            {{ end }}
-            {{ if ne $ps.provider "r2" }}
-              {{ $params = merge $params (dict "flickr_id" $fid "flickr_album" $setID) }}
-            {{ end }}
             {{ $photoSlug := index $photoSlugs $fid | default $fid }}
             {{ $page := dict
                 "content" $content

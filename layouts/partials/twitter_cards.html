@@ -26,7 +26,7 @@
 {{- else -}}
 {{- with $.Site.Params.images -}}
 <meta name="twitter:card" content="summary_large_image"/>
-{{- with (or $.Params.social_image $.Params.url_k) -}}
+{{- with (or $.Params.image_gallery $.Params.social_image) -}}
 <meta name="twitter:image" content="{{ . | absURL }}" />
 {{- else -}}
 {{- with $.Site.Params.images }}

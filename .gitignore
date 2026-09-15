@@ -11,8 +11,6 @@ resources/
 .netlify
 netlify_dev.sh
 
-data/flickr/*
 data/r2/galleries/*
 assets/*
-/flickrimport
 node_modules/

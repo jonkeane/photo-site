@@ -3,6 +3,5 @@ Title: ""
 Description: ""
 date: "{{ .Date }}"
 
-image: "gallery/"
-flickr_album: ""
+r2_gallery_id: "123"
 ---

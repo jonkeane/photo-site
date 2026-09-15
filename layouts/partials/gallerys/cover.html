@@ -5,13 +5,9 @@
   {{- $photos := slice -}}
   {{- with index .Site.Data.r2.galleries $slug -}}
     {{- $photos = .entries -}}
-  {{- else -}}
-    {{- with index $.Site.Data.flickr.photosets $slug -}}
-      {{- $photos = .photoset.photo -}}
-    {{- end -}}
   {{- end -}}
   {{- with partial "gallerys/cover-entry" (dict "photos" $photos "slug" $slug) -}}
-    {{- $source := or .source .url_k .url_h .url_l .url_c .url_z .url_m .url_o -}}
+    {{- $source := .source -}}
     {{- with .renditions -}}{{- $source = .gallery.source -}}{{- end -}}
     {{- $cover = dict "source" $source "alt" (or .alt .title $.Title) -}}
   {{- end -}}

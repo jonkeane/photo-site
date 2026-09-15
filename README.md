@@ -1,15 +1,14 @@
 # photo-site
-A Hugo static site for displaying photography portfolios with Flickr integration.
+A Hugo static site for displaying photography portfolios backed by Cloudflare R2.
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/0e4d43d8-6f63-49b4-b1b6-dbe795e53fda/deploy-status)](https://app.netlify.com/sites/xenodochial-curie-fec15a/deploys)
 
 ## Architecture
 
 This site uses **build-time static generation** rather than runtime JavaScript galleries:
-- Go CLI tool fetches Flickr photoset metadata via REST API
-- Raw JSON responses stored in `data/flickr/photosets/`
+- The R2 importer writes gallery manifests to `data/r2/galleries/`
 - Hugo generates one HTML page per photo 
-- Images served directly from Flickr CDN 
+- Images are served from the R2 public domain
 
 ## Development
 
@@ -41,13 +40,14 @@ pan a zoomed image against both edges, lift one finger during a pinch, pinch bac
 to fit and keep dragging, then start a fresh swipe. Also check the first/last
 photo, browser back/forward, and portrait/landscape orientation.
 
-## Flickr API Integration
+## R2 gallery manifests
 
-To fetch photoset metadata, you need a Flickr API key:
-1. Get key at https://www.flickr.com/services/apps/create/
-2. Export as environment variable: `export FLICKR_API_KEY=your-key-here`
-3. Run importer: `flickrimport` (or `go run ./cmd/flickrimport`)
-4. For private photos, you'll need to setup OAuth `export FLICKR_CONSUMER_KEY=your-key-here`, `export FLICKR_CONSUMER_SECRET=your-secret-here` and then `flickrimport -initOAuth`
+The deployment workflow refreshes the R2 manifests before each Hugo build. To
+refresh them locally, provide the public image base URL and run the importer:
+
+```
+R2_PUBLIC_BASE_URL=... \
+  go run github.com/jonkeane/publish-to-r2/uploader/cmd/r2import@latest
+```
  
-Run `go test ./...` to check dimension round-tripping and gallery rendering
-fixtures (the rendering checks require `hugo` on your PATH).
+Run `hugo --minify` to verify the site build (with `hugo` on your PATH).
