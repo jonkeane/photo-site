@@ -351,6 +351,40 @@ body:has(#photo-single) {
 	visibility: hidden;
 }
 
+.photo-close {
+	display: none;
+}
+
+html.photo-only .photo-close {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	top: #{'max(1rem, env(safe-area-inset-top))'};
+	right: #{'max(1rem, env(safe-area-inset-right))'};
+	z-index: 10;
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	background-color: #000000aa;
+	color: _palette(invert, fg-bold) !important;
+	box-shadow: none;
+	cursor: pointer;
+
+	> span {
+		font-size: 1.5rem;
+		line-height: 1;
+	}
+
+	&:hover {
+		box-shadow: none;
+		color: _palette(invert, accent) !important;
+	}
+}
+
 // Keep the same Swiper and its gestures, giving it the entire viewport.
 html.photo-only {
 	#photo-single {

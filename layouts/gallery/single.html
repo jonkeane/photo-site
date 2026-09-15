@@ -25,6 +25,7 @@
 						{{ with .NextInSection }}{{ partial "photo/slide" (dict "page" . "current" false) }}{{ end }}
 					</div>
 				</div>
+				<button class="photo-close" type="button" aria-label="Close image view (Escape)" title="Close image view (Escape)"><span aria-hidden="true">×</span></button>
 			</figure>
 			{{ partial "photo/exif" (dict "Photo" .Params "class" "exif-inline") }}
 			<div class="photo-drawer" id="details">

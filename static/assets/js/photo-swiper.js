@@ -31,7 +31,7 @@ if (viewer) {
 		const enabled = window.location.hash === '#photo-only';
 		document.documentElement.classList.toggle('photo-only', enabled);
 		viewer.setAttribute('aria-label', enabled
-			? 'Photo viewer. Pinch to zoom, or press Escape to reset zoom and restore controls.'
+			? 'Photo viewer. Pinch to zoom, or press Escape or Close to reset zoom and restore controls.'
 			: 'Photo viewer. Double tap or press Enter for image-only view. Pinch to zoom; Escape resets zoom.');
 		if (swiper.initialized) {
 			resetZoom();
@@ -40,14 +40,19 @@ if (viewer) {
 		}
 	}
 
-	function setPhotoOnly(enabled) {
-		if (destination || swiper.animating) return;
+	function setPhotoOnly(enabled, focusViewer = enabled) {
+		// Exiting must work even while a slide is transitioning.
+		if (enabled && (destination || swiper.animating)) return;
 		const url = new URL(window.location.href);
 		url.hash = enabled ? 'photo-only' : '';
 		history.replaceState(history.state, '', url);
 		// replaceState does not fire hashchange; also refresh the details drawer.
 		window.dispatchEvent(new Event('hashchange'));
-		viewer.focus({ preventScroll: true });
+		if (enabled && focusViewer) viewer.focus({ preventScroll: true });
+		else {
+			document.activeElement?.blur?.();
+			viewer.blur();
+		}
 	}
 
 	function resetZoom() {
@@ -56,6 +61,8 @@ if (viewer) {
 		gestureBlocked = pointers.size > 1;
 		updateNavigation();
 	}
+
+	document.querySelector('.photo-close')?.addEventListener('click', () => setPhotoOnly(false));
 
 	function zoomElements() {
 		const slide = slides[swiper.activeIndex];
@@ -92,7 +99,8 @@ if (viewer) {
 	}
 
 	swiper.on('doubleTap', () => {
-		setPhotoOnly(window.location.hash !== '#photo-only');
+		// A pointer gesture should not add a keyboard focus outline to the image.
+		setPhotoOnly(window.location.hash !== '#photo-only', false);
 	});
 	viewer.addEventListener('keydown', event => {
 		if (event.key === 'Enter' || event.key === ' ') {
