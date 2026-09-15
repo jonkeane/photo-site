@@ -46,5 +46,6 @@
 {{- if hugo.IsServer -}}
 <link rel="stylesheet" href="{{- ($style).RelPermalink -}}">
 {{- else -}}
-<link rel="stylesheet" href="{{- ($style | minify).RelPermalink -}}">
+{{- $style = $style | minify | fingerprint -}}
+<link rel="stylesheet" href="{{- $style.RelPermalink -}}" integrity="{{ $style.Data.Integrity }}">
 {{- end -}}

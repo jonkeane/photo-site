@@ -11,6 +11,7 @@ if (viewer) {
 	let zoomScale = 1;
 	let destination = null;
 	let resetting = false;
+	let navigationTimeout = null;
 	const swiper = new Swiper(viewer, {
 		init: false,
 		modules: [Zoom],
@@ -76,6 +77,13 @@ if (viewer) {
 		swiper.allowSlideNext = allowed && initialIndex < slides.length - 1;
 	}
 
+	function finishNavigation() {
+		if (resetting || !destination) return;
+		window.clearTimeout(navigationTimeout);
+		navigationTimeout = null;
+		window.photoNav.goToPhoto(destination);
+	}
+
 	function resetSlide() {
 		resetting = true;
 		swiper.allowSlidePrev = true;
@@ -126,10 +134,16 @@ if (viewer) {
 		destination = slides[swiper.activeIndex].dataset.photoUrl;
 		swiper.allowTouchMove = false;
 		updateNavigation();
+		// A swipe can begin while the page's preload styles suppress transitions,
+		// or its CSS transition can otherwise be interrupted. In either case
+		// transitionend never fires, so keep a bounded fallback rather than leaving
+		// touch locked.
+		navigationTimeout = window.setTimeout(
+			finishNavigation,
+			(Number(swiper.params.speed) || 0) + 100,
+		);
 	});
-	swiper.on('slideChangeTransitionEnd', () => {
-		if (!resetting && destination) window.photoNav.goToPhoto(destination);
-	});
+	swiper.on('slideChangeTransitionEnd', finishNavigation);
 
 	window.visualViewport?.addEventListener('resize', updateNavigation);
 	window.addEventListener('blur', () => {
@@ -140,6 +154,8 @@ if (viewer) {
 	window.addEventListener('pageshow', event => {
 		if (!event.persisted) return;
 		// A restored page must show its own photo and accept a new swipe.
+		window.clearTimeout(navigationTimeout);
+		navigationTimeout = null;
 		pointers.clear();
 		gestureBlocked = false;
 		destination = null;

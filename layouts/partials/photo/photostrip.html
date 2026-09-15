@@ -15,7 +15,7 @@
         {{- if lt . (len $pages) -}}
           {{- $p := index $pages . -}}
           {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.photo_id) }}
-          <a onclick="photoNav.goToPhoto('{{ $p.RelPermalink }}');" class="photostrip-thumb">
+          <a href="{{ $p.RelPermalink }}" data-photo-nav="photo" class="photostrip-thumb">
             <img src="{{ $p.Params.image_thumbnail }}" alt="{{ $alt }}"
               loading="lazy" crossorigin="anonymous" />
           </a>
@@ -36,7 +36,7 @@
           {{- if and (ge . 0) (lt . (len $pages)) -}}
             {{- $p := index $pages . -}}
             {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.photo_id) }}
-            <a onclick="photoNav.goToPhoto('{{ $p.RelPermalink }}');" class="photostrip-thumb">
+            <a href="{{ $p.RelPermalink }}" data-photo-nav="photo" class="photostrip-thumb">
               <img src="{{ $p.Params.image_thumbnail }}" alt="{{ $alt }}"
                 loading="lazy" crossorigin="anonymous" />
             </a>

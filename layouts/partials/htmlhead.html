@@ -18,16 +18,17 @@
 		<link rel="stylesheet" href="{{ ($style).RelPermalink }}">
 		{{- else -}}
 		{{- $style := resources.Get "scss/main.scss" | resources.ExecuteAsTemplate "main.scss" . | toCSS (dict "targetPath" "assets/css/main.css" "enableSourceMap" false) -}}
-		<link rel="stylesheet" href="{{ ($style | minify).RelPermalink }}">
+		{{- $style = $style | minify | fingerprint -}}
+		<link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
 		{{- end -}}
 		{{- with .Site.Params.favicon -}}
 		<link rel="shortcut icon" href="{{ . }}">
 		{{- end -}}
-		{{- $noscript := resources.Get "scss/noscript.scss" | resources.ExecuteAsTemplate "noscript.scss" . | toCSS (dict "targetPath" "assets/css/noscript.css" "enableSourceMap" false) -}}
-		<noscript><link rel="stylesheet" href='{{ $noscript.RelPermalink }}' /></noscript>
+		{{- $noscript := resources.Get "scss/noscript.scss" | resources.ExecuteAsTemplate "noscript.scss" . | toCSS (dict "targetPath" "assets/css/noscript.css" "enableSourceMap" false) | minify | fingerprint -}}
+		<noscript><link rel="stylesheet" href="{{ $noscript.RelPermalink }}" integrity="{{ $noscript.Data.Integrity }}" /></noscript>
 		{{- if and .IsPage (eq .Type "gallery") -}}
 		{{- $swiperCSS := slice (resources.Get "node_modules/swiper/swiper.css") (resources.Get "node_modules/swiper/modules/zoom.css") | resources.Concat "assets/css/photo-swiper.css" | minify | fingerprint -}}
-		<link rel="stylesheet" href="{{ $swiperCSS.RelPermalink }}">
+		<link rel="stylesheet" href="{{ $swiperCSS.RelPermalink }}" integrity="{{ $swiperCSS.Data.Integrity }}">
 		{{- end -}}
 		{{- partial "customhead" . -}}
 		<!-- {{- partial "photo/prefetch" . -}} -->
