@@ -2,16 +2,18 @@
 {{- $hasDimensions := true -}}
 {{- range .Photosubset -}}
   {{- $page := . -}}
-  {{- $thumbnail := "" -}}
+  {{- $image := "" -}}
   {{- $width := 0 -}}
   {{- $height := 0 -}}
-  {{- /* Select the URL and dimensions from the same non-square rendition. */ -}}
-  {{- range slice "z" "c" "m" "l" "h" "k" "o" "n" "s" "t" -}}
-    {{- if not $thumbnail -}}
-      {{- $thumbnail = index $page.Params (printf "url_%s" .) | default "" -}}
-      {{- $width = int (index $page.Params (printf "width_%s" .) | default 0) -}}
-      {{- $height = int (index $page.Params (printf "height_%s" .) | default 0) -}}
-    {{- end -}}
+  {{- /* Prefer the gallery rendition; fall back to the thumbnail as one complete rendition. */ -}}
+  {{- with $page.Params.image_gallery -}}
+    {{- $image = . -}}
+    {{- $width = int ($page.Params.gallery_width | default 0) -}}
+    {{- $height = int ($page.Params.gallery_height | default 0) -}}
+  {{- else with $page.Params.image_thumbnail -}}
+    {{- $image = . -}}
+    {{- $width = int ($page.Params.thumbnail_width | default 0) -}}
+    {{- $height = int ($page.Params.thumbnail_height | default 0) -}}
   {{- end -}}
   {{- $missingDimensions := or (le $width 0) (le $height 0) -}}
   {{- if $missingDimensions -}}
@@ -20,7 +22,7 @@
     {{- $width = 4 -}}
     {{- $height = 3 -}}
   {{- end -}}
-  {{- $items = $items | append (dict "page" $page "src" $thumbnail "width" $width "height" $height "missingDimensions" $missingDimensions) -}}
+  {{- $items = $items | append (dict "page" $page "src" $image "width" $width "height" $height "missingDimensions" $missingDimensions) -}}
 {{- end -}}
 <section class="photoset-grid">
   <div class="grid{{ if $hasDimensions }} has-dimensions{{ end }}">
