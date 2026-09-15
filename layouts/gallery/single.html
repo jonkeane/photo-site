@@ -3,7 +3,7 @@
 	<script>document.documentElement.classList.toggle('photo-only', location.hash === '#photo-only');</script>
 	<div id="main">
 		{{- $photoID := .Params.photo_id | string -}}
-		<section class="page" id="photo-single">
+		<section class="page" id="photo-single" data-photo-root-url="{{ .Parent.Parent.RelPermalink }}" data-photo-gallery-url="{{ .Parent.RelPermalink }}">
 			{{ partial "photo/nav" . }}
 			{{- $url := .Params.image_original -}}
 			{{- $alt := or .Params.alt .Params.description._content .Params.title (printf "Photo %s" $photoID) }}
@@ -55,10 +55,5 @@
 		</section>
 	</div>
 	{{- partial "scripts/index" . -}}
-	<script>
-			// Initialize photo navigation - injects gallery URLs into history for direct visits
-			// Order: [grandparent gallery index, parent gallery]
-			photoNav.initPhotoPage(['{{ .Parent.Parent.RelPermalink }}', '{{ .Parent.RelPermalink }}']);
-	</script>
 	</body>
 </html>

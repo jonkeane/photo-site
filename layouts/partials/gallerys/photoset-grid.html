@@ -27,7 +27,7 @@
 <section class="photoset-grid">
   <div class="grid{{ if $hasDimensions }} has-dimensions{{ end }}">
   {{ range $items }}
-    <a class="grid-item{{ if .missingDimensions }} missing-dimensions{{ end }}" href="{{ .page.RelPermalink }}" onclick="photoNav.markNavigation();" style="--photo-ratio: {{ div (float .width) .height }}">
+    <a class="grid-item{{ if .missingDimensions }} missing-dimensions{{ end }}" href="{{ .page.RelPermalink }}" data-photo-nav="enter-photo" style="--photo-ratio: {{ div (float .width) .height }}">
       <img src="{{ .src }}" width="{{ .width }}" height="{{ .height }}" alt="{{ .page.Params.title }}" loading="lazy" decoding="async" crossorigin="anonymous" />
     </a>
   {{ end }}
