@@ -1,0 +1,15 @@
+{{- /* Read the snapshot directly: cover-only photos have no generated page. */ -}}
+{{- $cover := dict -}}
+{{- if and .IsSection (eq .Section "gallery") .File -}}
+  {{- $slug := path.Base .File.Dir -}}
+  {{- $photos := slice -}}
+  {{- with index .Site.Data.r2.galleries $slug -}}
+    {{- $photos = .entries -}}
+  {{- end -}}
+  {{- with partial "gallerys/cover-entry" (dict "photos" $photos "slug" $slug) -}}
+    {{- $source := .source -}}
+    {{- with .renditions -}}{{- $source = .gallery.source -}}{{- end -}}
+    {{- $cover = dict "source" $source "alt" (or .alt .title $.Title) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $cover -}}

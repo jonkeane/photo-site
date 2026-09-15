@@ -1,8 +1,7 @@
 {{- /* Prefetch next/prev pages and images for instant navigation */ -}}
 {{- with .NextInSection -}}
 <link rel="prefetch" href="{{ .RelPermalink }}" />
-{{- $nextUrl := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c
-.Params.url_z -}}
+{{- $nextUrl := .Params.image_original -}}
 {{- if $nextUrl }}
 <link rel="prefetch" href="{{ $nextUrl }}" as="image" />
 {{- end -}}
@@ -10,8 +9,7 @@
 
 {{- with .PrevInSection -}}
 <link rel="prefetch" href="{{ .RelPermalink }}" />
-{{- $prevUrl := or .Params.url_5k .Params.url_4k .Params.url_3k .Params.url_k .Params.url_h .Params.url_b .Params.url_c
-.Params.url_z -}}
+{{- $prevUrl := .Params.image_original -}}
 {{- if $prevUrl }}
 <link rel="prefetch" href="{{ $prevUrl }}" as="image" />
 {{- end -}}

@@ -1,4 +1,11 @@
 {{- partial "htmlhead.html" . -}}
+{{- with .Params.r2_gallery_id -}}
+  {{- $slug := path.Base $.File.Dir -}}
+  {{- $manifest := index $.Site.Data.r2.galleries $slug -}}
+  {{- if or (not $manifest) (ne $manifest.galleryId .) -}}
+    {{- errorf "R2 gallery %s needs a matching manifest; run r2import before Hugo" $slug -}}
+  {{- end -}}
+{{- end -}}
 	<body lang='{{ .Site.Language.Lang | default "en-us" }}' class="is-preload">
 
 		{{- $postsPageSize := .Site.Params.Posts.pagesize | default 6 -}}
@@ -11,7 +18,7 @@
 
 				<div id="main">
 					<section class="page">
-						<a onclick="photoNav.goBack('{{ .Parent.RelPermalink }}')" class="button" id="galleryBackBtn">back to gallery</a>
+						<a href="{{ .Parent.RelPermalink }}" data-photo-nav="back" class="button" id="galleryBackBtn">back to gallery</a>
 						<header class="major">
                             <h1>{{ .Title }}</h1>
                             <p>{{ .Description }}</p>

@@ -6,17 +6,19 @@
 {{- $util := resources.Get "js/util.js" -}}
 {{- $main := resources.Get "js/main.js" -}}
 
-{{- $sentry := resources.Get "js/sentry-init.js" | js.Build (dict "target" "es2017" "minify" true) }}
+{{- $sentry := resources.Get "js/sentry-init.js" | js.Build (dict "targetPath" "assets/js/sentry-init.js" "target" "es2017" "minify" true) | fingerprint -}}
 {{- $js := slice $jQuery $scrollex $scrolly $browser $breakpoints $util $main | resources.Concat "assets/js/bundle.js"
-}}
+    | minify | fingerprint -}}
+{{- $infiniteScroll := resources.Get "js/infinite-scroll.pkgd.min.js" | resources.Copy "assets/js/infinite-scroll.pkgd.min.js" | fingerprint -}}
+{{- $custom := resources.Get "js/custom.js" | resources.Copy "assets/js/custom.js" | minify | fingerprint -}}
 
 <!-- Load Sentry SDK bundled from npm -->
-<script src='{{ $sentry.RelPermalink }}'></script>
+<script src="{{ $sentry.RelPermalink }}" integrity="{{ $sentry.Data.Integrity }}"></script>
 
-<script src='{{ $js.RelPermalink }}'></script>
-<script src='{{ "assets/js/infinite-scroll.pkgd.min.js" | relURL }}'></script>
-<script src='{{ "assets/js/custom.js" | relURL }}'></script>
-{{- if .Params.flickr_id -}}
-{{- $swiper := resources.Get "js/photo-swiper.js" | js.Build (dict "target" "es2017" "minify" true) | fingerprint -}}
-<script src="{{ $swiper.RelPermalink }}" defer></script>
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>
+<script src="{{ $infiniteScroll.RelPermalink }}" integrity="{{ $infiniteScroll.Data.Integrity }}"></script>
+<script src="{{ $custom.RelPermalink }}" integrity="{{ $custom.Data.Integrity }}"></script>
+{{- if and .IsPage (eq .Type "gallery") -}}
+{{- $swiper := resources.Get "js/photo-swiper.js" | js.Build (dict "targetPath" "assets/js/photo-swiper.js" "target" "es2017" "minify" true) | fingerprint -}}
+<script src="{{ $swiper.RelPermalink }}" integrity="{{ $swiper.Data.Integrity }}" defer></script>
 {{- end -}}

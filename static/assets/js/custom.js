@@ -7,6 +7,8 @@ var photoNav = {
 	galleryKey: 'photoSiteGallery',
 	// Key to track if we injected history (need popstate handling)
 	injectedKey: 'photoSiteInjected',
+	// The URL reached through one of this site's photo links.
+	entryKey: 'photoSitePhotoEntry',
 
 	// Mark that we're navigating within the site and go to the URL without adding to history
 	navigating: false,
@@ -20,6 +22,7 @@ var photoNav = {
 			destination.hash = 'photo-only';
 			url = destination.href;
 		}
+		sessionStorage.setItem(this.entryKey, new URL(url, window.location.href).href);
 		location.replace(url);
 	},
 
@@ -33,8 +36,9 @@ var photoNav = {
 	},
 
 	// Mark that we're entering a photo from a gallery (for normal link clicks)
-	markNavigation: function () {
+	markNavigation: function (url) {
 		sessionStorage.setItem(this.storageKey, 'true');
+		if (url) sessionStorage.setItem(this.entryKey, new URL(url, window.location.href).href);
 	},
 
 	// Initialize history on a photo page
@@ -42,8 +46,19 @@ var photoNav = {
 	// parentUrls should be ordered from root to immediate parent, e.g., ['/gallery/', '/gallery/iceland-2022/']
 	initPhotoPage: function (parentUrls) {
 	// Only inject if user landed directly on this page (not from within the site)
-		if (!sessionStorage.getItem(this.storageKey)) {
-			var currentUrl = window.location.href;
+		var currentUrl = window.location.href;
+		var enteredFromSite = sessionStorage.getItem(this.entryKey) === currentUrl;
+		var referrerIsOnSite = false;
+		try {
+			referrerIsOnSite = document.referrer && new URL(document.referrer).origin === window.location.origin;
+		} catch (e) {
+			// A malformed referrer is treated like a direct visit.
+		}
+		sessionStorage.removeItem(this.entryKey);
+
+		if (enteredFromSite || referrerIsOnSite) {
+			sessionStorage.setItem(this.storageKey, 'true');
+		} else {
 
 			// Normalize to array
 			if (!Array.isArray(parentUrls)) {
@@ -101,6 +116,33 @@ window.addEventListener('popstate', function (event) {
 		window.location.href = url;
 	}
 });
+
+// Navigation links remain ordinary links so they work even if this script has not
+// loaded. Enhance them only after photoNav is available.
+document.addEventListener('click', function (event) {
+	var link = event.target.closest('a[data-photo-nav]');
+	if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+	var url = link.getAttribute('href');
+	if (!url) return;
+
+	if (link.dataset.photoNav === 'back') {
+		event.preventDefault();
+		photoNav.goBack(url);
+	} else if (link.dataset.photoNav === 'enter-photo') {
+		photoNav.markNavigation(url);
+	} else {
+		event.preventDefault();
+		photoNav.goToPhoto(url);
+	}
+});
+
+// Initialize direct photo visits without an inline script that can race the
+// navigation helper. The data attributes are also harmless when JavaScript is off.
+var photoPage = document.getElementById('photo-single');
+if (photoPage) {
+	photoNav.initPhotoPage([photoPage.dataset.photoRootUrl, photoPage.dataset.photoGalleryUrl]);
+}
 
 (function ($) {
 	var $window = $(window),
@@ -219,14 +261,14 @@ window.addEventListener('popstate', function (event) {
 		if (e.keyCode === 37) {
 			var prevLink = $('a.previous[rel="prev"]');
 			if (prevLink.length > 0) {
-				photoNav.goToPhoto(prevLink.attr('url'));
+				photoNav.goToPhoto(prevLink.attr('href'));
 			}
 		}
 		// Right arrow key (39) - go to next
 		else if (e.keyCode === 39) {
 			var nextLink = $('a.next[rel="next"]');
 			if (nextLink.length > 0) {
-				photoNav.goToPhoto(nextLink.attr('url'));
+				photoNav.goToPhoto(nextLink.attr('href'));
 			}
 		}
 	});
@@ -300,7 +342,9 @@ window.addEventListener('popstate', function (event) {
 		// options
 		path: '.next',
 		append: '.grid-item',
-		history: false,
+		// Keep the current autoloaded page in the URL. Opening a photo then
+		// returning will therefore reload that same page rather than page 1.
+		history: 'replace',
 		hideNav: '.pagination',
 	});
 

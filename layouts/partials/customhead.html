@@ -9,7 +9,8 @@
 		<link rel="stylesheet" href="{{ ($style).RelPermalink }}">
 		{{- else -}}
 		{{- $style := resources.Get "scss/custom/main.scss" | resources.ExecuteAsTemplate "scss/custom/main.scss" . | toCSS (dict "targetPath" "assets/css/custom_main.css" "enableSourceMap" false) -}}
-		<link rel="stylesheet" href="{{ ($style | minify).RelPermalink }}">
+		{{- $style = $style | minify | fingerprint -}}
+		<link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
 		{{- end -}}
 
         {{- partial "bg" . -}}

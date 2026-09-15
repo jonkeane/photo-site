@@ -1,23 +1,60 @@
 {{/*
-content adapter: generate one page per Flickr photo from all 
-photoset JSON files in site.Data.flickr.photosets.
+Content adapter: one Hugo page per R2 gallery entry, with the same layouts and
+taxonomies.
 */}}
 
-{{ $photosets := site.Data.flickr.photosets }}
-{{ if not $photosets }}
-  {{ warnf "gallery adapter: no photosets found in site.Data.flickr.photosets" }}
+{{ $galleries := site.Data.r2.galleries }}
+{{ if not $galleries }}
+  {{ warnf "gallery adapter: no R2 gallery manifests found in site.Data.r2.galleries" }}
 {{ else }}
-  {{ range $slug, $ps := $photosets }}
-    {{ if not ($ps.photoset.photo) }}
-      {{ warnf "gallery adapter: photoset %q missing photo array" $slug }}
+  {{ range $slug, $m := $galleries }}
+    {{ if ne (int $m.schemaVersion) 1 }}
+      {{ errorf "R2 gallery %s has an unsupported or mismatched manifest; run r2import" $slug }}
+    {{ end }}
+    {{ $photos := slice }}
+    {{ range $p := $m.entries }}
+      {{ $thumbnail := $p.source }}
+      {{ $thumbnailWidth := $p.width }}
+      {{ $thumbnailHeight := $p.height }}
+      {{ $gallery := $p.source }}
+      {{ $galleryWidth := $p.width }}
+      {{ $galleryHeight := $p.height }}
+      {{ with $p.renditions }}
+        {{ $thumbnail = .thumbnail.source }}
+        {{ $thumbnailWidth = .thumbnail.width }}
+        {{ $thumbnailHeight = .thumbnail.height }}
+        {{ $gallery = .gallery.source }}
+        {{ $galleryWidth = .gallery.width }}
+        {{ $galleryHeight = .gallery.height }}
+      {{ end }}
+      {{ $photos = $photos | append (dict
+        "id" $p.id "title" $p.title "description" (dict "_content" ($p.caption | default ""))
+        "tags" ($p.tags | default slice) "datetaken" $p.dateTaken "dateupload" $p.dateUpload
+        "lastupdate" $p.lastUpdate "ownername" $p.ownerName "license" $p.license
+        "exif" ($p.exif | default dict) "copyright" $p.copyright "alt" $p.alt
+        "thumbnail_source" $thumbnail "thumbnail_width" $thumbnailWidth "thumbnail_height" $thumbnailHeight
+        "gallery_source" $gallery "gallery_width" $galleryWidth "gallery_height" $galleryHeight
+        "source" $p.source "width" $p.width "height" $p.height
+      ) }}
+    {{ end }}
+    {{ if not $photos }}
+      {{ warnf "gallery adapter: R2 gallery %q has no entries" $slug }}
     {{ else }}
-      {{ $setID := $ps.photoset.id }}
-      {{ $sortedPhotos := sort $ps.photoset.photo "datetaken" }}
+      {{ $galleryID := $m.galleryId }}
+      {{ $sortedPhotos := sort $photos "datetaken" }}
+      {{ $cover := partial "gallerys/cover-entry" (dict "photos" $sortedPhotos "slug" $slug) }}
+      {{ $photoSlugs := partial "gallerys/photo-slugs" (dict "photos" $sortedPhotos "cover" $cover) }}
       {{ range $p := $sortedPhotos }}
         {{ $fid := string $p.id }}
           {{ $tags := $p.tags }}
-          {{ $camera := $p.exif.model }}
-          {{ $emulsion := "" }}
+          {{ $make := string ($p.exif.make | default "") }}
+          {{ if eq (lower (strings.TrimSpace $make)) "noritsu koki" }}
+            {{ $make = "" }}
+          {{ end }}
+          {{ $model := string ($p.exif.model | default "") }}
+          {{ $camera := $model }}
+          {{ $emulsion := strings.TrimSpace ($p.exif.emulsion | default "") }}
+          {{ if not $emulsion }}
           {{ range site.Params.emulsions }}
             {{ $emulsionName := . }}
             {{ if hasPrefix $camera $emulsionName }}
@@ -38,7 +75,15 @@ photoset JSON files in site.Data.flickr.photosets.
               {{ if eq $emulsion "Kodak Ektachrome E 100" }} {{ $emulsion = "Kodak Ektachrome E100" }} {{ end }}
               {{ if eq $emulsion "Kodak E100" }} {{ $emulsion = "Kodak Ektachrome E100" }} {{ end }}
               {{ if eq $emulsion "Kodak E100" }} {{ $emulsion = "Kodak Ektachrome E100" }} {{ end }}
-              {{ if eq $emulsion "CatLABS X FILM 100" }} {{ $emulsion = "CatLABS 100" }} {{ end }}
+              {{ if eq $emulsion "CatLABS X FILM 100" }} {{ $emulsion = "CatLABS  X 100" }} {{ end }}
+            {{ end }}
+          {{ end }}
+          {{ end }}
+          {{ if and $make (not $emulsion) (not (in $camera $make)) }}
+            {{ if $camera }}
+              {{ $camera = printf "%s %s" $make $camera }}
+            {{ else }}
+              {{ $camera = $make }}
             {{ end }}
           {{ end }}
           {{ $lens := $p.exif.lens }}
@@ -56,18 +101,35 @@ photoset JSON files in site.Data.flickr.photosets.
           {{ if eq $lens "10.0-22.0 mm" }} {{ $lens = "EF-S 10-22mm" }} {{ end }}
           {{ if eq $lens "90.0 mm" }} {{ $lens = "Tamron SP 90mm" }} {{ end }}
 
-          {{ if not (in $tags "nogallery") }}
+          {{ $exif := $p.exif | default dict }}
+          {{ $fstop := string ($exif.fstop | default "") }}
+          {{ if strings.HasSuffix $fstop ".0" }}
+            {{ $fstop = strings.TrimSuffix ".0" $fstop }}
+          {{ end }}
+          {{ $exposure := string ($exif.exposure | default "") }}
+          {{ if eq $exposure "0.5" }}
+            {{ $exposure = "1/2" }}
+          {{ else if eq $exposure "0.3" }}
+            {{ $exposure = "1/3" }}
+          {{ else if strings.HasSuffix $exposure ".0" }}
+            {{ $exposure = strings.TrimSuffix ".0" $exposure }}
+          {{ end }}
+          {{ if or (ne $fstop ($exif.fstop | default "")) (ne $exposure ($exif.exposure | default "")) }}
+            {{ $exif = merge $exif (dict "fstop" $fstop "exposure" $exposure) }}
+          {{ end }}
+
+          {{ if and (ne $p.id $cover.id) (not (in $tags "nogallery")) }}
             {{ $content := dict "mediaType" "text/markdown" "value" "" }}
             {{ $dates := dict }}
             {{ with $p.datetaken }}{{ $dates = dict "date" (time.AsTime .) }}{{ end }}
             {{ $photoTitle := $p.title | default "untitled" }}
             {{ $lowerTitle := lower $photoTitle }}
-            {{ if or (strings.HasSuffix $lowerTitle ".jpg") (strings.HasSuffix $lowerTitle ".jpeg") (strings.HasSuffix $lowerTitle ".png") (strings.HasSuffix $lowerTitle ".tiff") (strings.HasSuffix $lowerTitle ".tif") (strings.HasSuffix $lowerTitle ".gif") (strings.HasSuffix $lowerTitle ".bmp") (strings.HasSuffix $lowerTitle ".webp") (strings.HasSuffix $lowerTitle ".heif") (strings.HasSuffix $lowerTitle ".heic") }}
+            {{ if or (strings.HasSuffix $lowerTitle ".jpg") (strings.HasSuffix $lowerTitle ".jpeg") (strings.HasSuffix $lowerTitle ".png") (strings.HasSuffix $lowerTitle ".tiff") (strings.HasSuffix $lowerTitle ".tif") (strings.HasSuffix $lowerTitle ".gif") (strings.HasSuffix $lowerTitle ".bmp") (strings.HasSuffix $lowerTitle ".webp") (strings.HasSuffix $lowerTitle ".heif") (strings.HasSuffix $lowerTitle ".heic") (strings.HasSuffix $lowerTitle ".arw") (strings.HasSuffix $lowerTitle ".cr2") (strings.HasSuffix $lowerTitle ".cr3") (strings.HasSuffix $lowerTitle ".dng") (strings.HasSuffix $lowerTitle ".nef") (strings.HasSuffix $lowerTitle ".orf") (strings.HasSuffix $lowerTitle ".raf") (strings.HasSuffix $lowerTitle ".rw2") }}
               {{ $photoTitle = "untitled" }}
             {{ end }}
             {{ $params := dict
-                "flickr_id" $fid
-                "flickr_album" $setID
+                "photo_id" $fid
+                "gallery_id" $galleryID
                 "gallery_slug" $slug
                 "tags" $tags
                 "cameras" $camera
@@ -76,38 +138,23 @@ photoset JSON files in site.Data.flickr.photosets.
                 "datetaken" $p.datetaken
                 "dateupload" $p.dateupload
                 "description" $p.description
-                "exif" $p.exif
-                "last_update" $p.last_update
+                "exif" $exif
+                "last_update" $p.lastupdate
                 "license" $p.license
                 "ownername" $p.ownername
-                "pathalias" $p.pathalias
                 "title" $p.title
-                "url_c" $p.url_c
-                "url_h" $p.url_h
-                "url_k" $p.url_k
-                "url_l" $p.url_l
-                "url_m" $p.url_m
-                "url_n" $p.url_n
-                "url_o" $p.url_o
-                "url_s" $p.url_s
-                "url_sq" $p.url_sq
-                "url_t" $p.url_t
-                "url_z" $p.url_z
+                "alt" $p.alt
+                "copyright" $p.copyright
+                "image_original" $p.source "image_width" $p.width "image_height" $p.height
+                "image_gallery" $p.gallery_source "gallery_width" $p.gallery_width "gallery_height" $p.gallery_height
+                "image_thumbnail" $p.thumbnail_source "thumbnail_width" $p.thumbnail_width "thumbnail_height" $p.thumbnail_height
               }}
-            {{/* Keep each rendition's dimensions alongside its URL. Old caches may omit them. */}}
-            {{ range $size := slice "sq" "t" "s" "n" "m" "z" "c" "l" "h" "k" "o" }}
-              {{ range $axis := slice "width" "height" }}
-                {{ $key := printf "%s_%s" $axis $size }}
-                {{ with index $p $key }}
-                  {{ $params = merge $params (dict $key .) }}
-                {{ end }}
-              {{ end }}
-            {{ end }}
+            {{ $photoSlug := index $photoSlugs $fid | default $fid }}
             {{ $page := dict
                 "content" $content
                 "dates" $dates
                 "kind" "page"
-                "path" (printf "%s/%s" $slug $fid)
+                "path" (printf "%s/%s" $slug $photoSlug)
                 "title" $photoTitle
                 "type" "gallery"
                 "layout" "single"
