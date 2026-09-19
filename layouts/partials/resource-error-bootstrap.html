@@ -1,0 +1,66 @@
+{{- /*
+  Resource errors do not bubble and can occur while the document is still being
+  parsed. Install this listener before stylesheets and page markup begin loading,
+  then queue failures until the Sentry bundle at the end of the page is ready.
+*/ -}}
+<script>
+(() => {
+  const queue = [];
+  const seen = new Set();
+  const resourceTags = new Set([
+    "IMG", "SCRIPT", "LINK", "AUDIO", "VIDEO", "SOURCE", "TRACK",
+    "IFRAME", "OBJECT", "EMBED"
+  ]);
+
+  const safeUrl = (value) => {
+    if (!value || typeof value !== "string") return null;
+    if (value.startsWith("data:")) return "data:";
+
+    try {
+      const url = new URL(value, document.baseURI);
+      // Do not send signed URLs, query strings, or fragments to Sentry.
+      return `${url.origin}${url.pathname}`;
+    } catch (_) {
+      return value.split("?")[0].split("#")[0];
+    }
+  };
+
+  const resourceFromEvent = (event) => {
+    const element = event.target;
+    if (!element || !resourceTags.has(element.tagName)) return null;
+
+    const url = safeUrl(
+      element.currentSrc || element.src || element.href || element.data || element.poster
+    );
+    if (!url) return null;
+
+    return {
+      element: element.tagName.toLowerCase(),
+      url,
+      page: safeUrl(window.location.href),
+      crossorigin: element.getAttribute && element.getAttribute("crossorigin"),
+      rel: element.getAttribute && element.getAttribute("rel"),
+    };
+  };
+
+  window.__sentryResourceErrorQueue = queue;
+  window.__sentryCaptureResourceError = null;
+
+  window.addEventListener("error", (event) => {
+    const resource = resourceFromEvent(event);
+    if (!resource) return;
+
+    // A fallback image and a photo viewer can reference the same image. One
+    // Sentry event per resource per page view is enough to make it actionable.
+    const key = `${resource.element}:${resource.url}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+
+    if (typeof window.__sentryCaptureResourceError === "function") {
+      window.__sentryCaptureResourceError(resource);
+    } else {
+      queue.push(resource);
+    }
+  }, true);
+})();
+</script>
