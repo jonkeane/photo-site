@@ -17,7 +17,7 @@
           {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.photo_id) }}
           <a href="{{ $p.RelPermalink }}" data-photo-nav="photo" class="photostrip-thumb">
             <img src="{{ $p.Params.image_thumbnail }}" alt="{{ $alt }}"
-              loading="lazy" crossorigin="anonymous" />
+              loading="lazy" />
           </a>
         {{- end -}}
       {{- end }}
@@ -27,7 +27,7 @@
       {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.photo_id) }}
       <div class="photostrip-thumb current" aria-current="page">
         <img src="{{ $p.Params.image_thumbnail }}" alt="{{ $alt }}"
-          loading="lazy" crossorigin="anonymous" />
+          loading="lazy" />
       </div>
     </div>
     <div class="photostrip-prev">
@@ -38,7 +38,7 @@
             {{- $alt := or $p.Params.title (printf "Photo %s" $p.Params.photo_id) }}
             <a href="{{ $p.RelPermalink }}" data-photo-nav="photo" class="photostrip-thumb">
               <img src="{{ $p.Params.image_thumbnail }}" alt="{{ $alt }}"
-                loading="lazy" crossorigin="anonymous" />
+                loading="lazy" />
             </a>
           {{- end -}}
         {{- end -}}

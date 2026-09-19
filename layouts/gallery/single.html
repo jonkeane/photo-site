@@ -14,9 +14,9 @@
 				{{- /* Never display above half the real pixel dimensions (at least 2x). */ -}}
 				<img class="photo-original" src="{{ $url }}" alt="{{ $alt }}" width="{{ .Params.image_width }}" height="{{ .Params.image_height }}"
 					style="max-width: min(100%, {{ div (float .Params.image_width) 2 }}px); max-height: min(100%, {{ math.Min 2048 (div (float .Params.image_height) 2) }}px)"
-					loading="eager" crossorigin="anonymous" />
+					loading="eager" />
 				{{- else -}}
-				<img class="photo-original" src="{{ $url }}" alt="{{ $alt }}" loading="eager" crossorigin="anonymous" />
+				<img class="photo-original" src="{{ $url }}" alt="{{ $alt }}" loading="eager" />
 				{{- end }}
 				<div class="swiper photo-swiper" tabindex="0" role="region" aria-label="Photo viewer">
 					<div class="swiper-wrapper">
