@@ -14,13 +14,43 @@ Sentry.init({
 	sendDefaultPii: false,
 });
 
+// These resources are intentionally non-critical: privacy/content blockers often
+// prevent analytics from loading, and the site can fall back from web fonts and
+// cosmetic/link-hint resources without losing functionality.
+const isInformationalResourceFailure = (resource) => {
+	const relTokens = (resource.rel || "").toLowerCase().split(/\s+/);
+	if (resource.element === "link" && (
+		relTokens.includes("prefetch") ||
+		relTokens.includes("prerender") ||
+		relTokens.includes("preconnect") ||
+		relTokens.includes("dns-prefetch") ||
+		relTokens.includes("icon") ||
+		relTokens.includes("apple-touch-icon")
+	)) {
+		return true;
+	}
+
+	try {
+		const hostname = new URL(resource.url).hostname.toLowerCase();
+		return hostname === "www.googletagmanager.com" ||
+			hostname === "googletagmanager.com" ||
+			hostname === "fonts.googleapis.com" ||
+			hostname === "fonts.gstatic.com";
+	} catch (_) {
+		return false;
+	}
+};
+
 // The listener is installed at the start of <head> so it catches resources that
 // fail before this Sentry bundle (which is loaded at the end of <body>) is ready.
 // Its queue is drained here, and later failures are sent immediately.
 const captureResourceError = (resource) => {
+	const level = isInformationalResourceFailure(resource) ? "info" : "error";
+
 	Sentry.withScope((scope) => {
-		scope.setLevel("error");
+		scope.setLevel(level);
 		scope.setTag("resource.element", resource.element);
+		scope.setTag("resource.severity", level);
 		scope.setContext("resource", resource);
 		scope.setFingerprint(["resource-load-failure", resource.element, resource.url]);
 		Sentry.captureMessage(`Failed to load ${resource.element}: ${resource.url}`);
