@@ -14,16 +14,22 @@ Sentry.init({
 	sendDefaultPii: false,
 });
 
-// Capture resource loading errors (images, CSS, JavaScript)
-// Uses capture phase (true) since resource errors don't bubble
-document.body.addEventListener("error", (event) => {
-	if (!event.target) return;
+// The listener is installed at the start of <head> so it catches resources that
+// fail before this Sentry bundle (which is loaded at the end of <body>) is ready.
+// Its queue is drained here, and later failures are sent immediately.
+const captureResourceError = (resource) => {
+	Sentry.withScope((scope) => {
+		scope.setLevel("error");
+		scope.setTag("resource.element", resource.element);
+		scope.setContext("resource", resource);
+		scope.setFingerprint(["resource-load-failure", resource.element, resource.url]);
+		Sentry.captureMessage(`Failed to load ${resource.element}: ${resource.url}`);
+	});
+};
 
-	if (event.target.tagName === 'IMG') {
-		Sentry.captureMessage(`Failed to load image: ${event.target.src}`, 'error');
-	}
-
-}, true);
+window.__sentryCaptureResourceError = captureResourceError;
+const queuedResourceErrors = window.__sentryResourceErrorQueue || [];
+queuedResourceErrors.splice(0).forEach(captureResourceError);
 
 // Export Sentry to the global window object in case it's needed elsewhere
 window.Sentry = Sentry;
