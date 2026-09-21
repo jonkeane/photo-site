@@ -7,6 +7,9 @@
 (() => {
   const queue = [];
   const seen = new Set();
+  let imageRetries = new WeakMap();
+  const retryTimers = new Set();
+  let leavingPage = false;
   const resourceTags = new Set([
     "IMG", "SCRIPT", "LINK", "AUDIO", "VIDEO", "SOURCE", "TRACK",
     "IFRAME", "OBJECT", "EMBED"
@@ -46,10 +49,7 @@
   window.__sentryResourceErrorQueue = queue;
   window.__sentryCaptureResourceError = null;
 
-  window.addEventListener("error", (event) => {
-    const resource = resourceFromEvent(event);
-    if (!resource) return;
-
+  const report = (resource) => {
     // A fallback image and a photo viewer can reference the same image. One
     // Sentry event per resource per page view is enough to make it actionable.
     const key = `${resource.element}:${resource.url}`;
@@ -61,6 +61,93 @@
     } else {
       queue.push(resource);
     }
+  };
+
+  // Include the source attributes as well as currentSrc: currentSrc can still
+  // describe the old request while a replacement image is being selected.
+  const imageSource = (image) => {
+    const sources = image.parentElement && image.parentElement.tagName === "PICTURE"
+      ? Array.from(image.parentElement.querySelectorAll("source")) : [];
+    return JSON.stringify([
+      image.currentSrc || image.src,
+      ...[image, ...sources].map((element) =>
+        ["src", "srcset", "sizes", "media", "type"].map((name) => element.getAttribute(name))
+      ),
+    ]);
+  };
+
+  const clearRetry = (image) => {
+    const retry = imageRetries.get(image);
+    if (!retry) return;
+    window.clearTimeout(retry.timer);
+    retryTimers.delete(retry.timer);
+    imageRetries.delete(image);
+  };
+
+  window.addEventListener("load", (event) => {
+    if (event.target && event.target.tagName === "IMG") clearRetry(event.target);
+  }, true);
+
+  // pagehide also covers the back/forward cache without disabling it. A restored
+  // page can retry again, but timers from the previous visit must not fire.
+  window.addEventListener("pagehide", () => {
+    leavingPage = true;
+    retryTimers.forEach((timer) => window.clearTimeout(timer));
+    retryTimers.clear();
+    imageRetries = new WeakMap();
+  });
+  window.addEventListener("pageshow", () => { leavingPage = false; });
+
+  window.addEventListener("error", (event) => {
+    if (leavingPage) return;
+    const resource = resourceFromEvent(event);
+    if (!resource) return;
+    if (resource.element !== "img") {
+      report(resource);
+      return;
+    }
+
+    const image = event.target;
+    if (!image.isConnected || (image.complete && image.naturalWidth > 0)) return;
+    const source = imageSource(image);
+    const previous = imageRetries.get(image);
+    if (previous && previous.source === source) {
+      // Repeated errors during the backoff do not consume the retry. Only an
+      // error after restarting the real image request is reported.
+      if (previous.retried) {
+        report({
+          ...resource,
+          retryCount: 1,
+          elapsedMs: Date.now() - previous.startedAt,
+          online: navigator.onLine,
+          imageRole: image.closest(".photostrip") ? "thumbnail"
+            : image.matches(".photo-original, .swiper-slide[data-current='true'] img") ? "main"
+            : image.closest(".swiper-slide") ? "adjacent" : "image",
+        });
+      }
+      return;
+    }
+
+    clearRetry(image);
+    const retry = { source, startedAt: Date.now(), retried: false, timer: null };
+    imageRetries.set(image, retry);
+    retry.timer = window.setTimeout(() => {
+      retryTimers.delete(retry.timer);
+      if (leavingPage || !image.isConnected || imageSource(image) !== source ||
+          (image.complete && image.naturalWidth > 0)) {
+        clearRetry(image);
+        return;
+      }
+
+      retry.retried = true;
+      // Reassign an existing source attribute to retry in place. Keep picture
+      // sources/srcset, lazy loading, and URL query parameters intact; the
+      // browser still chooses the responsive candidate. No cache busting.
+      const attribute = image.hasAttribute("src") ? "src" : "srcset";
+      image.setAttribute(attribute, image.getAttribute(attribute) || "");
+      retry.source = imageSource(image);
+    }, 1000 + Math.random() * 500);
+    retryTimers.add(retry.timer);
   }, true);
 })();
 </script>
