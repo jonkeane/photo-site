@@ -54,3 +54,8 @@ R2_PUBLIC_BASE_URL=... \
 ```
  
 Run `hugo --minify` to verify the site build (with `hugo` on your PATH).
+
+Run `npm test` for resource-error regression tests. Failed images retry once after
+1–1.5 seconds; only a failed retry is reported to Sentry, once per URL per page.
+Retries preserve responsive sources and cancel when the image loads, is removed,
+changes source, or the page is left. Other resource errors report immediately.

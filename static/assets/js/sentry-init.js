@@ -43,7 +43,8 @@ const isInformationalResourceFailure = (resource) => {
 
 // The listener is installed at the start of <head> so it catches resources that
 // fail before this Sentry bundle (which is loaded at the end of <body>) is ready.
-// Its queue is drained here, and later failures are sent immediately.
+// Image failures reach this queue/callback only after their delayed retry fails.
+// Its queue is drained here, and later confirmed failures are sent immediately.
 const captureResourceError = (resource) => {
 	const level = isInformationalResourceFailure(resource) ? "info" : "error";
 
