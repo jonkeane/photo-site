@@ -53,7 +53,7 @@ const captureResourceError = (resource) => {
 		scope.setTag("resource.element", resource.element);
 		scope.setTag("resource.severity", level);
 		scope.setContext("resource", resource);
-		scope.setFingerprint(["resource-load-failure", resource.element, resource.url]);
+		scope.setFingerprint(["resource-load-failure-v2", resource.element, resource.url]);
 		Sentry.captureMessage(`Failed to load ${resource.element}: ${resource.url}`);
 	});
 };
