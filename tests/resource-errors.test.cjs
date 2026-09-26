@@ -12,6 +12,7 @@ function setup() {
   const timers = new Map();
   let nextTimer = 0;
   let now = 0;
+  const navigator = { onLine: true };
   const window = {
     location: { href: 'https://photos.example/gallery/?private=value#photo' },
     addEventListener(type, callback) {
@@ -25,10 +26,10 @@ function setup() {
   };
   vm.runInNewContext(bootstrap, {
     window, document: { baseURI: window.location.href }, URL,
-    navigator: { onLine: true }, Date: { now: () => now },
+    navigator, Date: { now: () => now },
   });
   return {
-    window, timers,
+    window, navigator, timers,
     emit(type, target) { (listeners.get(type) || []).forEach((callback) => callback({ target })); },
     tick() {
       for (const [id, { callback, delay }] of [...timers]) {
@@ -90,6 +91,20 @@ test('a failed retry is queued once, with diagnostics and sanitized URLs', () =>
   assert.ok(report.elapsedMs >= 1000);
   assert.equal(report.online, true);
   assert.equal(JSON.stringify(report).includes('secret'), false);
+});
+
+test('queued image failures retain connectivity from the final error', () => {
+  for (const [failureTime, expected] of [[false, false], [undefined, 'unknown']]) {
+    const h = setup();
+    const img = image();
+    h.emit('error', img);
+    h.tick();
+    h.navigator.onLine = failureTime;
+    h.emit('error', img);
+    h.navigator.onLine = true;
+    assert.equal(h.reports.length, 1);
+    assert.equal(h.reports[0].online, expected);
+  }
 });
 
 test('Sentry becoming ready during backoff receives only the final failure', () => {

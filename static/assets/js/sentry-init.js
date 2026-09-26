@@ -46,15 +46,24 @@ const isInformationalResourceFailure = (resource) => {
 // Image failures reach this queue/callback only after their delayed retry fails.
 // Its queue is drained here, and later confirmed failures are sent immediately.
 const captureResourceError = (resource) => {
-	const level = isInformationalResourceFailure(resource) ? "info" : "error";
+	const browserImageFailure = resource.element === "img" && resource.retryCount === 1;
+	const level = browserImageFailure ? "warning"
+		: isInformationalResourceFailure(resource) ? "info" : "error";
 
 	Sentry.withScope((scope) => {
 		scope.setLevel(level);
 		scope.setTag("resource.element", resource.element);
 		scope.setTag("resource.severity", level);
+		if (browserImageFailure) {
+			scope.setTag("resource.failure_kind", "browser_image_load");
+			scope.setTag("resource.online", typeof resource.online === "boolean"
+				? String(resource.online) : "unknown");
+		}
 		scope.setContext("resource", resource);
 		scope.setFingerprint(["resource-load-failure-v2", resource.element, resource.url]);
-		Sentry.captureMessage(`Failed to load ${resource.element}: ${resource.url}`);
+		Sentry.captureMessage(browserImageFailure
+			? `Browser failed to load image after retry: ${resource.url}`
+			: `Failed to load ${resource.element}: ${resource.url}`);
 	});
 };
 
