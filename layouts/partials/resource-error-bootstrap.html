@@ -119,7 +119,8 @@
           ...resource,
           retryCount: 1,
           elapsedMs: Date.now() - previous.startedAt,
-          online: navigator.onLine,
+          // Capture connectivity now; Sentry may drain this report later.
+          online: typeof navigator.onLine === "boolean" ? navigator.onLine : "unknown",
           imageRole: image.closest(".photostrip") ? "thumbnail"
             : image.matches(".photo-original, .swiper-slide[data-current='true'] img") ? "main"
             : image.closest(".swiper-slide") ? "adjacent" : "image",
