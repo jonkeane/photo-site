@@ -1,8 +1,10 @@
 {
   "scripts": {
-    "test": "node --test tests/*.test.cjs"
+    "test": "node --test tests/*.test.cjs",
+    "check:r2-images": "node scripts/check-r2-images.cjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1141.0",
     "@sentry/browser": "^10.30.0",
     "swiper": "14.2.0"
   }
