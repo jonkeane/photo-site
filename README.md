@@ -55,6 +55,24 @@ R2_PUBLIC_BASE_URL=... \
  
 Run `hugo --minify` to verify the site build (with `hugo` on your PATH).
 
+## R2 image integrity check
+
+After refreshing manifests and running `hugo --minify --cleanDestinationDir`,
+run `npm run check:r2-images`.
+The check extracts R2 URLs from the built `public/` HTML and assets, verifies
+that every URL matches a gallery manifest, lists the `photos/` objects through
+R2's S3 API, and compares keys and byte sizes. It then downloads six public
+images (rotating daily, including each rendition size when present) and checks
+their SHA-256 values against the manifests. Any failure stops deployment.
+
+Set `R2_PUBLIC_BASE_URL` to the same value used by the importer, `R2_S3_ENDPOINT`
+to the account's S3 endpoint (`https://<account-id>.r2.cloudflarestorage.com`),
+and `R2_BUCKET`, `R2_ACCESS_KEY_ID`, and
+`R2_SECRET_ACCESS_KEY` to the bucket and a read-only R2 API token's S3 keys.
+These are required GitHub Actions secrets for the deploy workflow. Use
+`R2_IMAGE_SAMPLE_COUNT` to change the default of six downloads. The test does
+not download every image or require write access to the bucket.
+
 Run `npm test` for resource-error regression tests. Failed images retry once after
 1–1.5 seconds; only a failed retry is reported to Sentry, once per URL per page.
 Retries preserve responsive sources and cancel when the image loads, is removed,

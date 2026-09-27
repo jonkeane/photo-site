@@ -90,10 +90,19 @@ jobs:
         uses: actions/setup-node@v4
       
       - name: Install npm dependencies
-        run: npm install
+        run: npm ci
       
       - name: Build Hugo site
-        run: hugo --minify
+        run: hugo --minify --cleanDestinationDir
+
+      - name: Verify rendered R2 images
+        env:
+          R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
+          R2_S3_ENDPOINT: ${{ secrets.R2_S3_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: npm run check:r2-images
 
       - name: Install netlify cli
         run: npm install -g netlify-cli
