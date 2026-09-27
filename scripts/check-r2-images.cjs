@@ -161,12 +161,12 @@ async function verifyDownload(url, image, fetchImage = fetch) {
 async function run({ env = process.env, output = 'public', manifests = 'data/r2/galleries',
   fetchImage = fetch, client } = {}) {
   const base = publicBase(env.R2_PUBLIC_BASE_URL || '');
-  const bucket = env.R2_BUCKET;
+  const bucket = env.R2_BUCKET_NAME;
   const endpoint = env.R2_S3_ENDPOINT;
   const accessKeyId = env.R2_ACCESS_KEY_ID;
   const secretAccessKey = env.R2_SECRET_ACCESS_KEY;
   if (!bucket || !endpoint || (!client && (!accessKeyId || !secretAccessKey))) {
-    throw new Error('Set R2_BUCKET, R2_S3_ENDPOINT, R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY');
+    throw new Error('Set R2_BUCKET_NAME, R2_S3_ENDPOINT, R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY');
   }
   const sampleCount = Number(env.R2_IMAGE_SAMPLE_COUNT || 6);
   if (!Number.isSafeInteger(sampleCount) || sampleCount < 1) throw new Error('R2_IMAGE_SAMPLE_COUNT must be a positive integer');

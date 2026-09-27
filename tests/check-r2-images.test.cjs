@@ -47,7 +47,7 @@ test('checks the fresh render, listed key, and downloaded public bytes', async (
     await writeFile(path.join(manifests, 'gallery.json'), JSON.stringify({
       galleryId: 'gallery', entries: [image],
     }));
-    const env = { R2_PUBLIC_BASE_URL: base, R2_BUCKET: 'bucket', R2_S3_ENDPOINT: 'https://r2.example' };
+    const env = { R2_PUBLIC_BASE_URL: base, R2_BUCKET_NAME: 'bucket', R2_S3_ENDPOINT: 'https://r2.example' };
     const client = { async send() { return { Contents: [{ Key: key, Size: body.length }] }; } };
     const fetchImage = async (url) => {
       assert.equal(url, image.source);

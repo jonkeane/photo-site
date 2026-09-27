@@ -67,7 +67,7 @@ their SHA-256 values against the manifests. Any failure stops deployment.
 
 Set `R2_PUBLIC_BASE_URL` to the same value used by the importer, `R2_S3_ENDPOINT`
 to the account's S3 endpoint (`https://<account-id>.r2.cloudflarestorage.com`),
-and `R2_BUCKET`, `R2_ACCESS_KEY_ID`, and
+and `R2_BUCKET_NAME`, `R2_ACCESS_KEY_ID`, and
 `R2_SECRET_ACCESS_KEY` to the bucket and a read-only R2 API token's S3 keys.
 These are required GitHub Actions secrets for the deploy workflow. Use
 `R2_IMAGE_SAMPLE_COUNT` to change the default of six downloads. The test does
