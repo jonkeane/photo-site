@@ -9,7 +9,10 @@
 {{- $sentry := resources.Get "js/sentry-init.js" | js.Build (dict "targetPath" "assets/js/sentry-init.js" "target" "es2017" "minify" true) | fingerprint -}}
 {{- $js := slice $jQuery $scrollex $scrolly $browser $breakpoints $util $main | resources.Concat "assets/js/bundle.js"
     | minify | fingerprint -}}
-{{- $infiniteScroll := resources.Get "js/infinite-scroll.pkgd.min.js" | resources.Copy "assets/js/infinite-scroll.pkgd.min.js" | fingerprint -}}
+{{/* Keep UMD module checks local so transpilation preserves the browser globals. */}}
+{{- $infiniteScrollSource := resources.Get "js/infinite-scroll.pkgd.min.js" -}}
+{{- $infiniteScrollBrowser := resources.FromString "js/infinite-scroll-browser.js" (printf "(function (module, exports, define) {\n%s\n}).call(window);" $infiniteScrollSource.Content) -}}
+{{- $infiniteScroll := $infiniteScrollBrowser | js.Build (dict "targetPath" "assets/js/infinite-scroll.pkgd.min.js" "target" "es2017" "minify" true "externals" (slice "*")) | fingerprint -}}
 {{- $custom := resources.Get "js/custom.js" | resources.Copy "assets/js/custom.js" | minify | fingerprint -}}
 
 <!-- Load Sentry SDK bundled from npm -->
