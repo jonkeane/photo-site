@@ -7,6 +7,10 @@ googleanalytics = "G-CPQDC0642Z"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 timeout = 600
 
+# Keep minification from introducing syntax older browsers cannot parse (e.g. ??).
+[minify.tdewolff.js]
+  version = 2017
+
 [params]
   description = "Travelling the world and taking photographs of things that catch my eye. Landscapes, cityscapes, nature, people."
   images = ["photo-jonkeane.jpg"]
