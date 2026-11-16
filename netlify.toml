@@ -7,6 +7,13 @@ HUGO_VERSION = "0.147.9"
 [dev]
 framework = "hugo"
 
+# Keep existing prints links working while sending visitors straight to the store.
+[[redirects]]
+  from = "/prints/"
+  to = "https://photo-store.jonkeane.com"
+  status = 301
+  force = true
+
 # Cache static assets aggressively (1 year)
 [[headers]]
   for = "/assets/*"
